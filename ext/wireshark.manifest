@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<assembly xmlns='urn:schemas-microsoft-com:asm.v1' manifestVersion='1.0'>
+  <assemblyIdentity type='win32' name='Wireshark' version='0.99.5.0' processorArchitecture='x86' />
+  <file name="libatk-1.0-0.dll" hashalg="SHA1" hash="" />
+  <file name="libcairo-2.dll" hashalg="SHA1" hash="" />
+  <file name="libgcrypt-11.dll" hashalg="SHA1" hash="" />
+  <file name="libgdk-win32-2.0-0.dll" hashalg="SHA1" hash="" />
+  <file name="libgdk_pixbuf-2.0-0.dll" hashalg="SHA1" hash="" />
+  <file name="libglib-2.0-0.dll" hashalg="SHA1" hash="" />
+  <file name="libgmodule-2.0-0.dll" hashalg="SHA1" hash="" />
+  <file name="libgnutls-13.dll" hashalg="SHA1" hash="" />
+  <file name="libgnutls-extra-13.dll" hashalg="SHA1" hash="" />
+  <file name="libgnutls-openssl-13.dll" hashalg="SHA1" hash="" />
+  <file name="libgobject-2.0-0.dll" hashalg="SHA1" hash="" />
+  <file name="libgpg-error-0.dll" hashalg="SHA1" hash="" />
+  <file name="libgtk-win32-2.0-0.dll" hashalg="SHA1" hash="" />
+  <file name="libpango-1.0-0.dll" hashalg="SHA1" hash="" />
+  <file name="libpangocairo-1.0-0.dll" hashalg="SHA1" hash="" />
+  <file name="libpangowin32-1.0-0.dll" hashalg="SHA1" hash="" />
+  <file name="libpng13.dll" hashalg="SHA1" hash="" />
+  <file name="libtasn1-3.dll" hashalg="SHA1" hash="" />
+  <file name="libwireshark.dll" hashalg="SHA1" hash="" />
+  
+  <file name="adns_dll.dll" hashalg="SHA1" hash="" />
+  <file name="comerr32.dll" hashalg="SHA1" hash="" />
+  <file name="lua5.1.dll" hashalg="SHA1" hash="" />
+  <file name="krb5_32.dll" hashalg="SHA1" hash="" />
+  <file name="pcre.dll" hashalg="SHA1" hash="" />
+  <file name="iconv.dll" hashalg="SHA1" hash="" />
+  <file name="intl.dll" hashalg="SHA1" hash="" />
+  <file name="wiretap-0.3.1.dll" hashalg="SHA1" hash="" />
+  <file name="zlib1.dll" hashalg="SHA1" hash="" />
+</assembly>

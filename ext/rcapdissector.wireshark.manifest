@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<!-- Pull in the Wireshark manifest -->
+<assembly xmlns='urn:schemas-microsoft-com:asm.v1' manifestVersion='1.0'>
+  <dependency>
+    <dependentAssembly>
+      <assemblyIdentity type='win32' name='Wireshark' version='0.99.5.0' processorArchitecture='x86' />
+    </dependentAssembly>
+  </dependency>
+</assembly>
