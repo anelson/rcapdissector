@@ -3,6 +3,7 @@
 #include "RubyAndShit.h"
 
 #include "NativePacket.h"
+#include "ProtocolTreeNode.h"
 
 
 class Field
@@ -11,9 +12,9 @@ public:
 	static VALUE createClass();
 
 	/** Creates a new Field object */
-	static VALUE createField(VALUE packet, const gchar* fieldName, proto_node* node);
+	static VALUE createField(VALUE packet, ProtocolTreeNode* node);
 
-	proto_node* getProtoNode() { return _node; }
+	ProtocolTreeNode* getProtoNode() { return _node; }
 private:
 	Field();
 	virtual ~Field(void);
@@ -33,6 +34,7 @@ private:
 	static VALUE alloc(VALUE klass);
 	static VALUE initialize(VALUE self, VALUE packetObject);
 	static VALUE init_copy(VALUE copy, VALUE orig);
+	static VALUE to_s(VALUE self);
 	static VALUE name(VALUE self);
 	static VALUE display_name(VALUE self);
 	static VALUE value(VALUE self);
@@ -42,8 +44,8 @@ private:
 
 	/*@ Instance methods that actually perform the Field-specific work */
 	void mark();
-	void populateField();
 
+	VALUE toString();
 	VALUE getName();
 	VALUE getDisplayName();
 	VALUE getValue();
@@ -53,14 +55,7 @@ private:
 
 	VALUE _self;
 
-	proto_node* _node;
-	const gchar* _name;
-	const guchar* _value;
-	guint _length;
-	guint _position;
-	const gchar* _displayName;
-	std::string _displayValue;
-	gboolean _isProtocol;
+	ProtocolTreeNode* _node;
 
 	VALUE _rubyName;
 	VALUE _rubyValue;

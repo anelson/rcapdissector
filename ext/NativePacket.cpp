@@ -1,5 +1,6 @@
 #include "NativePacket.h"
 #include "Field.h"
+#include "FieldQuery.h"
 
 //Need some dissector constants
 extern "C" {
@@ -129,12 +130,24 @@ gboolean Packet::getNextPacket(VALUE capFileObject, capture_file& cf, VALUE& pac
     //Execution never makes it this far
 	return FALSE;
 }
+
 #pragma warning(pop)
+
+void Packet::getNodeSiblings(ProtocolTreeNode& node, NodeParentMap::iterator& lbound, NodeParentMap::iterator& ubound) {
+	guint64 parentPtr = 0;
+	if (node.getParentNode() != NULL) {
+		parentPtr = (guint64)node.getParentNode()->getProtoNode();
+	}
+
+	lbound = _nodesByParent.lower_bound(parentPtr);
+	ubound = _nodesByParent.upper_bound(parentPtr);
+}
 
 Packet::Packet() {
 	_edt = NULL;
 	_wth = NULL;
 	_cf = NULL;
+	_nodeCounter = 0;
 }
 
 Packet::~Packet(void) {
@@ -372,55 +385,75 @@ VALUE Packet::each_descendant_field(int argc, VALUE* argv, VALUE self) {
 	return packet->eachDescendantField(argc, argv);
 }
 
-void Packet::buildPacket() {
-	//Add each of this packet's nodes to our node map
-	::proto_tree_children_foreach(_edt->tree, 
-		addNodeThunk,
-	    this);
+VALUE Packet::field_matches(VALUE self, VALUE query) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->fieldMatches(query);
 }
 
-void Packet::addNodeThunk(proto_node *node, gpointer data) {
-	Packet* packet = reinterpret_cast<Packet*>(data);
+VALUE Packet::descendant_field_matches(VALUE self, VALUE parentField, VALUE query) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->descendantFieldMatches(parentField, query);
+}
 
-	packet->addNode(node);
+VALUE Packet::find_first_field_match(VALUE self, VALUE query) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->findFirstFieldMatch(query);
+}
+
+VALUE Packet::each_field_match(VALUE self, VALUE query) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->eachFieldMatch(query);
+}
+
+VALUE Packet::find_first_descendant_field_match(VALUE self, VALUE parentField, VALUE query) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->findFirstDescendantFieldMatch(parentField, query);
+}
+
+VALUE Packet::each_descendant_field_match(VALUE self, VALUE parentField, VALUE query) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->eachDescendantFieldMatch(parentField, query);
+}
+
+void Packet::buildPacket() {
+	//Add each of this packet's nodes to our node map
+	_nodeCounter = 0;
+	addProtocolNodes(_edt->tree);
 }
 
 void Packet::addNode(proto_node* node) {
 	//Add this node to the node map in two ways: by its header name,
 	//and by its parent's pointer value.  This allows access to fields by name
 	//and by parent field
-	field_info	*fi = PITEM_FINFO(node);
-	const gchar* name = NULL;
-	
-	if (fi->hfinfo->id == hf_text_only) {
-		//Text only node; no name
-		name = "";
-	} else if (fi->hfinfo->id == proto_data) {
-		//Data node.  we'll call it 'data'
-		name = "data";
-	} else {
-		//A normal protocol or field node
-		name = fi->hfinfo->abbrev;
+
+	//Find the ProtocolTreeNode object that wraps node->parent
+	ProtocolTreeNode* parentNode = NULL;
+
+	//If the node's parent is the tree object itself, that means it's a root node, and thus
+	//has no parent as far as we're concerned.  Otherwise, it should have a previously-processed parent node
+	if (node->parent != _edt->tree) {
+		parentNode = getProtocolTreeNodeFromProtoNode(node->parent);
+
+		if (parentNode == NULL) {
+			//Hmm, that shouldn't happen
+			::rb_bug("Processing node within packet and unable to find parent ProtocolTreeNode object for a given proto_node");
+		}
 	}
 
-	NODE_STRUCT* nodeStruct = new NODE_STRUCT;
-	nodeStruct->name = name;
-	nodeStruct->node = node;
-	nodeStruct->fieldObject = Qnil;
+	ProtocolTreeNode* nodeStruct = new ProtocolTreeNode(_self, _edt, _nodeCounter++, node, parentNode);
 
-	_nodesByName.insert(NodeNameMap::value_type(name, nodeStruct));
+	_nodesByName.insert(NodeNameMap::value_type(nodeStruct->getName(), nodeStruct));
 	_nodesByParent.insert(NodeParentMap::value_type((guint64)node->parent, nodeStruct));
 }
 	
-VALUE Packet::getRubyFieldObjectForField(NODE_STRUCT& node) {
-	//Has a Ruby Field object been created for this field yet?  If not, do that now	
-	if (NIL_P(node.fieldObject)) {
-		node.fieldObject = Field::createField(_self,
-			node.name,
-			node.node);
-	}
-
-	return node.fieldObject;
+VALUE Packet::getRubyFieldObjectForField(ProtocolTreeNode& node) {
+	return node.getFieldObject();
 }
 
 void Packet::mark() {
@@ -428,8 +461,8 @@ void Packet::mark() {
 	for (NodeNameMap::const_iterator iter = _nodesByName.begin();
 		iter != _nodesByName.end();
 		++iter) {
-		if (iter->second->fieldObject != Qnil) {
-			::rb_gc_mark(iter->second->fieldObject);
+		if (!NIL_P(iter->second->peekFieldObject())) {
+			::rb_gc_mark(iter->second->peekFieldObject());
 		}
 	}
 }
@@ -444,7 +477,7 @@ VALUE Packet::fieldExists(VALUE fieldName) {
 	}
 }
 
-VALUE Packet::descendantFieldExists(VALUE fieldName, VALUE parentField) {
+VALUE Packet::descendantFieldExists(VALUE parentField, VALUE fieldName) {
 	//Look for the given field name in the descendants of this field
 	if (NIL_P(parentField)) return Qfalse;
 
@@ -452,18 +485,13 @@ VALUE Packet::descendantFieldExists(VALUE fieldName, VALUE parentField) {
 
 	Field* field = NULL;
 	Data_Get_Struct(parentField, Field, field);
-	NodeParentMap::const_iterator lbound = _nodesByParent.lower_bound((guint64)field->getProtoNode());
-	NodeParentMap::const_iterator ubound = _nodesByParent.upper_bound((guint64)field->getProtoNode());
-	for (NodeParentMap::const_iterator iter = lbound;
-		iter != ubound;
-		++iter) {
-		if (::strcmp(name, iter->second->name) == 0) {
-			//Found it
-			return Qtrue;
-		}
-	}
 
-	return Qfalse;
+	if (findDescendantNodeByName(field->getProtoNode(),
+		name)) {
+		return Qtrue;
+	} else {
+		return Qfalse;
+	}
 }
 
 VALUE Packet::findFirstField(VALUE fieldName) {
@@ -505,38 +533,27 @@ VALUE Packet::eachField(int argc, VALUE* argv) {
 		ubound = _nodesByName.end();
 	}
 
-	for (NodeNameMap::iterator iter = lbound;
-		iter != ubound;
-		++iter) {
-		::rb_yield(getRubyFieldObjectForField(*iter->second));
-	}
+	sortAndYield(lbound, ubound);
 
 	return _self;
 }
 
 VALUE Packet::findFirstDescendantField(VALUE parentField, VALUE fieldName) {
 	//Look for the given field name in the descendants of this field
-	if (NIL_P(parentField)) return Qfalse;
+	if (NIL_P(parentField))  {
+		::rb_raise(::rb_eArgError, "parentField cannot be nil");
+	}
 
-	const gchar* name = RSTRING(::StringValue(fieldName))->ptr;
+	SafeStringValue(fieldName);
+	const gchar* name = RSTRING(fieldName)->ptr;
 	if (!name) {
 		return Qnil;
 	}
 
 	Field* field = NULL;
 	Data_Get_Struct(parentField, Field, field);
-	NodeParentMap::iterator lbound = _nodesByParent.lower_bound((guint64)field->getProtoNode());
-	NodeParentMap::iterator ubound = _nodesByParent.upper_bound((guint64)field->getProtoNode());
-	for (NodeParentMap::iterator iter = lbound;
-		iter != ubound;
-		++iter) {
-		if (::strcmp(name, iter->second->name) == 0) {
-			//Found it
-			return getRubyFieldObjectForField(*iter->second);
-		}
-	}
 
-	return Qnil;
+	return findDescendantFieldByName(field->getProtoNode(), name);
 }
 
 VALUE Packet::eachDescendantField(int argc, VALUE* argv) {
@@ -564,20 +581,255 @@ VALUE Packet::eachDescendantField(int argc, VALUE* argv) {
 		fieldName = RSTRING(fn)->ptr;
 	}
 
+	ProtocolTreeNodeOrderedSet sorted;
+	findDescendantFieldByName(parentFieldPtr->getProtoNode(), fieldName, sorted);
+
+	sortAndYield(sorted.begin(),
+		sorted.end());
+
+	return _self;
+}
+	
+VALUE Packet::fieldMatches(VALUE query) {
+	VALUE fieldQuery = FieldQuery::createFieldQuery(_self);
+	for (NodeNameMap::iterator iter = _nodesByName.begin();
+		iter != _nodesByName.end();
+		++iter) {
+		FieldQuery::setFieldQueryCurrentNode(fieldQuery, iter->second);
+		if (FieldQuery::passFieldToProc(fieldQuery, query)) {
+			//This field matched the query
+			return Qtrue;
+		}
+	}
+
+	//No field matched the query, so the answer is no
+	return Qfalse;
+}
+
+VALUE Packet::descendantFieldMatches(VALUE parentField, VALUE query) {
+	//Look for the given field name in the descendants of this field
+	if (NIL_P(parentField))  {
+		::rb_raise(::rb_eArgError, "parentField cannot be nil");
+	}
+
+	VALUE fieldQuery = FieldQuery::createFieldQuery(_self);
+
+	Field* field = NULL;
+	Data_Get_Struct(parentField, Field, field);
+	if (findDescendantNodeByQuery(field->getProtoNode(), fieldQuery, query)) {
+		return Qtrue;
+	} else {
+		return Qfalse;
+	}
+}
+
+VALUE Packet::findFirstFieldMatch(VALUE query) {
+	VALUE fieldQuery = FieldQuery::createFieldQuery(_self);
+
+	for (NodeNameMap::iterator iter = _nodesByName.begin();
+		iter != _nodesByName.end();
+		++iter) {
+		FieldQuery::setFieldQueryCurrentNode(fieldQuery, iter->second);
+		if (FieldQuery::passFieldToProc(fieldQuery, query)) {
+			//This field matched the query
+			return getRubyFieldObjectForField(*iter->second);
+		}
+	}
+
+	//No field matched
+	return Qnil;
+}
+
+VALUE Packet::eachFieldMatch(VALUE query) {
+	rb_need_block();
+	VALUE fieldQuery = FieldQuery::createFieldQuery(_self);
+
+	ProtocolTreeNodeOrderedSet sorted;
+
+	for (NodeNameMap::iterator iter = _nodesByName.begin();
+		iter != _nodesByName.end();
+		++iter) {
+		FieldQuery::setFieldQueryCurrentNode(fieldQuery, iter->second);
+		if (FieldQuery::passFieldToProc(fieldQuery, query)) {
+			//This field matched the query
+			sorted.insert(iter->second);
+		}
+	}
+
+	//Yield all of the matches
+	sortAndYield(sorted.begin(),
+		sorted.end());
+
+	return _self;
+}
+
+VALUE Packet::findFirstDescendantFieldMatch(VALUE parentField, VALUE query) {
+	//Look for the given field name in the descendants of this field
+	if (NIL_P(parentField))  {
+		::rb_raise(::rb_eArgError, "parentField cannot be nil");
+	}
+
+	Field* field = NULL;
+	Data_Get_Struct(parentField, Field, field);
+	VALUE fieldQuery = FieldQuery::createFieldQuery(_self);
+	return findDescendantFieldByQuery(field->getProtoNode(),
+		fieldQuery,
+		query);
+}
+
+VALUE Packet::eachDescendantFieldMatch(VALUE parentField, VALUE query) {
+	if (NIL_P(parentField))  {
+		::rb_raise(::rb_eArgError, "parentField cannot be nil");
+	}
+
+	rb_need_block();
+
+	Field* parentFieldPtr = NULL;
+	Data_Get_Struct(parentField, Field, parentFieldPtr);
+	VALUE fieldQuery = FieldQuery::createFieldQuery(_self);
+
+	ProtocolTreeNodeOrderedSet sorted;
+
+	findDescendantFieldByQuery(parentFieldPtr->getProtoNode(),
+		fieldQuery,
+		query);
+
+	sortAndYield(sorted.begin(),
+		sorted.end());
+
+	return _self;
+}
+
+ProtocolTreeNode* Packet::getProtocolTreeNodeFromProtoNode(proto_node* node) {
+	//If the wrapper for this node is known to the packet, it will be in the list
+	//of ProtocolTreeNode objects who share node's parent.  Thus, like there
 	NodeParentMap::iterator lbound, ubound;
-	lbound = _nodesByParent.lower_bound((guint64)parentFieldPtr->getProtoNode());
-	ubound = _nodesByParent.upper_bound((guint64)parentFieldPtr->getProtoNode());
+	lbound = _nodesByParent.lower_bound((guint64)node->parent);
+	ubound = _nodesByParent.upper_bound((guint64)node->parent);
 
 	for (NodeParentMap::iterator iter = lbound;
 		iter != ubound;
 		++iter) {
-		//If the fieldName is non-null, filter on that
-		if (!fieldName ||
-			(::strcmp(fieldName, iter->second->name) == 0)) {
-			//Found a matching field
-			::rb_yield(getRubyFieldObjectForField(*iter->second));
+		if (iter->second->getProtoNode() == node) {
+			return iter->second;
 		}
 	}
 
-	return _self;
+	return NULL;
+}
+
+void Packet::addProtocolNodes(proto_tree *tree) {
+	proto_node *pnode = tree;
+	proto_node *child;
+	proto_node *current;
+
+	child = pnode->first_child;
+
+	while (child != NULL) {
+		current = child;
+		child = current->next;
+
+		//Pass this node to the callback
+		addNode(current);
+
+		//Now process all this node's children
+		addProtocolNodes((proto_tree *)current);
+	}
+}
+
+ProtocolTreeNode* Packet::findDescendantNodeByName(ProtocolTreeNode* parent, const gchar* name) {
+	NodeParentMap::iterator lbound = _nodesByParent.lower_bound((guint64)parent->getProtoNode());
+	NodeParentMap::iterator ubound = _nodesByParent.upper_bound((guint64)parent->getProtoNode());
+	for (NodeParentMap::iterator iter = lbound;
+		iter != ubound;
+		++iter) {
+		if (name == NULL ||
+			::strcmp(name, iter->second->getName()) == 0) {
+			//Found it
+			return iter->second;
+		}
+
+		//Else, search children
+		ProtocolTreeNode* match = findDescendantNodeByName(iter->second, name);
+		if (match) {
+			return match;
+		}
+	}
+
+	return NULL;
+}
+
+VALUE Packet::findDescendantFieldByName(ProtocolTreeNode* parent, const gchar* name) {
+	ProtocolTreeNode* match = findDescendantNodeByName(parent, name);
+
+	if (match) {
+		return getRubyFieldObjectForField(*match);
+	}
+
+	return Qnil;
+}
+
+void Packet::findDescendantFieldByName(ProtocolTreeNode* parent, const gchar* name, ProtocolTreeNodeOrderedSet& set) {
+	NodeParentMap::iterator lbound = _nodesByParent.lower_bound((guint64)parent->getProtoNode());
+	NodeParentMap::iterator ubound = _nodesByParent.upper_bound((guint64)parent->getProtoNode());
+	for (NodeParentMap::iterator iter = lbound;
+		iter != ubound;
+		++iter) {
+		if (name == NULL ||
+			::strcmp(name, iter->second->getName()) == 0) {
+			//Found it
+			set.insert(iter->second);
+		}
+
+		//Search children
+		findDescendantFieldByName(iter->second, name, set);
+	}
+}
+
+ProtocolTreeNode* Packet::findDescendantNodeByQuery(ProtocolTreeNode* parent, VALUE fieldQueryObject, VALUE query) {
+	NodeParentMap::iterator lbound = _nodesByParent.lower_bound((guint64)parent->getProtoNode());
+	NodeParentMap::iterator ubound = _nodesByParent.upper_bound((guint64)parent->getProtoNode());
+	for (NodeParentMap::iterator iter = lbound;
+		iter != ubound;
+		++iter) {
+		FieldQuery::setFieldQueryCurrentNode(fieldQueryObject, iter->second);
+		if (FieldQuery::passFieldToProc(fieldQueryObject, query)) {
+			//Found it
+			return iter->second;
+		}
+
+		//Else, search children
+		ProtocolTreeNode* match = findDescendantNodeByQuery(iter->second, fieldQueryObject, query);
+		if (match) {
+			return match;
+		}
+	}
+
+	return NULL;
+}
+
+VALUE Packet::findDescendantFieldByQuery(ProtocolTreeNode* parent, VALUE fieldQueryObject, VALUE query) {
+	ProtocolTreeNode* match = findDescendantNodeByQuery(parent, fieldQueryObject, query);
+	if (match) {
+		return getRubyFieldObjectForField(*match);
+	}
+
+	return Qnil;
+}
+
+void Packet::findDescendantFieldByQuery(ProtocolTreeNode* parent, VALUE fieldQueryObject, VALUE query, ProtocolTreeNodeOrderedSet& set) {
+	NodeParentMap::iterator lbound = _nodesByParent.lower_bound((guint64)parent->getProtoNode());
+	NodeParentMap::iterator ubound = _nodesByParent.upper_bound((guint64)parent->getProtoNode());
+	for (NodeParentMap::iterator iter = lbound;
+		iter != ubound;
+		++iter) {
+		FieldQuery::setFieldQueryCurrentNode(fieldQueryObject, iter->second);
+		if (FieldQuery::passFieldToProc(fieldQueryObject, query)) {
+			//Found it
+			set.insert(iter->second);
+		}
+
+		//Search children
+		findDescendantFieldByQuery(iter->second, fieldQueryObject, query, set);
+	}
 }

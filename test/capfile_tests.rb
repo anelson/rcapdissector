@@ -1,10 +1,11 @@
 require 'test/unit'
 
 require 'capdissector'
+require File.dirname(__FILE__) + '\testdata'
+
+include TestData
 
 class CapfileTests < Test::Unit::TestCase
-    TEST_CAP = File.dirname(__FILE__) + '\testdata\test.cap'
-    HUGE_CAP = File.dirname(__FILE__) + '\testdata\huge_dump.cap'
 
     def test_instance
         capfile = CapDissector::CapFile.new(TEST_CAP)
@@ -16,61 +17,31 @@ class CapfileTests < Test::Unit::TestCase
         assert_equal(TEST_CAP, capfile.capture_file)
     end
 
-    def test_each_packet
-        capfile = CapDissector::CapFile.new(TEST_CAP)
-        count = 0
+    def test_bogus_capture_file
+        exception_thrown = false
 
-        capfile.each_packet() do |packet|
-            count += 1
-            assert_equal(packet.capfile.capture_file, capfile.capture_file)
+        begin
+            capfile = CapDissector::CapFile.new(BOGUS_CAP)
+
+            fail("CapFile.new succeeded for a non-existent cap file path")
+        rescue CapDissector::CapFileError
+            exception_thrown = true
         end
 
-        assert_not_equal(0, count)
+        assert_equal(true, exception_thrown)
     end
 
-    def test_load_time
-        capfile = CapDissector::CapFile.new(HUGE_CAP)
-        count = 0
+    def test_corrupted_capture_file
+        exception_thrown = false
 
-        capfile.each_packet() do |packet|
-            count += 1
+        begin
+            capfile = CapDissector::CapFile.new(CORRUPTED_CAP)
+
+            fail("CapFile.new succeeded for a corrupted cap file path")
+        rescue CapDissector::CapFileError
+            exception_thrown = true
         end
 
-        puts "Read #{count} packets"
-    end
-
-    def test_field_exists
-        capfile = CapDissector::CapFile.new(HUGE_CAP)
-        ip_count = 0
-
-        capfile.each_packet() do |packet|
-            if packet.field_exists?("ip")
-                ip_count += 1
-            end
-        end
-
-        assert_not_equal(0, ip_count)
-    end
-
-    def test_each_field
-        capfile = CapDissector::CapFile.new(HUGE_CAP)
-
-        capfile.each_packet() do |packet|
-            field_count = 0
-            packet.each_field do |field|
-                field_count += 1
-            end
-            assert_not_equal(0, field_count)
-        end
-    end
-
-    def test_each_field_name
-        capfile = CapDissector::CapFile.new(HUGE_CAP)
-
-        capfile.each_packet() do |packet|
-            packet.each_field do |field|
-                assert_not_equal(nil, field.name)
-            end
-        end
+        assert_equal(true, exception_thrown)
     end
 end

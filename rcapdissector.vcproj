@@ -1244,11 +1244,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ext\FieldQuery.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ext\FieldQuery.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ext\NativePacket.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\ext\NativePacket.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ext\ProtocolTreeNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ext\ProtocolTreeNode.h"
 					>
 				</File>
 				<File
