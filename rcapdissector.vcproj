@@ -1260,6 +1260,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ext\NativePointer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ext\NativePointer.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ext\ProtocolTreeNode.cpp"
 					>
 				</File>

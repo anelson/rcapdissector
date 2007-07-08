@@ -81,12 +81,7 @@ const gchar* ProtocolTreeNode::getDisplayName()  {
 
 		/* Text label. It's printed as a field with no name. */
 		if (fi->hfinfo->id == hf_text_only) {
-			if (fi->rep) {
-				_displayName = fi->rep->representation;
-			}
-			else {
-				_displayName = "";
-			}
+			_displayName = NULL;
 		}
 		/* Uninterpreted data, i.e., the "Data" protocol, is
 		 * printed as a field instead of a protocol. */
@@ -157,7 +152,12 @@ const gchar* ProtocolTreeNode::getDisplayValue() {
 
 		/* Text label. It's printed as a field with no name. */
 		if (fi->hfinfo->id == hf_text_only) {
-			_displayValue = NULL;
+			if (fi->rep) {
+				_displayValue = fi->rep->representation;
+			}
+			else {
+				_displayValue = "";
+			}
 		}
 		/* Uninterpreted data, i.e., the "Data" protocol, is
 		 * printed as a field instead of a protocol. */

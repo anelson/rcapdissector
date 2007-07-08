@@ -31,13 +31,6 @@ public:
 	void setCurrentNode(ProtocolTreeNode* node);
 
 private:
-	/** STruct wrapped in a T_DATA object used to maintain state during an rb_rescue call in passFieldToProc */
-	typedef struct _RESCUE_STRUCT {
-		VALUE fieldQueryObject;
-		VALUE proc;
-		bool success;
-	} RESCUE_STRUCT;
-
 	FieldQuery();
 	virtual ~FieldQuery(void);
 
@@ -53,6 +46,8 @@ private:
 	static VALUE initialize(VALUE self);
 	static VALUE init_copy(VALUE copy, VALUE orig);
 
+	static VALUE get_field(VALUE self);
+
 	static VALUE name_is(VALUE self, VALUE match);
 	static VALUE value_is(VALUE self, VALUE match);
 	static VALUE display_value_is(VALUE self, VALUE match);
@@ -67,6 +62,7 @@ private:
 
 	/*@ Instance methods that actually perform the FieldQuery-specific work */
 	void mark();
+	VALUE getField();
 	VALUE getNameIs(VALUE match);
 	VALUE getValueIs(VALUE match);
 	VALUE getDisplayValueIs(VALUE match);
@@ -85,17 +81,12 @@ private:
 		//Throw the FieldDoesNotMatchQueryError exception if value is false, indicating something
 		//didn't match
 		if (!value) {
-			::rb_raise(g_field_doesnt_match_error_class, NULL);
+			::rb_raise(g_field_doesnt_match_error_class, "");
 		}
 	}
 
 	/** Ensures 'in' is of type Proc, attempting coercion if necessary.  Throws on error; returns Proc object on success */
 	static VALUE ensureIsProc(VALUE in);
-
-	/** The 'body' method passed to rb_rescue by passFieldToProc */
-	static VALUE passFieldToProcBody(VALUE state);
-	/** The 'rescue' method passed to rb_rescue by passFieldToProc */
-	static VALUE passFieldToProcRescue(VALUE state, VALUE error_info);
 
 	VALUE _self;
 	VALUE _rubyPacket;

@@ -18,6 +18,7 @@ extern VALUE g_at_func;
 
 extern VALUE g_cap_dissector_module;
 extern VALUE g_cap_file_class;
+extern VALUE g_native_pointer_class;
 
 extern ID g_id_call;
 

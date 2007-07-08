@@ -94,6 +94,14 @@ Field::Field() {
 
 Field::~Field(void) {
 }
+
+VALUE Field::rubyStringFromCString(const gchar* str) {
+	if (str) {
+		return ::rb_str_new2(str);
+	} else {
+		return Qnil;
+	}
+}
 	
 /*@ Methods implementing the Field Ruby object methods */
 void Field::free(void* p) {
@@ -242,7 +250,7 @@ VALUE Field::toString() {
 
 VALUE Field::getName() {
 	if (NIL_P(_rubyName)) {
-		_rubyName = ::rb_str_new2(_node->getName());
+		_rubyName = rubyStringFromCString(_node->getName());
 	}
 
 	return _rubyName;
@@ -250,7 +258,7 @@ VALUE Field::getName() {
 
 VALUE Field::getDisplayName() {
 	if (NIL_P(_rubyDisplayName)) {
-		_rubyDisplayName = ::rb_str_new2(_node->getDisplayName());
+		_rubyDisplayName = rubyStringFromCString(_node->getDisplayName());
 	}
 
 	return _rubyDisplayName;
@@ -271,7 +279,7 @@ VALUE Field::getValue() {
 
 VALUE Field::getDisplayValue() {
 	if (NIL_P(_rubyDisplayValue)) {
-		_rubyDisplayValue = ::rb_str_new2(_node->getDisplayValue());
+		_rubyDisplayValue = rubyStringFromCString(_node->getDisplayValue());
 	}
 
 	return _rubyDisplayValue;

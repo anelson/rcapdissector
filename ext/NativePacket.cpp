@@ -55,6 +55,37 @@ VALUE Packet::createClass() {
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::each_descendant_field), 
 					 -1);
 
+	
+    rb_define_method(klass,
+                     "field_matches?", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::field_matches), 
+					 1);
+
+    rb_define_method(klass,
+                     "descendant_field_matches?", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::descendant_field_matches), 
+					 2);
+
+    rb_define_method(klass,
+                     "find_first_field_match", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::find_first_field_match), 
+					 1);
+
+    rb_define_method(klass,
+                     "each_field_match", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::each_field_match), 
+					 1);
+
+    rb_define_method(klass,
+                     "find_first_descendant_field_match", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::find_first_descendant_field_match), 
+					 2);
+
+    rb_define_method(klass,
+                     "each_descendant_field_match", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::each_descendant_field_match), 
+					 2);
+
 	return klass;
 }
 

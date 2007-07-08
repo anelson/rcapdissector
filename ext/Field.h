@@ -25,7 +25,7 @@ private:
 	}
 
 	/**@ Packet-related helper methods */
-	static const guchar* getValueForField(epan_dissect_t* edt, field_info *fi);
+	static VALUE rubyStringFromCString(const gchar* str);
 
 
 	/*@ Methods implementing the Field Ruby object methods */

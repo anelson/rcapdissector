@@ -7,6 +7,7 @@
 #include "NativePacket.h"
 #include "Field.h"
 #include "FieldQuery.h"
+#include "NativePointer.h"
 
 VALUE g_packet_class;
 VALUE g_protocol_class;
@@ -20,6 +21,7 @@ VALUE g_at_func;
 
 VALUE g_cap_dissector_module;
 VALUE g_cap_file_class;
+VALUE g_native_pointer_class;
 
 ID g_id_call;
 
@@ -40,6 +42,7 @@ extern "C" __declspec(dllexport) void Init_capdissector() {
 	g_packet_class = Packet::createClass();
 	g_field_class = Field::createClass();
 	g_field_query_class = FieldQuery::createClass();
+	g_native_pointer_class = NativePointer::createClass();
 
 	g_id_call = ::rb_intern("call");
 }

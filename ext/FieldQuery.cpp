@@ -1,4 +1,5 @@
 #include "FieldQuery.h"
+#include "NativePointer.h"
 
 //Need some dissector constants
 extern "C" {
@@ -15,7 +16,12 @@ VALUE FieldQuery::createClass() {
     rb_define_method(klass,
                      "initialize", 
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(FieldQuery::initialize), 
-					 1);
+					 0);
+
+    rb_define_method(klass,
+                     "get_field", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(FieldQuery::get_field), 
+					 0);
 
     rb_define_method(klass,
                      "name_is?", 
@@ -23,8 +29,8 @@ VALUE FieldQuery::createClass() {
 					 1);
 
     rb_define_method(klass,
-                     "name_is?", 
-					 reinterpret_cast<VALUE(*)(ANYARGS)>(FieldQuery::name_is), 
+                     "value_is?", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(FieldQuery::value_is), 
 					 1);
 
     rb_define_method(klass,
@@ -97,25 +103,14 @@ bool FieldQuery::passFieldToProc(VALUE fieldQueryObject, VALUE proc) {
 	//Ensure proc is in fact a proc
 	proc = FieldQuery::ensureIsProc(proc);
 
-	//Allocate a T_DATA object which will carry aroudn the RESCUE_STATE struct
-	//used to keep state in the body and rescue methods where the work will happen
-	VALUE state = ::rb_class_new_instance(INT2FIX(0),
-		NULL,
-		::rb_cObject);
-	RESCUE_STRUCT rs = {0};
+	//Call the 'call' method on the proc object, passing in the field query object
+	VALUE retval = ::rb_funcall(proc, g_id_call, 1, fieldQueryObject);
 
-	rs.fieldQueryObject = fieldQueryObject;
-	rs.proc = proc;
-
-	Data_Wrap_Struct(::rb_obj_class(state), NULL, NULL, &rs);
-
-	//Do the actual calling from the body function, and the exception handling in the rescue function
-	::rb_rescue(reinterpret_cast<VALUE(*)(ANYARGS)>(FieldQuery::passFieldToProcBody),
-		state,
-		reinterpret_cast<VALUE(*)(ANYARGS)>(FieldQuery::passFieldToProcRescue),
-		state);
-
-	return rs.success;
+	if (retval == Qtrue || (retval != Qfalse && !NIL_P(retval))) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 void FieldQuery::setCurrentNode(ProtocolTreeNode* node) {
@@ -182,6 +177,12 @@ VALUE FieldQuery::init_copy(VALUE copy, VALUE orig) {
 	return copy;
 }
 	
+VALUE FieldQuery::get_field(VALUE self) {
+	FieldQuery* fieldQuery = NULL;
+	Data_Get_Struct(self, FieldQuery, fieldQuery);
+	return fieldQuery->getField();
+}
+
 VALUE FieldQuery::name_is(VALUE self, VALUE match) {
 	FieldQuery* fieldQuery = NULL;
 	Data_Get_Struct(self, FieldQuery, fieldQuery);
@@ -242,27 +243,45 @@ void FieldQuery::mark() {
 	if (!NIL_P(_siblingsMatchesFieldQuery)) ::rb_gc_mark(_siblingsMatchesFieldQuery);
 }
 
+VALUE FieldQuery::getField() {
+	if (_currentNode == NULL) {
+		::rb_bug("get_field called without a valid current node");
+	}
+	return _currentNode->getFieldObject();
+}
+
 VALUE FieldQuery::getNameIs(VALUE match) {
-	throwIfFalse(compareStrings(match, _currentNode->getName()));
-	return Qtrue;
+	if (_currentNode == NULL) {
+		::rb_bug("name_is? called without a valid current node");
+	}
+	return compareStrings(match, _currentNode->getName());
 }
 
 VALUE FieldQuery::getValueIs(VALUE match)  {
-	throwIfFalse(compareByteArrays(match, _currentNode->getValue(), _currentNode->getFieldLength()));
-	return Qtrue;
+	if (_currentNode == NULL) {
+		::rb_bug("value_is? called without a valid current node");
+	}
+	return compareByteArrays(match, _currentNode->getValue(), _currentNode->getFieldLength());
 }
 
 VALUE FieldQuery::getDisplayValueIs(VALUE match)  {
-	throwIfFalse(compareStrings(match, _currentNode->getDisplayValue()));
-	return Qtrue;
+	if (_currentNode == NULL) {
+		::rb_bug("display_value_is? called without a valid current node");
+	}
+	return compareStrings(match, _currentNode->getDisplayValue());
 }
 
 VALUE FieldQuery::getDisplayNameIs(VALUE match)  {
-	throwIfFalse(compareStrings(match, _currentNode->getDisplayName()));
-	return Qtrue;
+	if (_currentNode == NULL) {
+		::rb_bug("display_name_is? called without a valid current node");
+	}
+	return compareStrings(match, _currentNode->getDisplayName());
 }
 
 VALUE FieldQuery::getSiblingNameIs(VALUE match) {
+	if (_currentNode == NULL) {
+		::rb_bug("sibling_name_is? called without a valid current node");
+	}
 	Packet::NodeParentMap::iterator lbound;
 	Packet::NodeParentMap::iterator ubound;
 
@@ -281,11 +300,13 @@ VALUE FieldQuery::getSiblingNameIs(VALUE match) {
 		}
 	}
 
-	throwIfFalse(false);
 	return Qfalse;
 }
 
 VALUE FieldQuery::getSiblingMatches(VALUE query)  {
+	if (_currentNode == NULL) {
+		::rb_bug("sibling_matches? called without a valid current node");
+	}
 	//query needs to be a Proc object which we'll call once for each sibling
 	VALUE proc = FieldQuery::ensureIsProc(query);
 
@@ -311,6 +332,7 @@ VALUE FieldQuery::getSiblingMatches(VALUE query)  {
 		}
 
 		//Pass this sibling FieldQuery object to the query proc
+		FieldQuery::setFieldQueryCurrentNode(_siblingsMatchesFieldQuery, iter->second);
 		if (passFieldToProc(_siblingsMatchesFieldQuery, proc)) {
 			//Query proc matches this field; that means at least one sibling of this field
 			//matches the query, so no further processing is needed
@@ -323,14 +345,23 @@ VALUE FieldQuery::getSiblingMatches(VALUE query)  {
 }
 
 VALUE FieldQuery::getHasDisplayName() {
+	if (_currentNode == NULL) {
+		::rb_bug("has_display_name? called without a valid current node");
+	}
 	return (isNotEmptyOrNull(_currentNode->getDisplayName()) ? Qtrue : Qfalse);
 }
 
 VALUE FieldQuery::getHasValue()  {
+	if (_currentNode == NULL) {
+		::rb_bug("has_value? called without a valid current node");
+	}
 	return (_currentNode->getValue() != NULL ? Qtrue : Qfalse);
 }
 
 VALUE FieldQuery::getHasDisplayValue()  {
+	if (_currentNode == NULL) {
+		::rb_bug("has_display_value? called without a valid current node");
+	}
 	return (isNotEmptyOrNull(_currentNode->getDisplayValue()) ? Qtrue : Qfalse);
 }
 
@@ -390,31 +421,4 @@ VALUE FieldQuery::ensureIsProc(VALUE in) {
     }
 
 	return in;
-}
-
-VALUE FieldQuery::passFieldToProcBody(VALUE state) {
-	RESCUE_STRUCT* rs = NULL;
-	Data_Get_Struct(state, RESCUE_STRUCT, rs);
-
-	//Call the 'call' method on the proc object, passing in the field query object
-	VALUE retval = ::rb_funcall(rs->proc, g_id_call, 1, rs->fieldQueryObject);
-
-	//When execution gets this far, that means the query passed
-	rs->success = true;
-	return retval;
-}
-
-VALUE FieldQuery::passFieldToProcRescue(VALUE state, VALUE error_info) {
-	RESCUE_STRUCT* rs = NULL;
-	Data_Get_Struct(state, RESCUE_STRUCT, rs);
-
-	//If this is the exception raised to indicate a query predicate didn't match, that just means
-	//success goes to false and we're done.  If it's some other exception, rethrow it
-	if (::rb_obj_is_kind_of(error_info, g_field_doesnt_match_error_class)) {
-		rs->success = false;
-	} else {
-		::rb_exc_raise(error_info);
-	}
-
-	return Qnil;
 }
