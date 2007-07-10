@@ -119,4 +119,100 @@ class PacketTests < Test::Unit::TestCase
             assert_not_equal(0, descendantCount)
         end
     end
+
+    def test_field_matches
+        capfile = CapDissector::CapFile.new(TEST_CAP)
+
+        capfile.each_packet() do |packet|
+            assert_equal(true, packet.field_matches?(Proc.new {|query| query.name_is? 'eth.dst'}))
+            assert_equal(false, packet.field_matches?(Proc.new {|query| query.name_is? 'quidgibo'}))
+        end
+    end
+
+    def test_decendant_field_matches
+        capfile = CapDissector::CapFile.new(TEST_CAP)
+
+        capfile.each_packet() do |packet|
+            eth = packet.find_first_field("eth")
+            assert_not_equal(nil, eth)
+            assert_equal(true, packet.descendant_field_matches?(eth, Proc.new {|query| query.name_is? 'eth.ig'}))
+            assert_equal(false, packet.descendant_field_matches?(eth, Proc.new {|query| query.name_is? 'ip'}))
+        end
+    end
+
+    def test_find_first_field_match
+        capfile = CapDissector::CapFile.new(TEST_CAP)
+
+        capfile.each_packet() do |packet|
+            eth_addr = packet.find_first_field_match(Proc.new {|query| query.name_is? 'eth.addr'})
+            assert_not_equal(nil, eth_addr)
+
+            quidgibo = packet.find_first_field_match(Proc.new {|query| query.name_is? 'quidgibo'})
+            assert_equal(nil, quidgibo)
+        end
+    end
+
+    def test_each_field_match
+        capfile = CapDissector::CapFile.new(TEST_CAP)
+
+        capfile.each_packet() do |packet|
+            eth_count = 0
+            ip_version_count = 0
+            bogus_count = 0
+            packet.each_field_match(Proc.new {|query| query.name_is? 'eth'}) do |field| 
+                eth_count += 1
+            end
+            packet.each_field_match(Proc.new {|query| query.name_is? 'ip.version'}) do |field| 
+                ip_version_count += 1
+            end
+            packet.each_field_match(Proc.new {|query| query.name_is? 'bogus'}) do |field| 
+                bogus_count += 1
+            end
+
+            assert_equal(true, eth_count > 0)
+            assert_equal(true, ip_version_count > 0)
+            assert_equal(true, bogus_count == 0)
+        end
+    end
+
+    def test_find_first_descendant_field_match
+        capfile = CapDissector::CapFile.new(TEST_CAP)
+
+        capfile.each_packet() do |packet|
+            eth = packet.find_first_field_match(Proc.new {|query| query.name_is? 'eth'})
+            assert_not_equal(nil, eth)
+
+            eth_addr = packet.find_first_descendant_field_match(eth, Proc.new {|query| query.name_is? 'eth.addr'})
+            assert_not_equal(nil, eth_addr)
+
+            quidgibo = packet.find_first_descendant_field_match(eth, Proc.new {|query| query.name_is? 'frame'})
+            assert_equal(nil, quidgibo)
+        end
+    end
+
+    def test_each_descendant_field_match
+        capfile = CapDissector::CapFile.new(TEST_CAP)
+
+        capfile.each_packet() do |packet|
+            eth = packet.find_first_field_match(Proc.new {|query| query.name_is? 'eth'})
+            assert_not_equal(nil, eth)
+
+            eth_addr_count = 0
+            ip_version_count = 0
+            bogus_count = 0
+            packet.each_descendant_field_match(eth, Proc.new {|query| query.name_is? 'eth.addr'}) do |field| 
+                eth_addr_count += 1
+            end
+            packet.each_descendant_field_match(eth, Proc.new {|query| query.name_is? 'ip.version'}) do |field| 
+                ip_version_count += 1
+            end
+            packet.each_descendant_field_match(eth, Proc.new {|query| query.name_is? 'bogus'}) do |field| 
+                bogus_count += 1
+            end
+
+            assert_equal(true, eth_addr_count > 0)
+            assert_equal(true, ip_version_count == 0)
+            assert_equal(true, bogus_count == 0)
+        end
+    end
 end

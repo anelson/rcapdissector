@@ -723,7 +723,8 @@ VALUE Packet::eachDescendantFieldMatch(VALUE parentField, VALUE query) {
 
 	findDescendantFieldByQuery(parentFieldPtr->getProtoNode(),
 		fieldQuery,
-		query);
+		query,
+		sorted);
 
 	sortAndYield(sorted.begin(),
 		sorted.end());

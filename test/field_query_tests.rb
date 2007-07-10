@@ -196,6 +196,16 @@ class FieldQueryTests < Test::Unit::TestCase
         end
     end
 
-    
+    def test_get_field
+        capfile = CapDissector::CapFile.new(SINGLE_HTTP_REQ_CAP)
+
+        capfile.each_packet() do |packet|
+            match = packet.field_matches? Proc.new { |query| 
+                query.name_is?('http.request.method') &&
+                query.get_field.name == 'http.request.method'
+            }
+            assert_equal(true, match)
+        end
+    end
 end
 
