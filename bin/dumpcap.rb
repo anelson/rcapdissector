@@ -15,7 +15,7 @@ remaining_args = opt_parser.parse(*ARGV)
 
 if remaining_args.length != 1
     opts.to_s
-    exit -1
+    exit(-1)
 end
 
 opts[:cap_file] = remaining_args[0]
@@ -36,7 +36,8 @@ if opts[:benchmarks]
     benchmarks[:start_time] = Time.now
 end
 
-dissector.each_packet do |packet|    if packet_count % 100 == 0
+dissector.each_packet do |packet|    
+    if packet_count % 100 == 0
         printf "\rProcessed #{packet_count} packets"
     end
     packet_count += 1
@@ -88,8 +89,8 @@ puts
 puts "Packet Count: #{packet_count}"
 if opts[:list_wireless_aps]
     puts "#{wlan_aps.length} WLAN APs detected."
-    wlan_aps.each_pair do |ap_name, packet_count|
-        puts "\tWLAN AP: #{ap_name} (#{packet_count} packets)"
+    wlan_aps.each_pair do |ap_name, ap_packet_count|
+        puts "\tWLAN AP: #{ap_name} (#{ap_packet_count} packets)"
     end
 end
 

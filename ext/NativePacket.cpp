@@ -339,8 +339,10 @@ void Packet::fillInFdata(frame_data *fdata, capture_file& cf,
 
 void Packet::clearFdata(frame_data *fdata)
 {
-  if (fdata->pfd)
-    g_slist_free(fdata->pfd);
+	if (fdata->pfd) {
+		g_slist_free(fdata->pfd);
+		fdata->pfd = NULL;
+	}
 }
 
 /*@ Methods implementing the Packet Ruby object methods */
