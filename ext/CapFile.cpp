@@ -163,7 +163,13 @@ void CapFile::deinitPacketCapture() {
     epan_cleanup();
 }
 
-CapFile::CapFile(void) {
+CapFile::CapFile(void)
+#ifdef USE_LOOKASIDE_LIST
+	//These initial/max numbers are derived imperically; typical wlan captures contain no more than 187 fields
+	//so these numbers should minimize heap operations while also keeping memory consumption at the low end
+	: _nodeLookaside(_allocator, 200, 500)
+#endif
+{
 	::memset(&_cf, 0, sizeof(_cf));
 }
 
@@ -409,5 +415,7 @@ void CapFile::eachPacket() {
 	VALUE packet = Qnil;
 	while (Packet::getNextPacket(_self, _cf, packet)) {
 		rb_yield(packet);
+		/** Free up the resources for this packet so they can be used by the next one */
+		Packet::freePacket(packet);
 	}
 }

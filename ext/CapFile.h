@@ -4,6 +4,11 @@
 
 #include "rcapdissector.h"
 
+#ifdef USE_LOOKASIDE_LIST
+#include "RubyAllocator.h"
+#include "ProtocolTreeNodeLookasideList.h"
+#endif
+
 class CapFile
 {
 public:
@@ -11,6 +16,10 @@ public:
 
 	static void initPacketCapture();
 	static void deinitPacketCapture();
+
+#ifdef USE_LOOKASIDE_LIST
+	ProtocolTreeNodeLookasideList& getNodeLookasideList() { return _nodeLookaside; }
+#endif
 
 private:
 	CapFile(void);
@@ -36,4 +45,8 @@ private:
 
 	VALUE _self;
 	capture_file _cf;
+#ifdef USE_LOOKASIDE_LIST
+	RubyAllocator _allocator;
+	ProtocolTreeNodeLookasideList _nodeLookaside;
+#endif
 };

@@ -1,4 +1,5 @@
 #include "NativePacket.h"
+#include "CapFile.h"
 #include "Field.h"
 #include "FieldQuery.h"
 
@@ -162,6 +163,12 @@ gboolean Packet::getNextPacket(VALUE capFileObject, capture_file& cf, VALUE& pac
 	return FALSE;
 }
 
+void Packet::freePacket(VALUE packet) {
+	Packet* nativePacket = NULL;
+	Data_Get_Struct(packet, Packet, nativePacket);
+	return nativePacket->free();
+}
+
 #pragma warning(pop)
 
 void Packet::getNodeSiblings(ProtocolTreeNode& node, NodeParentMap::iterator& lbound, NodeParentMap::iterator& ubound) {
@@ -173,20 +180,17 @@ void Packet::getNodeSiblings(ProtocolTreeNode& node, NodeParentMap::iterator& lb
 	lbound = _nodesByParent.lower_bound(parentPtr);
 	ubound = _nodesByParent.upper_bound(parentPtr);
 }
-
-Packet::Packet() {
-	_edt = NULL;
-	_wth = NULL;
-	_cf = NULL;
-	_nodeCounter = 0;
-}
-
-Packet::~Packet(void) {
+	
+void Packet::free() {
 	for (NodeNameMap::iterator iter = _nodesByName.begin();
 		iter != _nodesByName.end();
 		++iter) {
 		if (iter->second) {
+#ifdef USE_LOOKASIDE_LIST
+			_nodeLookaside->returnProtocolTreeNode(iter->second);
+#else
 			delete iter->second;
+#endif
 		}
 	}
 	_nodesByName.clear();
@@ -198,6 +202,18 @@ Packet::~Packet(void) {
 	}
 	
 	clearFdata(&_frameData);
+}
+
+Packet::Packet() 
+{
+	_edt = NULL;
+	_wth = NULL;
+	_cf = NULL;
+	_nodeCounter = 0;
+}
+
+Packet::~Packet(void) {
+	free();
 }
 	
 VALUE Packet::processPacket(VALUE capFileObject, capture_file& cf, gint64 offset) {
@@ -255,6 +271,10 @@ VALUE Packet::processPacket(VALUE capFileObject, capture_file& cf, gint64 offset
 											 argv,
 											 g_packet_class);
 
+		//Get the wrapped CapFile object
+		CapFile* capFile = NULL;
+		Data_Get_Struct(capFileObject, CapFile, capFile);
+
 		//Get the wrapped Packet object
 		Packet* nativePacket = NULL;
 		Data_Get_Struct(packet, Packet, nativePacket);
@@ -263,6 +283,9 @@ VALUE Packet::processPacket(VALUE capFileObject, capture_file& cf, gint64 offset
 		nativePacket->_edt = edt;
 		nativePacket->_wth = cf.wth;
 		nativePacket->_cf = &cf;
+#ifdef USE_LOOKASIDE_LIST
+		nativePacket->_nodeLookaside = &capFile->getNodeLookasideList();
+#endif
 
 		nativePacket->buildPacket();
 #else
@@ -477,7 +500,11 @@ void Packet::addNode(proto_node* node) {
 		}
 	}
 
+#ifdef USE_LOOKASIDE_LIST
+	ProtocolTreeNode* nodeStruct = _nodeLookaside->getProtocolTreeNode(_self, _edt, _nodeCounter++, node, parentNode);
+#else
 	ProtocolTreeNode* nodeStruct = new ProtocolTreeNode(_self, _edt, _nodeCounter++, node, parentNode);
+#endif
 
 	_nodesByName.insert(NodeNameMap::value_type(nodeStruct->getName(), nodeStruct));
 	_nodesByParent.insert(NodeParentMap::value_type((guint64)node->parent, nodeStruct));

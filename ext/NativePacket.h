@@ -9,6 +9,10 @@
 #include "rcapdissector.h"
 
 #include "ProtocolTreeNode.h"
+#ifdef USE_LOOKASIDE_LIST
+#include "RubyAllocator.h"
+#include "ProtocolTreeNodeLookasideList.h"
+#endif
 
 class Packet
 {
@@ -24,10 +28,17 @@ public:
 	/** Gets the next packet from a capfile object, returning false if the end of the capfile is reached */
 	static gboolean getNextPacket(VALUE capFileObject, capture_file& cf, VALUE& packet);
 
+	/** Frees the native resources associated with a Ruby Packet object */
+	static void freePacket(VALUE packet);
+
 	epan_dissect_t* getEpanDissect() { return _edt; }
 
 	/** Gets the range of nodes, including the given node and any siblings nodes, which share the same parent node */
 	void getNodeSiblings(ProtocolTreeNode& node, NodeParentMap::iterator& lbound, NodeParentMap::iterator& ubound);
+
+	/** Releases the protocol tree nodes allocated for this packet.  Needs to happen before
+	CapFile is GC'd if using lookaside list*/
+	void free();
 
 private:
 	/** A version of the less<> comparator that operates on ProtocolTreeNode pointers, using the ordinal to sort */
@@ -37,7 +48,8 @@ private:
 		typedef ProtocolTreeNode* second_argument_type;
 		typedef bool result_type;
 
-		ProtocolTreeNodeLess() {}
+		ProtocolTreeNodeLess() 
+		{}
 
 		bool operator()(ProtocolTreeNode const* lhs, ProtocolTreeNode const* rhs) {
 			return lhs->getOrdinal() < rhs->getOrdinal();
@@ -167,4 +179,7 @@ private:
 	NodeNameMap _nodesByName;
 	NodeParentMap _nodesByParent;
 	guint _nodeCounter;
+#ifdef USE_LOOKASIDE_LIST
+	ProtocolTreeNodeLookasideList* _nodeLookaside;
+#endif
 };

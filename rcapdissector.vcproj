@@ -44,9 +44,9 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;C:\work\sourcecode\wireshark-0.99.5&quot;;&quot;C:\work\sourcecode\wireshark-win32-libs&quot;;&quot;C:\work\sourcecode\wireshark-win32-libs\WpdPack\Include&quot;;&quot;C:\work\sourcecode\wireshark-win32-libs\glib\lib\glib-2.0\include&quot;;&quot;C:\work\sourcecode\wireshark-win32-libs\glib\include\glib-2.0&quot;;&quot;C:\work\sourcecode\wireshark-win32-libs\zlib123\include&quot;;&quot;C:\work\sourcecode\wireshark-win32-libs\pcre-6.4\include&quot;;&quot;C:\work\sourcecode\wireshark-win32-libs\net-snmp-5.4\include&quot;;&quot;C:\work\sourcecode\wireshark-win32-libs\gnutls-1.6.1-1\include&quot;;&quot;C:\work\sourcecode\wireshark-win32-libs\lua5.1\include&quot;;&quot;C:\work\sourcecode\wireshark-0.99.5\wiretap&quot;;&quot;C:\work\sourcecode\ruby-1.8.6\lib\ruby\1.8\i386-mswin32&quot;;&quot;C:\work\sourcecode\ruby-1.8.6&quot;"
-				PreprocessorDefinitions="WIN32;_CONSOLE;HAVE_CONFIG_H;_NEED_VAR_IMPORT_;_U_=;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;WIN32_LEAN_AND_MEAN"
+				PreprocessorDefinitions="WIN32;_CONSOLE;HAVE_CONFIG_H;_NEED_VAR_IMPORT_;_U_=;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;WIN32_LEAN_AND_MEAN;USE_LOOKASIDE_LIST"
 				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
+				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
@@ -1228,6 +1228,14 @@
 				Name="ext"
 				>
 				<File
+					RelativePath=".\ext\Allocator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ext\Allocator.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ext\CapFile.cpp"
 					>
 				</File>
@@ -1249,6 +1257,10 @@
 				</File>
 				<File
 					RelativePath=".\ext\FieldQuery.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ext\LookasideList.h"
 					>
 				</File>
 				<File
@@ -1276,6 +1288,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ext\ProtocolTreeNodeLookasideList.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ext\rcapdissector.cpp"
 					>
 				</File>
@@ -1285,6 +1301,14 @@
 				</File>
 				<File
 					RelativePath=".\ext\rcapdissector.wireshark.manifest"
+					>
+				</File>
+				<File
+					RelativePath=".\ext\RubyAllocator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ext\RubyAllocator.h"
 					>
 				</File>
 				<File
