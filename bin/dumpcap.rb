@@ -1,15 +1,64 @@
 require 'optparse'
+require 'logger'
 require 'capdissector'
 
 opts = {
     :cap_file => nil,
     :list_wireless_aps => false,
-    :benchmarks => false
+    :benchmarks => false,
+    :wireshark_prefs => [],
+    :display_filter => nil
 }
 
+log = Logger.new(STDOUT)
+log.level = Logger::INFO
+
 opt_parser = OptionParser.new
-opt_parser.on("-w") {|val| opts[:list_wireless_aps] = true}
-opt_parser.on("-b") {|val| opts[:benchmarks] = true}
+# Define 'WiresharkPref' as an option type, consisting of a name=value pair
+class WiresharkPref
+    attr_reader :name
+    attr_reader :value
+
+    def initialize(name, value)
+        @name = name
+        @value = value
+    end
+end
+
+opt_parser.accept(WiresharkPref, /([[:alnum:]\._]+)\=(.+)/) do |nvp, name, value|
+    WiresharkPref.new(name, value)
+end
+
+opt_parser.on("-w", 
+    "--wireless", 
+    "Collects and displays information about wireless networks in the capture") {|val| 
+        opts[:list_wireless_aps] = true
+    }
+
+opt_parser.on("-b", 
+    "--benchmarks", 
+    "Collects and displays information about the time spent processing the capture") {|val| 
+        opts[:benchmarks] = true
+    }
+
+opt_parser.on("-p NVP", 
+    "--preference NVP", 
+    WiresharkPref, 
+    "Sets a named Wireshark preference of the form name=value") {|val| 
+        opts[:wireshark_prefs] << val
+    }
+
+opt_parser.on("-v", 
+    "--verbose", 
+    "Turns on verbose logging") {|val| 
+        log.level  = Logger::DEBUG
+    }
+
+opt_parser.on("-f ARG", 
+    "--ilter ARG", 
+    "Sets a display filter in Wireshark syntax to apply to the file") {|val| 
+        opts[:display_filter] = val
+    }
 
 remaining_args = opt_parser.parse(*ARGV)
 
@@ -20,15 +69,26 @@ end
 
 opts[:cap_file] = remaining_args[0]
 
-puts "Dumping capture file #{opts[:cap_file]}"
+# APply the preferences
+opts[:wireshark_prefs].each do |nvp|
+    log.debug "Setting #{nvp.name} to #{nvp.value}"
+    CapDissector::CapFile.set_preference(nvp.name, nvp.value)
+end
+
+log.info "Dumping capture file #{opts[:cap_file]}"
 
 dissector = CapDissector::CapFile.new(opts[:cap_file])
+if opts[:display_filter]
+    log.debug "Setting display filter '#{opts[:display_filter]}'"
+    dissector.set_display_filter opts[:display_filter]
+end
 
 packet_count = 0
 wlan_aps = {}
 benchmarks = {}
 
 if opts[:benchmarks]
+    log.debug "Initializing benchmarks"
     benchmarks[:best_packet_time] = 0
     benchmarks[:worst_packet_time] = 0
     benchmarks[:total_packet_time] = 0
@@ -38,7 +98,9 @@ end
 
 dissector.each_packet do |packet|    
     if packet_count % 100 == 0
-        printf "\rProcessed #{packet_count} packets"
+        if (log.level >= Logger::INFO) 
+            printf "Processed #{packet_count} packets\r"
+        end
     end
     packet_count += 1
 
@@ -84,23 +146,23 @@ if opts[:benchmarks]
     benchmarks[:end_time] = Time.now
 end
 
-puts
+#puts
 
-puts "Packet Count: #{packet_count}"
+log.info "Packet Count: #{packet_count}"
 if opts[:list_wireless_aps]
-    puts "#{wlan_aps.length} WLAN APs detected."
+    log.info "#{wlan_aps.length} WLAN APs detected."
     wlan_aps.each_pair do |ap_name, ap_packet_count|
-        puts "\tWLAN AP: #{ap_name} (#{ap_packet_count} packets)"
+        log.info "\tWLAN AP: #{ap_name} (#{ap_packet_count} packets)"
     end
 end
 
 if opts[:benchmarks]
     total_packet_processing_time = benchmarks[:end_time] - benchmarks[:start_time]
 
-    puts "#{packet_count} packet(s) processed in #{total_packet_processing_time} seconds (#{packet_count/total_packet_processing_time} packets/sec)"
-    puts "Total time spent executing each_packet block: #{benchmarks[:total_packet_time]} seconds"
-    puts "Fastest each_packet block run time: #{benchmarks[:best_packet_time]} seconds"
-    puts "Slowest each_packet block run time: #{benchmarks[:worst_packet_time]} seconds"
-    puts "Mean each_packet block run time: #{benchmarks[:total_packet_time] / packet_count} seconds"
+    log.info "#{packet_count} packet(s) processed in #{total_packet_processing_time} seconds (#{packet_count/total_packet_processing_time} packets/sec)"
+    log.info "Total time spent executing each_packet block: #{benchmarks[:total_packet_time]} seconds"
+    log.info "Fastest each_packet block run time: #{benchmarks[:best_packet_time]} seconds"
+    log.info "Slowest each_packet block run time: #{benchmarks[:worst_packet_time]} seconds"
+    log.info "Mean each_packet block run time: #{benchmarks[:total_packet_time] / packet_count} seconds"
 end
 

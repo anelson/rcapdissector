@@ -36,12 +36,20 @@ private:
 	static VALUE alloc(VALUE klass);
 	static VALUE initialize(VALUE self, VALUE capfile);
 	static VALUE init_copy(VALUE copy, VALUE orig);
+
+	static VALUE set_preference(VALUE klass, VALUE name, VALUE value);
+
+	static VALUE set_display_filter(VALUE self, VALUE filter); 
+
 	static VALUE each_packet(VALUE self);
 
 	/*@ Instance methods that actually perform the CapFile-specific work */
 	void openCaptureFile(VALUE capFileName);
 	void closeCaptureFile();
+	void setDisplayFilter(VALUE filter);
 	void eachPacket();
+
+	static void setPreference(const char* name, const char* value);
 
 	VALUE _self;
 	capture_file _cf;

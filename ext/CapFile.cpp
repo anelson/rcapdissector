@@ -1,5 +1,7 @@
 #include "CapFile.h"
 
+#include <sstream>
+
 #include "NativePacket.h"
 
 /**@ Static callbacks passed to EPAN; not meant to do anything */
@@ -134,6 +136,16 @@ VALUE CapFile::createClass() {
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(CapFile::initialize), 
 					 1);
 
+    rb_define_singleton_method(klass,
+                     "set_preference", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(CapFile::set_preference), 
+					 2);
+
+    rb_define_method(klass,
+                     "set_display_filter", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(CapFile::set_display_filter), 
+					 1);
+
     //Define the 'each_packet' method
     rb_define_method(klass,
                      "each_packet", 
@@ -145,6 +157,22 @@ VALUE CapFile::createClass() {
                    "capture_file",
                    TRUE, 
                    FALSE);
+
+	//Define some const values for useful TCP prefs
+	::rb_define_const(klass, "PREF_TCP_SHOW_SUMMARY", ::rb_str_new2("tcp.summary_in_tree"));
+	::rb_define_const(klass, "PREF_TCP_CHECK_CHECKSUM", ::rb_str_new2("tcp.check_checksum"));
+	::rb_define_const(klass, "PREF_TCP_DESEGMENT_STREAMS", ::rb_str_new2("tcp.desegment_tcp_streams"));
+	::rb_define_const(klass, "PREF_TCP_ANALYZE_SEQUENCE_NUMBERS", ::rb_str_new2("tcp.analyze_sequence_numbers"));
+	::rb_define_const(klass, "PREF_TCP_RELATIVE_SEQUENCE_NUMBERS", ::rb_str_new2("tcp.relative_sequence_numbers"));
+	::rb_define_const(klass, "PREF_TCP_TRY_HEURISTIC_FIRST", ::rb_str_new2("tcp.try_heuristic_first"));
+
+	//Initialize some prefs to reasonable defaults
+	setPreference("tcp.summary_in_tree", "true");
+	setPreference("tcp.check_checksum", "false");
+	setPreference("tcp.desegment_tcp_streams", "true");
+	setPreference("tcp.analyze_sequence_numbers", "true");
+	setPreference("tcp.relative_sequence_numbers", "true");
+	setPreference("tcp.try_heuristic_first", "false");
 
 	return klass;
 }
@@ -171,6 +199,9 @@ CapFile::CapFile(void)
 #endif
 {
 	::memset(&_cf, 0, sizeof(_cf));
+
+	//Initialize some Wireshark preferences to reasonable defaults
+	
 }
 
 CapFile::~CapFile(void) {
@@ -332,6 +363,27 @@ VALUE CapFile::init_copy(VALUE copy, VALUE orig) {
 	return copy;
 }
 
+VALUE CapFile::set_preference(VALUE, VALUE name, VALUE value) {
+	//Cast both name and value to strings and pass to Wireshark
+	SafeStringValue(name);
+	SafeStringValue(value);
+
+	//Convert to C-style strings and call the overload
+	setPreference(RSTRING(name)->ptr,
+		RSTRING(value)->ptr);
+
+	return Qnil;
+}
+
+VALUE CapFile::set_display_filter(VALUE self, VALUE filter) {
+	CapFile* cf = NULL;
+
+	Data_Get_Struct(self, CapFile, cf);
+
+	cf->setDisplayFilter(filter);
+	return self;
+}
+
 VALUE CapFile::each_packet(VALUE self) {
 	CapFile* cf = NULL;
 
@@ -400,7 +452,29 @@ void CapFile::closeCaptureFile() {
 		::g_free(_cf.filename);
     }
 
+	if (_cf.rfcode != NULL) {
+		dfilter_free(_cf.rfcode);
+		_cf.rfcode = NULL;
+	}
+
     memset(&_cf, 0, sizeof(_cf));
+}
+	
+void CapFile::setDisplayFilter(VALUE filter) {
+	if (NIL_P(filter)) {
+		//Clear the filter
+		_cf.rfcode = NULL;
+	} else {
+		SafeStringValue(filter);
+		const gchar* rfilter = RSTRING(filter)->ptr;
+
+		if (!::dfilter_compile(rfilter, &_cf.rfcode)) {
+			std::string msg = "Error setting display filter: ";
+			msg += dfilter_error_msg;
+			::rb_raise(g_capfile_error_class,
+				msg.c_str());
+		}
+	}
 }
 
 void CapFile::eachPacket() {
@@ -419,3 +493,33 @@ void CapFile::eachPacket() {
 		Packet::freePacket(packet);
 	}
 }
+
+void CapFile::setPreference(const char* name, const char* value) {
+	//Build a string of the form name:value to pass to wireshark
+	std::string pref = name;
+	pref += ":";
+	pref += value;
+
+	//Pet peeve: fucktards that don't make their [in] arguments as const, and force me to
+	//do it for them
+	::prefs_set_pref_e result = ::prefs_set_pref(const_cast<char*>(pref.c_str()));
+	if (result == ::PREFS_SET_OK) {
+		return;
+	} else {
+		//An error of some kind
+		std::stringstream msg;
+		if (result == ::PREFS_SET_SYNTAX_ERR) {
+			msg << "Syntax error setting '" << name << "' to '" << value << "'";
+		} else if (result == ::PREFS_SET_NO_SUCH_PREF) {
+			msg << "There is no such preference '" << name << "'";
+		} else if (result == ::PREFS_SET_OBSOLETE) {
+			msg << "The preference '" << name << "' is obsolete";
+		} else {
+			msg << "Got unrecognized return value " << result << " when setting '" << name << "' to '" << value << "'";
+		}
+
+		::rb_raise(g_capfile_error_class, msg.str().c_str());
+	}
+}
+
+
