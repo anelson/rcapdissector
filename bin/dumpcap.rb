@@ -21,7 +21,8 @@ def main(*args)
         :wireshark_prefs => [],
         :display_filter => nil,
         :show_packets => false,
-        :wlan_keys => []
+        :wlan_keys => [],
+        :traffic_analysis => nil
     }
     
     log = Logger.new(STDOUT)
@@ -74,6 +75,16 @@ def main(*args)
         "--wlan-key ARG", 
         "Specifies a WEP or WPA/WPA2 decryption key for decrypting encrypted WLAN packets") {|val| 
             opts[:wlan_keys] << val
+        }
+    
+    opt_parser.on("-t", 
+        "--traffic", 
+        "Analyze and display traffic information by host and protocol") {|val| 
+            opts[:traffic_analysis] = {
+                :hosts => {},
+                :http => 0
+            }
+            opts[:traffic_analysis][:hosts].default = 0
         }
     
     remaining_args = opt_parser.parse(*args)
@@ -143,6 +154,20 @@ def main(*args)
                 wlan_aps[ssid_tag.display_value] += 1
             end
         end
+
+        if opts[:traffic_analysis]
+            #Try to extract a hostname from this packet
+            hostname = packet.find_first_field('http.host')
+            if hostname != nil
+                opts[:traffic_analysis][:hosts][hostname.display_value] += 1
+            end
+
+            hostname = packet.each_field('dns.resp.name') do |field|
+                opts[:traffic_analysis][:hosts][field.display_value] += 1
+            end
+
+            opts[:traffic_analysis][:http] += 1 unless packet.find_first_field('http') == nil
+        end
     
         if opts[:show_packets]
             output_packet packet
@@ -181,6 +206,16 @@ def main(*args)
         wlan_aps.each_pair do |ap_name, ap_packet_count|
             log.info "\tWLAN AP: #{ap_name} (#{ap_packet_count} packets)"
         end
+    end
+
+    if opts[:traffic_analysis]
+        log.info "Host traffic counts: "
+
+        opts[:traffic_analysis][:hosts].each_pair do |hostname, count|
+            log.info "\t#{hostname} (#{count} packets)"
+        end
+
+        log.info "#{opts[:traffic_analysis][:http]} HTTP packet(s)"
     end
     
     if opts[:benchmarks]

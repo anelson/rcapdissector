@@ -1315,6 +1315,62 @@
 					RelativePath=".\ext\RubyAndShit.h"
 					>
 				</File>
+				<Filter
+					Name="lib"
+					>
+					<File
+						RelativePath=".\ext\lib\capdissector.rb"
+						>
+					</File>
+					<Filter
+						Name="capdissector"
+						>
+						<File
+							RelativePath=".\ext\lib\capdissector\cap_file_error.rb"
+							>
+						</File>
+						<File
+							RelativePath=".\ext\lib\capdissector\field_does_not_match_query_error.rb"
+							>
+						</File>
+					</Filter>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="test"
+				>
+				<File
+					RelativePath=".\test\all_tests.rb"
+					>
+				</File>
+				<File
+					RelativePath=".\test\capfile_tests.rb"
+					>
+				</File>
+				<File
+					RelativePath=".\test\field_query_tests.rb"
+					>
+				</File>
+				<File
+					RelativePath=".\test\field_tests.rb"
+					>
+				</File>
+				<File
+					RelativePath=".\test\packet_tests.rb"
+					>
+				</File>
+				<File
+					RelativePath=".\test\testdata.rb"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="bin"
+				>
+				<File
+					RelativePath=".\bin\dumpcap.rb"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<File

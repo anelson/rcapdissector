@@ -1,0 +1,9 @@
+HTTP dissector isn't all it's cracked up to be.  See random_web_browsing_session.cap around frame 18347.  It seems due to some packet loss the HTTP dissector got confused and couldn't pick up the HTTP session (this capture was taken right before I had to bounce my shitty FiOS router, so the packet loss was probably due to its full NAT table).  Thus, if one relies on the HTTP dissector to detect this particular HTTP request/response pair, one would miss it.  At the same time, the more primitive TCP-based 'Follow Conversation' feature in Wireshark picks up the exchange fine.  It would well and truly suck to have to abandon the HTTP dissector.
+
+In the cases where the HTTP dissector is available, no property is available to get the raw payload.  The getValueForField method adapted from the tshark sources explicitly returns NULL for protocol elements, and when the payload is a recognized type like JPEG it gets its own dissector which also doesn't expose the raw data.
+
+On the other hand, when the TCP payload isn't picked up by another dissector, there is a no-name field with a display value indicating "TCP segment data (n bytes)", the value of which is the raw payload.  Lame.
+
+It remains to be seen how much of an issue this will really be.  WLANs can be expected to suffer more packet loss than wired lans due to multipath loss and interference, but on the whole perhaps this will not be a big deal.  I may adapt dumpcap to look at tcp/80 traffic and see what proportion of non-zero-length TCP segments to or from that port are missing the http protocol info.
+
+
