@@ -14,6 +14,14 @@ VALUE Field::createClass() {
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::initialize), 
 					 1);
 
+	//Define some const values for various flag values
+	::rb_define_const(klass, "FLAG_HIDDEN", LONG2FIX(FI_HIDDEN));
+	::rb_define_const(klass, "FLAG_GENERATED", LONG2FIX(FI_GENERATED));
+	::rb_define_const(klass, "FI_URL", LONG2FIX(FI_URL));
+	::rb_define_const(klass, "PI_CHECKSUM", LONG2FIX(PI_CHECKSUM));
+	::rb_define_const(klass, "PI_RESPONSE_CODE", LONG2FIX(PI_RESPONSE_CODE));
+	::rb_define_const(klass, "PI_REQUEST_CODE", LONG2FIX(PI_REQUEST_CODE));
+
     //Define the 'packet' attribute reader
     rb_define_attr(klass,
                    "packet",
@@ -48,6 +56,22 @@ VALUE Field::createClass() {
     rb_define_method(klass,
                      "position", 
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::position), 
+					 0);
+    rb_define_method(klass,
+                     "flags", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::flags), 
+					 0);
+    rb_define_method(klass,
+                     "parent", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::parent), 
+					 0);
+    rb_define_method(klass,
+                     "next_sibling", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::next_sibling), 
+					 0);
+    rb_define_method(klass,
+                     "each_child", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::each_child), 
 					 0);
 
 	return klass;
@@ -88,6 +112,7 @@ Field::Field() {
 	_rubyPosition = Qnil;
 	_rubyDisplayName = Qnil;
 	_rubyDisplayValue = Qnil;
+	_rubyFlags = Qnil;
 
 	_packet = NULL;
 }
@@ -199,6 +224,30 @@ VALUE Field::position(VALUE self) {
 	return field->getPosition();
 }
 
+VALUE Field::flags(VALUE self) {
+	Field* field = NULL;
+	Data_Get_Struct(self, Field, field);
+	return field->getFlags();
+}
+
+VALUE Field::parent(VALUE self) {
+	Field* field = NULL;
+	Data_Get_Struct(self, Field, field);
+	return field->getParent();
+}
+
+VALUE Field::next_sibling(VALUE self) {
+	Field* field = NULL;
+	Data_Get_Struct(self, Field, field);
+	return field->getNextSibling();
+}
+
+VALUE Field::each_child(VALUE self) {
+	Field* field = NULL;
+	Data_Get_Struct(self, Field, field);
+	return field->eachChild();
+}
+
 void Field::mark() {
 	//If any of our Ruby versions of properties are set, mark them
 	if (_rubyName != Qnil) ::rb_gc_mark(_rubyName);
@@ -266,11 +315,12 @@ VALUE Field::getDisplayName() {
 
 VALUE Field::getValue() {
 	if (NIL_P(_rubyValue)) {
-		const guchar* value = _node->getValue();
-
 		_rubyValue = ::rb_ary_new();
-		for (guint idx = 0; idx < _node->getFieldLength(); idx++) {
-			::rb_ary_push(_rubyValue, CHR2FIX(value[idx]));
+		const guchar* value = _node->getValue();
+		if (value) {
+			for (guint idx = 0; idx < _node->getFieldLength(); idx++) {
+				::rb_ary_push(_rubyValue, CHR2FIX(value[idx]));
+			}
 		}
 	}
 
@@ -299,6 +349,33 @@ VALUE Field::getPosition() {
 	}
 
 	return _rubyPosition;
+}
+	
+VALUE Field::getFlags() {
+	if (NIL_P(_rubyFlags)) {
+		_rubyFlags = LONG2FIX(_node->getProtoNode()->finfo->flags);
+	}
+
+	return _rubyFlags;
+}
+
+VALUE Field::getParent() {
+	return protocolTreeNodePtrToField(_packet->getProtocolTreeNodeFromProtoNode(_node->getProtoNode()->parent));
+}
+
+VALUE Field::getNextSibling() {
+	return protocolTreeNodePtrToField(_packet->getProtocolTreeNodeFromProtoNode(_node->getProtoNode()->next));
+}
+
+VALUE Field::eachChild() {
+	::rb_need_block();
+
+	proto_node* child = _node->getProtoNode()->first_child;
+	while (child) {
+		::rb_yield(protocolTreeNodePtrToField(_packet->getProtocolTreeNodeFromProtoNode(child)));
+		child = child->next;
+	}
+	return _self;
 }
 
 

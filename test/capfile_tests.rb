@@ -99,4 +99,54 @@ class CapfileTests < Test::Unit::TestCase
 
         assert_equal(num_ip_packets, num_filtered_packets)
     end
+
+    def test_decrypt_test
+        # Start with decryption disabled
+        CapDissector::CapFile.set_wlan_decryption_keys nil
+
+        capfile = CapDissector::CapFile.new(WEP_ENCRYPTED_CAP)
+
+        # The encrypted cap file won't contain any IP packets, coz they're all WEP-encrypted
+        num_ip_packets = 0
+        capfile.each_packet do |packet|
+            ip = packet.find_first_field('ip')
+            num_ip_packets += 1 unless ip == nil
+        end
+        assert_equal(false, num_ip_packets > 0)
+
+        # Try again with the wrong decryption key; should be same result
+        CapDissector::CapFile.set_wlan_decryption_key WEP_ENCRYPTED_CAP_INCORRECT_KEY
+        capfile = CapDissector::CapFile.new(WEP_ENCRYPTED_CAP)
+
+        num_ip_packets = 0
+        capfile.each_packet do |packet|
+            ip = packet.find_first_field('ip')
+            num_ip_packets += 1 unless ip == nil
+        end
+        assert_equal(false, num_ip_packets > 0)
+
+        # With the decryption enabled and the correct key specified, should see some 
+        # IP packets
+        CapDissector::CapFile.set_wlan_decryption_key WEP_ENCRYPTED_CAP_KEY
+        capfile = CapDissector::CapFile.new(WEP_ENCRYPTED_CAP)
+        num_ip_packets = 0
+        capfile.each_packet do |packet|
+            ip = packet.find_first_field('ip')
+            num_ip_packets += 1 unless ip == nil
+        end
+        assert_equal(true, num_ip_packets > 0)
+
+        # Turn decryption off again and make sure it stays off
+        CapDissector::CapFile.set_wlan_decryption_keys nil
+
+        capfile = CapDissector::CapFile.new(WEP_ENCRYPTED_CAP)
+
+        # The encrypted cap file won't contain any IP packets, coz they're all WEP-encrypted
+        num_ip_packets = 0
+        capfile.each_packet do |packet|
+            ip = packet.find_first_field('ip')
+            num_ip_packets += 1 unless ip == nil
+        end
+        assert_equal(false, num_ip_packets > 0)
+    end
 end

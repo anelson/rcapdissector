@@ -36,6 +36,9 @@ public:
 	/** Gets the range of nodes, including the given node and any siblings nodes, which share the same parent node */
 	void getNodeSiblings(ProtocolTreeNode& node, NodeParentMap::iterator& lbound, NodeParentMap::iterator& ubound);
 
+	/** Finds the ProtocolTreeNode wrapper for a given proto_node */
+	ProtocolTreeNode* getProtocolTreeNodeFromProtoNode(proto_node* node);
+
 	/** Releases the protocol tree nodes allocated for this packet.  Needs to happen before
 	CapFile is GC'd if using lookaside list*/
 	void free();
@@ -88,6 +91,7 @@ private:
 	static VALUE each_field(int argc, VALUE* argv, VALUE self);
 	static VALUE find_first_descendant_field(VALUE self, VALUE parentField, VALUE fieldName);
 	static VALUE each_descendant_field(int argc, VALUE* argv, VALUE self);
+	static VALUE each_root_field(VALUE self);
 
 	static VALUE field_matches(VALUE self, VALUE query);
 	static VALUE descendant_field_matches(VALUE self, VALUE parentField, VALUE query);
@@ -107,6 +111,7 @@ private:
 	VALUE eachField(int argc, VALUE* argv);
 	VALUE findFirstDescendantField(VALUE parentField, VALUE fieldName);
 	VALUE eachDescendantField(int argc, VALUE* argv);
+	VALUE eachRootField();
 	
 	VALUE fieldMatches(VALUE query);
 	VALUE descendantFieldMatches(VALUE parentField, VALUE query);
@@ -114,9 +119,6 @@ private:
 	VALUE eachFieldMatch(VALUE query);
 	VALUE findFirstDescendantFieldMatch(VALUE parentField, VALUE query);
 	VALUE eachDescendantFieldMatch(VALUE parentField, VALUE query);
-
-	/** Finds the ProtocolTreeNode wrapper for a given proto_node */
-	ProtocolTreeNode* getProtocolTreeNodeFromProtoNode(proto_node* node);
 
 	/** Recursive function that adds nodes in a protocol tree to the node list */
 	void addProtocolNodes(proto_tree *tree);

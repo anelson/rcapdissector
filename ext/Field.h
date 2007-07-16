@@ -41,6 +41,11 @@ private:
 	static VALUE display_value(VALUE self);
 	static VALUE length(VALUE self);
 	static VALUE position(VALUE self);
+	static VALUE flags(VALUE self);
+
+	static VALUE parent(VALUE self);
+	static VALUE next_sibling(VALUE self);
+	static VALUE each_child(VALUE self);
 
 	/*@ Instance methods that actually perform the Field-specific work */
 	void mark();
@@ -52,6 +57,19 @@ private:
 	VALUE getDisplayValue();
 	VALUE getLength();
 	VALUE getPosition();
+	VALUE getFlags();
+
+	VALUE getParent();
+	VALUE getNextSibling();
+	VALUE eachChild();
+
+	VALUE protocolTreeNodePtrToField(ProtocolTreeNode* node) {
+		if (node) {
+			return node->getFieldObject();
+		} else {
+			return Qnil;
+		}
+	}
 
 	VALUE _self;
 
@@ -63,6 +81,7 @@ private:
 	VALUE _rubyPosition;
 	VALUE _rubyDisplayName;
 	VALUE _rubyDisplayValue;
+	VALUE _rubyFlags;
 
 	Packet* _packet;
 

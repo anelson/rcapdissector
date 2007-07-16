@@ -4,6 +4,9 @@
 
 #include "NativePacket.h"
 
+/** copied from Wireshark, epan\dissectors\packet-ieee80211.c */
+#define MAX_ENCRYPTION_KEYS 64
+
 /**@ Static callbacks passed to EPAN; not meant to do anything */
 /*
  * Open/create errors are reported with an console message in TShark.
@@ -141,6 +144,16 @@ VALUE CapFile::createClass() {
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(CapFile::set_preference), 
 					 2);
 
+    rb_define_singleton_method(klass,
+                     "set_wlan_decryption_key", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(CapFile::set_wlan_decryption_key), 
+					 1);
+
+    rb_define_singleton_method(klass,
+                     "set_wlan_decryption_keys", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(CapFile::set_wlan_decryption_keys), 
+					 1);
+
     rb_define_method(klass,
                      "set_display_filter", 
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(CapFile::set_display_filter), 
@@ -199,9 +212,6 @@ CapFile::CapFile(void)
 #endif
 {
 	::memset(&_cf, 0, sizeof(_cf));
-
-	//Initialize some Wireshark preferences to reasonable defaults
-	
 }
 
 CapFile::~CapFile(void) {
@@ -375,6 +385,16 @@ VALUE CapFile::set_preference(VALUE, VALUE name, VALUE value) {
 	return Qnil;
 }
 
+VALUE CapFile::set_wlan_decryption_key(VALUE, VALUE key) {
+	CapFile::setWlanDecryptionKey(key);
+	return Qnil;
+}
+
+VALUE CapFile::set_wlan_decryption_keys(VALUE, VALUE keys) {
+	CapFile::setWlanDecryptionKeys(keys);
+	return Qnil;
+}
+
 VALUE CapFile::set_display_filter(VALUE self, VALUE filter) {
 	CapFile* cf = NULL;
 
@@ -394,6 +414,9 @@ VALUE CapFile::each_packet(VALUE self) {
 }
 
 void CapFile::openCaptureFile(VALUE capFileName) {
+	//Apply any previously-set preferences
+	prefs_apply_all();
+
     const char* name = RSTRING(capFileName)->ptr;
 
     wtap       *wth;
@@ -521,5 +544,49 @@ void CapFile::setPreference(const char* name, const char* value) {
 		::rb_raise(g_capfile_error_class, msg.str().c_str());
 	}
 }
+
+void CapFile::setWlanDecryptionKey(VALUE key) {
+	//Special case of setWlanDecryptionKeys
+	//Pass in an array of this one key
+	if (NIL_P(key)) {
+		setWlanDecryptionKeys(Qnil);
+	} else {
+		VALUE keys = ::rb_ary_new();
+		::rb_ary_push(keys, key);
+
+		setWlanDecryptionKeys(keys);
+	}
+}
+
+void CapFile::setWlanDecryptionKeys(VALUE keys) {
+	//keys should be a ruby Array of string values, each one representing a WEP decryption key
+	char prefName[64];
+
+	if (NIL_P(keys)) {
+		//Disable WLAN decryption
+		setPreference("wlan.enable_decryption", "false");
+		return;
+	}
+
+	//Else, enable decryption and set up the keys
+	setPreference("wlan.enable_decryption", "true");
+
+	keys = ::rb_check_array_type(keys);
+	for (int idx = 0; idx < RARRAY(keys)->len; idx++) {
+		SafeStringValue(RARRAY(keys)->ptr[idx]);
+	
+		::snprintf(prefName,
+			sizeof(prefName),
+			"wlan.wep_key%d", idx + 1);
+
+		setPreference(prefName, 
+			RSTRING(RARRAY(keys)->ptr[idx])->ptr);
+	}
+
+	//TODO: Is there some way to null out the remaining key values?  It doesn't seem possible
+	//using the high-level preference setting API we're using, since passing an empty string for a
+	//preference value throws a syntax error.  Figure out some day.
+}
+
 
 

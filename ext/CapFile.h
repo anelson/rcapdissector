@@ -38,6 +38,8 @@ private:
 	static VALUE init_copy(VALUE copy, VALUE orig);
 
 	static VALUE set_preference(VALUE klass, VALUE name, VALUE value);
+	static VALUE set_wlan_decryption_key(VALUE klass, VALUE key);
+	static VALUE set_wlan_decryption_keys(VALUE klass, VALUE keys);
 
 	static VALUE set_display_filter(VALUE self, VALUE filter); 
 
@@ -50,6 +52,8 @@ private:
 	void eachPacket();
 
 	static void setPreference(const char* name, const char* value);
+	static void setWlanDecryptionKey(VALUE key);
+	static void setWlanDecryptionKeys(VALUE keys);
 
 	VALUE _self;
 	capture_file _cf;

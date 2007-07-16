@@ -120,6 +120,22 @@ class PacketTests < Test::Unit::TestCase
         end
     end
 
+    def test_each_root_field
+        capfile = CapDissector::CapFile.new(SINGLE_HTTP_REQ_CAP)
+
+        capfile.each_packet() do |packet|
+            num_root_fields = 0
+
+            #This packet is known to have six 'root' fields, each one corresponding
+            #to a protocol
+            packet.each_root_field do |field|
+                num_root_fields += 1
+            end
+
+            assert_equal(5, num_root_fields)
+        end
+    end
+
     def test_field_matches
         capfile = CapDissector::CapFile.new(TEST_CAP)
 

@@ -56,6 +56,11 @@ VALUE Packet::createClass() {
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::each_descendant_field), 
 					 -1);
 
+    rb_define_method(klass,
+                     "each_root_field", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::each_root_field), 
+					 0);
+
 	
     rb_define_method(klass,
                      "field_matches?", 
@@ -179,6 +184,24 @@ void Packet::getNodeSiblings(ProtocolTreeNode& node, NodeParentMap::iterator& lb
 
 	lbound = _nodesByParent.lower_bound(parentPtr);
 	ubound = _nodesByParent.upper_bound(parentPtr);
+}
+
+ProtocolTreeNode* Packet::getProtocolTreeNodeFromProtoNode(proto_node* node) {
+	//If the wrapper for this node is known to the packet, it will be in the list
+	//of ProtocolTreeNode objects who share node's parent.  Thus, like there
+	NodeParentMap::iterator lbound, ubound;
+	lbound = _nodesByParent.lower_bound((guint64)node->parent);
+	ubound = _nodesByParent.upper_bound((guint64)node->parent);
+
+	for (NodeParentMap::iterator iter = lbound;
+		iter != ubound;
+		++iter) {
+		if (iter->second->getProtoNode() == node) {
+			return iter->second;
+		}
+	}
+
+	return NULL;
 }
 	
 void Packet::free() {
@@ -441,6 +464,12 @@ VALUE Packet::each_descendant_field(int argc, VALUE* argv, VALUE self) {
 	return packet->eachDescendantField(argc, argv);
 }
 
+VALUE Packet::each_root_field(VALUE self) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->eachRootField();
+}
+
 VALUE Packet::field_matches(VALUE self, VALUE query) {
 	Packet* packet = NULL;
 	Data_Get_Struct(self, Packet, packet);
@@ -650,6 +679,23 @@ VALUE Packet::eachDescendantField(int argc, VALUE* argv) {
 	return _self;
 }
 	
+VALUE Packet::eachRootField() {
+	//Yield each field that has NULL as its parent
+	::rb_need_block();
+
+	NodeParentMap::iterator lbound, ubound;
+	lbound = _nodesByParent.lower_bound((guint64)_edt->tree);
+	ubound = _nodesByParent.upper_bound((guint64)_edt->tree);
+
+	for (NodeParentMap::iterator iter = lbound;
+		iter != ubound;
+		++iter) {
+		::rb_yield(iter->second->getFieldObject());
+	}
+
+	return _self;
+}
+	
 VALUE Packet::fieldMatches(VALUE query) {
 	VALUE fieldQuery = FieldQuery::createFieldQuery(_self);
 	for (NodeNameMap::iterator iter = _nodesByName.begin();
@@ -759,24 +805,6 @@ VALUE Packet::eachDescendantFieldMatch(VALUE parentField, VALUE query) {
 		sorted.end());
 
 	return _self;
-}
-
-ProtocolTreeNode* Packet::getProtocolTreeNodeFromProtoNode(proto_node* node) {
-	//If the wrapper for this node is known to the packet, it will be in the list
-	//of ProtocolTreeNode objects who share node's parent.  Thus, like there
-	NodeParentMap::iterator lbound, ubound;
-	lbound = _nodesByParent.lower_bound((guint64)node->parent);
-	ubound = _nodesByParent.upper_bound((guint64)node->parent);
-
-	for (NodeParentMap::iterator iter = lbound;
-		iter != ubound;
-		++iter) {
-		if (iter->second->getProtoNode() == node) {
-			return iter->second;
-		}
-	}
-
-	return NULL;
 }
 
 void Packet::addProtocolNodes(proto_tree *tree) {
