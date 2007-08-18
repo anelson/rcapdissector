@@ -19,10 +19,10 @@ class FieldTests < Test::Unit::TestCase
     def test_null_value
         capfile = CapDissector::CapFile.new(SINGLE_HTTP_REQ_CAP)
         capfile.each_packet() do |packet|
-            frame = packet.find_first_field('frame')
+            field = packet.find_first_field('http.request')
 
-            # Frame has no value; make sure it comes out that way
-            assert_equal([], frame.value)
+            # field has no value; make sure it comes out that way
+            assert_equal(nil, field.value)
         end
     end
 
@@ -55,14 +55,14 @@ class FieldTests < Test::Unit::TestCase
             assert_equal('frame.pkt_len', frame.name)
             assert_equal('Packet Length: 1422 bytes', frame.display_name)
             assert_equal('1422', frame.display_value)
-            assert_equal([], frame.value)
+            assert_equal(nil, frame.value)
 
             ip_version = packet.find_first_field('ip.version')
             assert_not_equal(nil, ip_version)
             assert_equal('ip.version', ip_version.name)
             assert_equal('Version: 4', ip_version.display_name)
             assert_equal('4', ip_version.display_value)
-            assert_equal([0x45], ip_version.value)
+            assert_equal("\x45", ip_version.value)
 
             # Find the nameless child field of 'http' that contains the http GET request
             # Make sure it's parsed out right
@@ -73,7 +73,8 @@ class FieldTests < Test::Unit::TestCase
             assert_equal('', http_get.name)
             assert_equal(nil, http_get.display_name)
             assert_equal('GET /public/page/0_0018_Refresh.html HTTP/1.1\\r\\n', http_get.display_value)
-            assert_equal([0x47, 0x45, 0x54, 0x20, 0x2f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x2f, 0x70, 0x61, 0x67, 0x65, 0x2f, 0x30, 0x5f, 0x30, 0x30, 0x31, 0x38, 0x5f, 0x52, 0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x2e, 0x68, 0x74, 0x6d, 0x6c, 0x20, 0x48, 0x54, 0x54, 0x50, 0x2f, 0x31, 0x2e, 0x31, 0x0d, 0x0a], http_get.value)
+
+            assert_equal("\x47\x45\x54\x20\x2f\x70\x75\x62\x6c\x69\x63\x2f\x70\x61\x67\x65\x2f\x30\x5f\x30\x30\x31\x38\x5f\x52\x65\x66\x72\x65\x73\x68\x2e\x68\x74\x6d\x6c\x20\x48\x54\x54\x50\x2f\x31\x2e\x31\x0d\x0a", http_get.value)
         end
     end
 

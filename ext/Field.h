@@ -42,6 +42,7 @@ private:
 	static VALUE length(VALUE self);
 	static VALUE position(VALUE self);
 	static VALUE flags(VALUE self);
+	static VALUE is_protocol_node(VALUE self);
 
 	static VALUE parent(VALUE self);
 	static VALUE next_sibling(VALUE self);
@@ -58,6 +59,7 @@ private:
 	VALUE getLength();
 	VALUE getPosition();
 	VALUE getFlags();
+	VALUE getIsProtocolNode();
 
 	VALUE getParent();
 	VALUE getNextSibling();

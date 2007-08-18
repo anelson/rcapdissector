@@ -62,6 +62,10 @@ VALUE Field::createClass() {
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::flags), 
 					 0);
     rb_define_method(klass,
+                     "is_protocol_node?", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::is_protocol_node), 
+					 0);
+    rb_define_method(klass,
                      "parent", 
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::parent), 
 					 0);
@@ -230,6 +234,12 @@ VALUE Field::flags(VALUE self) {
 	return field->getFlags();
 }
 
+VALUE Field::is_protocol_node(VALUE self) {
+	Field* field = NULL;
+	Data_Get_Struct(self, Field, field);
+	return field->getIsProtocolNode();
+}
+
 VALUE Field::parent(VALUE self) {
 	Field* field = NULL;
 	Data_Get_Struct(self, Field, field);
@@ -315,12 +325,11 @@ VALUE Field::getDisplayName() {
 
 VALUE Field::getValue() {
 	if (NIL_P(_rubyValue)) {
-		_rubyValue = ::rb_ary_new();
+		_rubyValue = Qnil;
+
 		const guchar* value = _node->getValue();
 		if (value) {
-			for (guint idx = 0; idx < _node->getFieldLength(); idx++) {
-				::rb_ary_push(_rubyValue, CHR2FIX(value[idx]));
-			}
+            _rubyValue = ::rb_str_new(reinterpret_cast<const char*>(value), _node->getFieldLength());
 		}
 	}
 
@@ -357,6 +366,10 @@ VALUE Field::getFlags() {
 	}
 
 	return _rubyFlags;
+}
+
+VALUE Field::getIsProtocolNode() {
+    return _node->getIsProtocolNode();
 }
 
 VALUE Field::getParent() {

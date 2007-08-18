@@ -6,4 +6,23 @@ On the other hand, when the TCP payload isn't picked up by another dissector, th
 
 It remains to be seen how much of an issue this will really be.  WLANs can be expected to suffer more packet loss than wired lans due to multipath loss and interference, but on the whole perhaps this will not be a big deal.  I may adapt dumpcap to look at tcp/80 traffic and see what proportion of non-zero-length TCP segments to or from that port are missing the http protocol info.
 
+UPDATE: In the packet which represents the reassembled fragments, the tcp.segments field contains one record for each TCP segment used to compose the final packet (note the reassembled packet data seems to be bolted on to whatever the last segment is, and not added as a stand-alone packet).
+
+According to the wireshark code, in each fragment packet other than the final one there should be a tcp.reassembled_in field that references the final segment containing the reassembled packet, but I don't see it in my dumpcap output.
+
+Running tshark against my test cap file didn't produce the tcp.reassembled_in field either.  Upon reflection, in order for a dissector to know this, it would have to read forward through the capture until it found the subsequent fragments, which the tshark code upon which rcapdissector was modeled doesn't do, but it's clear the wireshark GUI does make two passes, if for no other reason than to display the protocol summary.  For performance reasons I can't afford to do two passes, so I'll have to adapt the code to go back and remove entries for partial fragments once the reassembled packet is encountered.  Oh well.
+
+As for getting the raw data, I've modified the Field.value accessor logic so protocol fields also return data.  This in effect returns the entire block of data associated with a particular protocol.  I also adapted dumpcap to take a --dump-field-contents arg which dumps the raw value of one or more fields by name, to separate files.  I've tested this by dumping 'image-gif' fields, which dumps decoded GIF streams.  I ended up changing the data type of the value property to String from Array.
+
+=== Processing traffic
+
+Need a solution that will accomodate resolving things like MAC addresses and IP addresses to multiple symbolic names without alot of going back and updating.
+
+Some sort of recursive tagging mechanism, so I can insert a rule that says 'packets with x src MAC address have y hostname.dns property', then any time such a packet is loaded that hostname is appended.
+
+Need multiple layers (MAC->IP->SMB, MAC->IP->DNS), and multiple values per property.
+
+The criteria for applying a rule need to be flexible enough to accomodate namespaces.  '192.168.1.1' will have alot of tags for different networks; we'll need a way to keep them apart.
+
+Also need a way to cache the tag values, since they'll be way too complex to apply on the fly when querying data.
 

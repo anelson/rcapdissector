@@ -22,7 +22,8 @@ def main(*args)
         :display_filter => nil,
         :show_packets => false,
         :wlan_keys => [],
-        :traffic_analysis => nil
+        :traffic_analysis => nil,
+        :dump_field_contents => []
     }
     
     log = Logger.new(STDOUT)
@@ -87,6 +88,12 @@ def main(*args)
             opts[:traffic_analysis][:hosts].default = 0
         }
     
+    opt_parser.on("-d FIELDNAME", 
+        "--dump-field-contents FIELDNAME", 
+        "Dump the raw contents of each field called FIELDNAME to a separate file") {|val| 
+            opts[:dump_field_contents] << val
+        }
+    
     remaining_args = opt_parser.parse(*args)
     
     if remaining_args.length != 1
@@ -117,6 +124,12 @@ def main(*args)
     packet_count = 0
     wlan_aps = {}
     benchmarks = {}
+
+    if !opts[:dump_field_contents].empty?
+        #Initialize a hash to keep track of the counts of each dumped field
+        dumped_field_count = {}
+        dumped_field_count.default = 0
+    end
     
     if opts[:benchmarks]
         log.debug "Initializing benchmarks"
@@ -171,6 +184,31 @@ def main(*args)
     
         if opts[:show_packets]
             output_packet packet
+        end
+
+        opts[:dump_field_contents].each do |fieldname|
+            #For each field to dump, attempt to locate it in the 
+            #packet.  Could use Packet.each_field_match and provide a block
+            #to check for the field name in the dump_field_contents array,
+            #but that's much more expensive.  Packet.each_field is a high-speed
+            #operation that doesn't require excessive Ruby object creation overhead
+            packet.each_field(fieldname) do |field|
+                if field.value.empty?
+                    log.debug "Field #{fieldname} in packet #{packet_count} has zero-length value; skipping dump"
+                    return
+                end
+
+                dumped_field_count[fieldname] += 1
+
+                filename = "#{fieldname}-#{dumped_field_count[fieldname]}.dump"
+
+                log.debug "Writing #{field.value.length} data bytes in field #{fieldname} to file #{filename}"
+
+                File.open(filename, "w") do |f| 
+                    f.binmode 
+                    f.write field.value
+                end
+            end
         end
     
         if opts[:benchmarks]
@@ -252,7 +290,9 @@ def output_field(field, indent_level)
     if field.display_name != nil && field.display_name != ""
         puts indent + "Display Name: #{field.display_name}"
     end
-    if field.value != nil && field.value.length > 0
+
+    # The top-level 'protocol' fields shouldn't have values as they're just containers
+    if field.is_protocol_node? == false && field.value != nil && field.value.length > 0
         value_string = ""
         field.value.each do |byte|
             value_string << sprintf(" %02x", byte)

@@ -14,6 +14,7 @@ public:
 	const gchar* getName();
 	const gchar* getDisplayName();
 	const guchar* getValue();
+
 	const gchar* getDisplayValue();
 
 	guint getFieldLength() const { return _length; }

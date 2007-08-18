@@ -109,37 +109,10 @@ const guchar* ProtocolTreeNode::getValue() {
 	if (!_valueComputed) {
 		field_info	*fi = PITEM_FINFO(_node);
 
-		/* Text label. It's printed as a field with no name. */
-		if (fi->hfinfo->id == hf_text_only) {
-			_value = getValueForField(fi);
-		}
-		/* Uninterpreted data, i.e., the "Data" protocol, is
-		 * printed as a field instead of a protocol. */
-		else if (fi->hfinfo->id == proto_data) {
-			_value = getValueForField(fi);
-		}
-		/* Normal protocols and fields */
-		else {
-			/* show, value, and unmaskedvalue attributes */
-			switch (fi->hfinfo->type)
-			{
-			case FT_PROTOCOL:
-				break;
-			case FT_NONE:
-				break;
-			default:
-				/*
-				 * XXX - should we omit "value" for any fields?
-				 * What should we do for fields whose length is 0?
-				 * They might come from a pseudo-header or from
-				 * the capture header (e.g., time stamps), or
-				 * they might be generated fields.
-				 */
-				if (fi->length > 0) {
-					_value = getValueForField(fi);
-				}
-			}
-		}
+        if (fi->length > 0) {
+            _value = getValueForField(fi);
+        }
+
 		_valueComputed = TRUE;
 	}
 

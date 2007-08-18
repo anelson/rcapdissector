@@ -179,6 +179,12 @@ VALUE CapFile::createClass() {
 	::rb_define_const(klass, "PREF_TCP_RELATIVE_SEQUENCE_NUMBERS", ::rb_str_new2("tcp.relative_sequence_numbers"));
 	::rb_define_const(klass, "PREF_TCP_TRY_HEURISTIC_FIRST", ::rb_str_new2("tcp.try_heuristic_first"));
 
+    //Define some HTTP refs 
+	::rb_define_const(klass, "PREF_HTTP_DESEGMENT_HEADERS", ::rb_str_new2("http.desegment_headers"));
+	::rb_define_const(klass, "PREF_HTTP_DESEGMENT_BODY", ::rb_str_new2("http.desegment_body"));
+	::rb_define_const(klass, "PREF_HTTP_DECHUNK_BODY", ::rb_str_new2("http.dechunk_body"));
+	::rb_define_const(klass, "PREF_HTTP_DECOMPRESS_BODY", ::rb_str_new2("http.decompress_body"));
+
 	//Initialize some prefs to reasonable defaults
 	setPreference("tcp.summary_in_tree", "true");
 	setPreference("tcp.check_checksum", "false");
