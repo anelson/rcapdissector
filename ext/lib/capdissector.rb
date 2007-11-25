@@ -6,3 +6,4 @@ require 'capdissector/field_does_not_match_query_error'
 #require 'capdissector/field'
 require 'capdissector.dll'
 
+require 'capdissector/packet_yaml.rb'

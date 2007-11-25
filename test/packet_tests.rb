@@ -1,4 +1,5 @@
 require 'test/unit'
+require 'yaml'
 
 require 'capdissector'
 require File.dirname(__FILE__) + '\testdata'
@@ -229,6 +230,86 @@ class PacketTests < Test::Unit::TestCase
             assert_equal(true, eth_addr_count > 0)
             assert_equal(true, ip_version_count == 0)
             assert_equal(true, bogus_count == 0)
+        end
+    end
+
+    def test_to_yaml
+        #To verify the to_yaml function, it will be compared with the slow Ruby-native ruby_to_yaml version, which uses
+        #the YAML class.  The output of to_yaml will be parsed with YAML.load, then spit back out into 'canonical' YAML
+        #with YAML.dump, and if the result matches the output of ruby_to_yaml, it's assumed that the outputs are equivalent.
+        capfile = CapDissector::CapFile.new(TEST_CAP)
+
+        packet_count = 0
+        capfile.each_packet() do |packet|
+            packet_count += 1
+            expected_yaml = packet.ruby_to_yaml
+            got_yaml = packet.to_yaml
+
+            compare_yaml(packet_count, expected_yaml, got_yaml)
+        end
+    end
+
+    def compare_yaml(packet_number, expected_yaml, got_yaml)
+        # Parse both of these into structures with YAML and compare them
+        begin
+            expected = YAML.load(expected_yaml)
+            got = YAML.load(got_yaml)
+    
+            compare_types("", expected, got)
+        rescue
+            # Write out the expected and got YAML for comparison
+            puts "Compare error comparing YAML output for packet #{packet_number} (1 based)"
+            write_yaml(expected_yaml, "expected")
+            write_yaml(got_yaml, "got")
+
+            raise
+        end
+    end
+
+    def write_yaml(yaml, name)
+        path = File.dirname(__FILE__) + "/#{name}.yaml"
+        File.open(path, "w") do |f|
+            f.puts yaml
+            puts "Wrote #{name} YAML to #{path}"
+        end
+    end
+
+    def compare_types(parent, expected, got)
+        assert_equal(expected.class, got.class,
+            "Type mismatch at [#{parent}]")
+
+        if expected.kind_of?(Hash)
+            compare_hashes(parent, expected, got)
+        elsif expected.kind_of?(Array)
+            compare_arrays(parent, expected, got)
+        else
+            assert_equal(expected, got, 
+                "Inequality at [#{parent}]")
+        end
+    end
+
+    def compare_hashes(parent, expected, got)
+        assert_equal(expected.length, got.length,
+            "Hash size mismatch at [#{parent}]")
+
+        expected.each do |key, value|
+            assert_equal(true, got.has_key?(key),
+                "Hash is missing expected key '#{key}' at [#{parent}]")
+
+            compare_types(parent + "/" + key,
+                value,
+                got[key])
+        end
+    end
+
+    def compare_arrays(parent, expected, got)
+        assert_equal(expected.length, got.length,
+            "Array length mismatch at [#{parent}]")
+
+        expected.length.times do |idx|
+            compare_types(parent + "/array index #{idx}",
+                expected[idx],
+                got[idx])
         end
     end
 end

@@ -92,6 +92,11 @@ VALUE Packet::createClass() {
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::each_descendant_field_match), 
 					 2);
 
+    rb_define_method(klass,
+                     "to_yaml", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::to_yaml), 
+					 0);
+
 	return klass;
 }
 
@@ -189,6 +194,7 @@ void Packet::getNodeSiblings(ProtocolTreeNode& node, NodeParentMap::iterator& lb
 ProtocolTreeNode* Packet::getProtocolTreeNodeFromProtoNode(proto_node* node) {
 	//If the wrapper for this node is known to the packet, it will be in the list
 	//of ProtocolTreeNode objects who share node's parent.  Thus, like there
+	if (!node) { return NULL; }
 	NodeParentMap::iterator lbound, ubound;
 	lbound = _nodesByParent.lower_bound((guint64)node->parent);
 	ubound = _nodesByParent.upper_bound((guint64)node->parent);
@@ -506,6 +512,12 @@ VALUE Packet::each_descendant_field_match(VALUE self, VALUE parentField, VALUE q
 	return packet->eachDescendantFieldMatch(parentField, query);
 }
 
+VALUE Packet::to_yaml(VALUE self) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->toYaml();
+}
+
 void Packet::buildPacket() {
 	//Add each of this packet's nodes to our node map
 	_nodeCounter = 0;
@@ -805,6 +817,70 @@ VALUE Packet::eachDescendantFieldMatch(VALUE parentField, VALUE query) {
 		sorted.end());
 
 	return _self;
+}
+
+VALUE Packet::toYaml() {
+    YamlGenerator yaml;
+
+    //The YAML representation is a nested sequence of fields.  Each field is represented as a 
+    //mapping keyed by the field name, with the value a nested mapping of name/value pairs for field attributes
+    //like value, display_value, etc
+    yaml.startList();
+
+    //Start with the root fields and go from there
+	NodeParentMap::iterator lbound, ubound;
+	lbound = _nodesByParent.lower_bound((guint64)_edt->tree);
+	ubound = _nodesByParent.upper_bound((guint64)_edt->tree);
+
+	for (NodeParentMap::iterator iter = lbound;
+		iter != ubound;
+		++iter) {
+        addFieldToYaml(iter->second, yaml);
+	}
+
+    yaml.endList();
+
+    return ::rb_str_new2(yaml.getStringBuffer().str().c_str());
+}
+
+void Packet::addFieldToYaml(ProtocolTreeNode* node, YamlGenerator& yaml) {
+    const char* fieldName = NULL;
+    char fieldOrdinalBuffer[20];
+    //Use the field's name as the key for this mapping unless there is no field name,
+    //in which case use <no name>
+    fieldName = node->getName();
+    if (fieldName == NULL || ::strlen(fieldName) == 0) {
+        ::sprintf_s(fieldOrdinalBuffer, "<Field#%d>", node->getOrdinal());
+        fieldName = fieldOrdinalBuffer;
+    }
+
+    yaml.startMapping(fieldName);
+    {
+        //Any field with a display name should have it output
+        if (node->getDisplayName() != NULL && node->getDisplayName()[0] != '\0') { yaml.addMapping("display_name", node->getDisplayName()); }
+
+        //Ditto display value
+        if (node->getDisplayValue() != NULL && node->getDisplayValue()[0] != '\0') { yaml.addMapping("display_value", node->getDisplayValue()); }
+
+        //Top-level 'protocol' fields and fields with empty values shouldn't get a value field
+        if (node->getIsProtocolNode() == false && node->getValue() != NULL && node->getFieldLength() > 0) { 
+            yaml.addMappingWithBinaryValue("value", node->getValue(), node->getFieldLength()); 
+        }
+
+        //Add children, if any
+        if (node->getProtoNode()->first_child) {
+            yaml.startMappingToList("children");
+
+            ProtocolTreeNode* child = getProtocolTreeNodeFromProtoNode(node->getProtoNode()->first_child);
+            while (child) {
+                addFieldToYaml(child, yaml);
+                child = getProtocolTreeNodeFromProtoNode(child->getProtoNode()->next);
+            }
+
+            yaml.endMapping();
+        }
+    }
+    yaml.endMapping();
 }
 
 void Packet::addProtocolNodes(proto_tree *tree) {

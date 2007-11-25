@@ -1315,6 +1315,14 @@
 					RelativePath=".\ext\RubyAndShit.h"
 					>
 				</File>
+				<File
+					RelativePath=".\ext\YamlGenerator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ext\YamlGenerator.h"
+					>
+				</File>
 				<Filter
 					Name="lib"
 					>
@@ -1341,6 +1349,10 @@
 				>
 				<File
 					RelativePath=".\test\all_tests.rb"
+					>
+				</File>
+				<File
+					RelativePath=".\test\benchmark_tests.rb"
 					>
 				</File>
 				<File
@@ -1373,6 +1385,14 @@
 				</File>
 			</Filter>
 		</Filter>
+		<File
+			RelativePath=".\bin\analyze_traffic.rb"
+			>
+		</File>
+		<File
+			RelativePath=".\ext\lib\capdissector\packet_yaml.rb"
+			>
+		</File>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>

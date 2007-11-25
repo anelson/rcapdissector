@@ -28,12 +28,16 @@ public:
 	}
 
 	virtual ~LookasideList() {
+        emptyPool();
+	}
+
+    void emptyPool() {
 		while (_pool.size()) {
 			_T* block = _pool.front();
 			freeBlock(block);
 			_pool.pop_front();
 		}
-	}
+    }
 
 protected:
 	/** Gets a block from the pool if available, otherwise allocates a new block for that purpose */

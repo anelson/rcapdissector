@@ -45,6 +45,8 @@ private:
 
 	static VALUE each_packet(VALUE self);
 
+    static VALUE close_capture_file(VALUE self);
+
 	/*@ Instance methods that actually perform the CapFile-specific work */
 	void openCaptureFile(VALUE capFileName);
 	void closeCaptureFile();

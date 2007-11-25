@@ -8,12 +8,14 @@
 #include "Field.h"
 #include "FieldQuery.h"
 #include "NativePointer.h"
+#include "YamlGenerator.h"
 
 VALUE g_packet_class;
 VALUE g_protocol_class;
 VALUE g_field_class;
 VALUE g_field_query_class;
 VALUE g_capfile_error_class;
+VALUE g_wtapcapfile_error_class;
 VALUE g_field_doesnt_match_error_class;
 
 VALUE g_add_element_func;
@@ -32,6 +34,7 @@ extern "C" __declspec(dllexport) void Init_capdissector() {
 	CapFile::initPacketCapture();
 
     g_capfile_error_class = rb_path2class("CapDissector::CapFileError");
+    g_wtapcapfile_error_class = rb_path2class("CapDissector::WtapCapFileError");
 	g_field_doesnt_match_error_class = rb_path2class("CapDissector::FieldDoesNotMatchQueryError");
 
     //Define the 'CapDissector' module

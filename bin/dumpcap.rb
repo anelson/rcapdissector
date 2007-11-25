@@ -21,6 +21,7 @@ def main(*args)
         :wireshark_prefs => [],
         :display_filter => nil,
         :show_packets => false,
+        :show_packets_as_yaml => false,
         :wlan_keys => [],
         :traffic_analysis => nil,
         :dump_field_contents => []
@@ -70,6 +71,12 @@ def main(*args)
         "--show-packets", 
         "Outputs the fields within each packet") {|val| 
             opts[:show_packets] = true
+        }
+    
+    opt_parser.on("-y", 
+        "--yaml", 
+        "When combined with --show-packets, outputs packets in YAML") {|val| 
+            opts[:show_packets_as_yaml] = true
         }
     
     opt_parser.on("-k ARG", 
@@ -183,7 +190,7 @@ def main(*args)
         end
     
         if opts[:show_packets]
-            output_packet packet
+            output_packet packet, opts[:show_packets_as_yaml]
         end
 
         opts[:dump_field_contents].each do |fieldname|
@@ -267,10 +274,66 @@ def main(*args)
     end
 end
 
-def output_packet(packet)
+def output_packet(packet, as_yaml)
+    output_packet_as_text(packet) unless as_yaml == true
+    output_packet_as_yaml(packet) unless as_yaml != true
+end
+
+def output_packet_as_text(packet)
     packet.each_root_field do |field|
         output_field field, 0
     end
+end
+
+def output_packet_as_yaml(packet)
+    puts packet.to_yaml
+    #yaml = packet.ruby_to_yaml
+
+    #fields_array = []
+
+    #packet.each_root_field do |field|
+        #add_field_to_array(field, fields_array)
+    #end
+
+    #p fields_array
+    #YAML.dump(fields_array, STDOUT)
+end
+
+def add_field_to_array(field, fields_array)
+    # Each field is represented by a hash
+    field_hash = {}
+    fields_array << field_hash
+
+    if field.name != nil && field.name != ""
+        #Top-level key of this field's hash will be the field's name
+        field_hash[field.name] = {}
+        field_hash = field_hash[field.name]
+    else
+        field_hash["<no name>"] = {}
+        field_hash = field_hash["<no name>"]
+    end
+
+    if field.display_name != nil && field.display_name != ""
+        field_hash['display_name'] = field.display_name
+    end
+
+    # The top-level 'protocol' fields shouldn't have values as they're just containers
+    if field.is_protocol_node? == false && field.value != nil && field.value.length > 0
+        value_string = ""
+        field_hash['value'] = field.value
+    end
+
+    if field.display_value != nil && field.display_value != ""
+        field_hash['display_value'] = field.display_value
+    end
+
+    field_hash['children'] = []
+
+    field.each_child do |child_field|
+        add_field_to_array(child_field, field_hash['children'])
+    end
+
+    field_hash.delete('children') unless field_hash['children'].length > 0
 end
 
 def output_field(field, indent_level) 

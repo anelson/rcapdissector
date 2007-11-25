@@ -165,6 +165,12 @@ VALUE CapFile::createClass() {
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(CapFile::each_packet), 
 					 0);
 
+    //Define the 'close' method
+    rb_define_method(klass,
+                     "close", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(CapFile::close_capture_file), 
+					 0);
+
     //Define the 'capture_file' attribute reader
     rb_define_attr(klass,
                    "capture_file",
@@ -419,6 +425,15 @@ VALUE CapFile::each_packet(VALUE self) {
 	return self;
 }
 
+VALUE CapFile::close_capture_file(VALUE self) {
+	CapFile* cf = NULL;
+
+	Data_Get_Struct(self, CapFile, cf);
+
+	cf->closeCaptureFile();
+	return self;
+}
+
 void CapFile::openCaptureFile(VALUE capFileName) {
 	//Apply any previously-set preferences
 	prefs_apply_all();
@@ -469,7 +484,7 @@ void CapFile::openCaptureFile(VALUE capFileName) {
     g_snprintf(err_msg, 
 		sizeof err_msg,
 		buildCfOpenErrorMessage(err, err_info, FALSE, _cf.cd_t), name);
-    rb_raise(g_capfile_error_class, err_msg);
+    rb_raise(g_wtapcapfile_error_class, err_msg, err);
 }
 
 void CapFile::closeCaptureFile() {
@@ -487,6 +502,11 @@ void CapFile::closeCaptureFile() {
 	}
 
     memset(&_cf, 0, sizeof(_cf));
+
+#ifdef USE_LOOKASIDE_LIST
+	_nodeLookaside.emptyPool();
+#endif
+    
 }
 	
 void CapFile::setDisplayFilter(VALUE filter) {

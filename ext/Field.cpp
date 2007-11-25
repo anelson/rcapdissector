@@ -66,6 +66,10 @@ VALUE Field::createClass() {
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::is_protocol_node), 
 					 0);
     rb_define_method(klass,
+                     "ordinal", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::ordinal), 
+					 0);
+    rb_define_method(klass,
                      "parent", 
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::parent), 
 					 0);
@@ -117,6 +121,7 @@ Field::Field() {
 	_rubyDisplayName = Qnil;
 	_rubyDisplayValue = Qnil;
 	_rubyFlags = Qnil;
+	_rubyOrdinal = Qnil;
 
 	_packet = NULL;
 }
@@ -240,6 +245,12 @@ VALUE Field::is_protocol_node(VALUE self) {
 	return field->getIsProtocolNode();
 }
 
+VALUE Field::ordinal(VALUE self) {
+	Field* field = NULL;
+	Data_Get_Struct(self, Field, field);
+	return field->getOrdinal();
+}
+
 VALUE Field::parent(VALUE self) {
 	Field* field = NULL;
 	Data_Get_Struct(self, Field, field);
@@ -266,6 +277,7 @@ void Field::mark() {
 	if (_rubyPosition != Qnil) ::rb_gc_mark(_rubyPosition);
 	if (_rubyDisplayName != Qnil) ::rb_gc_mark(_rubyDisplayName);
 	if (_rubyDisplayValue != Qnil) ::rb_gc_mark(_rubyDisplayValue);
+	if (_rubyOrdinal != Qnil) ::rb_gc_mark(_rubyOrdinal);
 }
 	
 VALUE Field::toString() {
@@ -370,6 +382,13 @@ VALUE Field::getFlags() {
 
 VALUE Field::getIsProtocolNode() {
     return _node->getIsProtocolNode();
+}
+
+VALUE Field::getOrdinal() {
+	if (NIL_P(_rubyOrdinal)) {
+		_rubyOrdinal = LONG2FIX(_node->getOrdinal());
+	}
+    return _rubyOrdinal;
 }
 
 VALUE Field::getParent() {

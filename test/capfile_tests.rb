@@ -149,4 +149,20 @@ class CapfileTests < Test::Unit::TestCase
         end
         assert_equal(false, num_ip_packets > 0)
     end
+
+    def test_openclose_leak
+        # It seems I'm getting a significant leak with each capture file I open then close
+        # See if that bears out in testing
+        200.times do |x|
+            capfile = CapDissector::CapFile.new(TEST_CAP)
+            capfile.each_packet do |packet|
+                packet.each_root_field do |field|
+                    dv = field.display_value
+                end
+            end
+
+            capfile.close
+            capfile = nil
+        end
+    end
 end

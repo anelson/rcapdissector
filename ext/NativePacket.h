@@ -13,6 +13,7 @@
 #include "RubyAllocator.h"
 #include "ProtocolTreeNodeLookasideList.h"
 #endif
+#include "YamlGenerator.h"
 
 class Packet
 {
@@ -100,6 +101,8 @@ private:
 	static VALUE find_first_descendant_field_match(VALUE self, VALUE parentField, VALUE query);
 	static VALUE each_descendant_field_match(VALUE self, VALUE parentField, VALUE query);
 
+    static VALUE to_yaml(VALUE self);
+
 	/*@ Instance methods that actually perform the Packet-specific work */
 	void buildPacket();
 	void addNode(proto_node* node);
@@ -119,6 +122,10 @@ private:
 	VALUE eachFieldMatch(VALUE query);
 	VALUE findFirstDescendantFieldMatch(VALUE parentField, VALUE query);
 	VALUE eachDescendantFieldMatch(VALUE parentField, VALUE query);
+
+    VALUE toYaml();
+
+    void addFieldToYaml(ProtocolTreeNode* node, YamlGenerator& yaml);
 
 	/** Recursive function that adds nodes in a protocol tree to the node list */
 	void addProtocolNodes(proto_tree *tree);

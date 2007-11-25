@@ -43,6 +43,7 @@ private:
 	static VALUE position(VALUE self);
 	static VALUE flags(VALUE self);
 	static VALUE is_protocol_node(VALUE self);
+	static VALUE ordinal(VALUE self);
 
 	static VALUE parent(VALUE self);
 	static VALUE next_sibling(VALUE self);
@@ -60,6 +61,7 @@ private:
 	VALUE getPosition();
 	VALUE getFlags();
 	VALUE getIsProtocolNode();
+	VALUE getOrdinal();
 
 	VALUE getParent();
 	VALUE getNextSibling();
@@ -84,6 +86,7 @@ private:
 	VALUE _rubyDisplayName;
 	VALUE _rubyDisplayValue;
 	VALUE _rubyFlags;
+	VALUE _rubyOrdinal;
 
 	Packet* _packet;
 
