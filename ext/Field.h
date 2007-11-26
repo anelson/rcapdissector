@@ -24,9 +24,6 @@ private:
 		return *this;
 	}
 
-	/**@ Packet-related helper methods */
-	static VALUE rubyStringFromCString(const gchar* str);
-
 
 	/*@ Methods implementing the Field Ruby object methods */
 	static void free(void* p);
@@ -49,6 +46,10 @@ private:
 	static VALUE next_sibling(VALUE self);
 	static VALUE each_child(VALUE self);
 
+	static VALUE value_blob(VALUE self);
+	static VALUE value_blob_offset(VALUE self);
+	static VALUE value_blob_length(VALUE self);
+
 	/*@ Instance methods that actually perform the Field-specific work */
 	void mark();
 
@@ -66,6 +67,10 @@ private:
 	VALUE getParent();
 	VALUE getNextSibling();
 	VALUE eachChild();
+
+	VALUE getValueBlob();
+	VALUE getValueBlobOffset();
+	VALUE getValueBlobLength();
 
 	VALUE protocolTreeNodePtrToField(ProtocolTreeNode* node) {
 		if (node) {
@@ -87,6 +92,9 @@ private:
 	VALUE _rubyDisplayValue;
 	VALUE _rubyFlags;
 	VALUE _rubyOrdinal;
+	VALUE _rubyValueBlob;
+	VALUE _rubyValueBlobOffset;
+	VALUE _rubyValueBlobLength;
 
 	Packet* _packet;
 

@@ -1236,6 +1236,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ext\Blob.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ext\Blob.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ext\CapFile.cpp"
 					>
 				</File>
@@ -1353,6 +1361,10 @@
 				</File>
 				<File
 					RelativePath=".\test\benchmark_tests.rb"
+					>
+				</File>
+				<File
+					RelativePath=".\test\blob_tests.rb"
 					>
 				</File>
 				<File

@@ -81,6 +81,19 @@ VALUE Field::createClass() {
                      "each_child", 
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::each_child), 
 					 0);
+	
+    rb_define_method(klass,
+                     "value_blob", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::value_blob), 
+					 0);
+    rb_define_method(klass,
+                     "value_blob_offset", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::value_blob_offset), 
+					 0);
+    rb_define_method(klass,
+                     "value_blob_length", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Field::value_blob_length), 
+					 0);
 
 	return klass;
 }
@@ -122,19 +135,14 @@ Field::Field() {
 	_rubyDisplayValue = Qnil;
 	_rubyFlags = Qnil;
 	_rubyOrdinal = Qnil;
+	_rubyValueBlob = Qnil;
+	_rubyValueBlobOffset = Qnil;
+	_rubyValueBlobLength = Qnil;
 
 	_packet = NULL;
 }
 
 Field::~Field(void) {
-}
-
-VALUE Field::rubyStringFromCString(const gchar* str) {
-	if (str) {
-		return ::rb_str_new2(str);
-	} else {
-		return Qnil;
-	}
 }
 	
 /*@ Methods implementing the Field Ruby object methods */
@@ -267,6 +275,24 @@ VALUE Field::each_child(VALUE self) {
 	Field* field = NULL;
 	Data_Get_Struct(self, Field, field);
 	return field->eachChild();
+}
+
+VALUE Field::value_blob(VALUE self) {
+	Field* field = NULL;
+	Data_Get_Struct(self, Field, field);
+	return field->getValueBlob();
+}
+
+VALUE Field::value_blob_offset(VALUE self) {
+	Field* field = NULL;
+	Data_Get_Struct(self, Field, field);
+	return field->getValueBlobOffset();
+}
+
+VALUE Field::value_blob_length(VALUE self) {
+	Field* field = NULL;
+	Data_Get_Struct(self, Field, field);
+	return field->getValueBlobLength();
 }
 
 void Field::mark() {
@@ -408,6 +434,33 @@ VALUE Field::eachChild() {
 		child = child->next;
 	}
 	return _self;
+}
+
+VALUE Field::getValueBlob() {
+	if (NIL_P(_rubyValueBlob)) {
+		const Blob* blob = _packet->getBlobByTvbuffPtr(_node->getProtoNode()->finfo->ds_tvb);
+		if (blob) {
+			_rubyValueBlob = blob->getRubyWrapper();
+		}
+	}
+
+	return _rubyValueBlob;
+}
+
+VALUE Field::getValueBlobOffset() {
+	if (NIL_P(_rubyValueBlobOffset)) {
+		_rubyValueBlobOffset = LONG2FIX(_node->getProtoNode()->finfo->start);
+	}
+
+	return _rubyValueBlobOffset;
+}
+
+VALUE Field::getValueBlobLength() {
+	if (NIL_P(_rubyValueBlobLength)) {
+		_rubyValueBlobLength = LONG2FIX(_node->getProtoNode()->finfo->length);
+	}
+
+	return _rubyValueBlobLength;
 }
 
 

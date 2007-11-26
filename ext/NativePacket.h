@@ -14,6 +14,19 @@
 #include "ProtocolTreeNodeLookasideList.h"
 #endif
 #include "YamlGenerator.h"
+#include "Blob.h"
+
+/** THe maximum number of bytes in a field value that will be
+ *  encoded inline in the field's YAML representation.  Any
+ *  binary values longer than this will be encoded as
+ *  offset/length references into the blob containing the
+ *  field's value
+ *  
+ *  This number is based on the approximate overhead for the
+ *  blob name/offset/length reference above the overhead for
+ *  a binary value.  It's very approximate */
+#define MAX_INLINE_VALUE_LENGTH                 64
+  
 
 class Packet
 {
@@ -40,6 +53,12 @@ public:
 	/** Finds the ProtocolTreeNode wrapper for a given proto_node */
 	ProtocolTreeNode* getProtocolTreeNodeFromProtoNode(proto_node* node);
 
+	/** Find the Blob object that wraps the given data_source pointer, or NULL if not found */
+	const Blob* getBlobByDataSourcePtr(data_source* ds);
+
+	/** Find the Blob object that wraps the data_source which contains the given tvb */
+	const Blob* getBlobByTvbuffPtr(tvbuff_t* tvb);
+
 	/** Releases the protocol tree nodes allocated for this packet.  Needs to happen before
 	CapFile is GC'd if using lookaside list*/
 	void free();
@@ -61,6 +80,8 @@ private:
 	};
 
 	typedef std::set<ProtocolTreeNode*, ProtocolTreeNodeLess> ProtocolTreeNodeOrderedSet;
+
+	typedef std::list<Blob*> BlobsList;
 
 	Packet();
 	virtual ~Packet(void);
@@ -101,6 +122,8 @@ private:
 	static VALUE find_first_descendant_field_match(VALUE self, VALUE parentField, VALUE query);
 	static VALUE each_descendant_field_match(VALUE self, VALUE parentField, VALUE query);
 
+	static VALUE blobs(VALUE self);
+
     static VALUE to_yaml(VALUE self);
 
 	/*@ Instance methods that actually perform the Packet-specific work */
@@ -123,12 +146,21 @@ private:
 	VALUE findFirstDescendantFieldMatch(VALUE parentField, VALUE query);
 	VALUE eachDescendantFieldMatch(VALUE parentField, VALUE query);
 
+	VALUE getBlobs();
+
     VALUE toYaml();
 
     void addFieldToYaml(ProtocolTreeNode* node, YamlGenerator& yaml);
 
 	/** Recursive function that adds nodes in a protocol tree to the node list */
 	void addProtocolNodes(proto_tree *tree);
+
+	void ensureBlobsLoaded();
+
+	/** Adds the data_source's for the packet as Blobs */
+	void addDataSourcesAsBlobs(GSList* dses);
+
+	void addDataSourceAsBlob(data_source* ds);
 
 	/** Recursive function that searches a branch of the protocol tree for a field of a given name */
 	ProtocolTreeNode* findDescendantNodeByName(ProtocolTreeNode* parent, const gchar* name);
@@ -187,6 +219,9 @@ private:
 	capture_file* _cf;
 	NodeNameMap _nodesByName;
 	NodeParentMap _nodesByParent;
+	VALUE _blobsHash;
+	BlobsList _blobs;
+
 	guint _nodeCounter;
 #ifdef USE_LOOKASIDE_LIST
 	ProtocolTreeNodeLookasideList* _nodeLookaside;

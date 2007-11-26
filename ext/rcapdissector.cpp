@@ -8,12 +8,13 @@
 #include "Field.h"
 #include "FieldQuery.h"
 #include "NativePointer.h"
-#include "YamlGenerator.h"
+#include "Blob.h"
 
 VALUE g_packet_class;
 VALUE g_protocol_class;
 VALUE g_field_class;
 VALUE g_field_query_class;
+VALUE g_blob_class;
 VALUE g_capfile_error_class;
 VALUE g_wtapcapfile_error_class;
 VALUE g_field_doesnt_match_error_class;
@@ -46,7 +47,15 @@ extern "C" __declspec(dllexport) void Init_capdissector() {
 	g_field_class = Field::createClass();
 	g_field_query_class = FieldQuery::createClass();
 	g_native_pointer_class = NativePointer::createClass();
+	g_blob_class = Blob::createClass();
 
 	g_id_call = ::rb_intern("call");
 }
 
+VALUE rubyStringFromCString(const gchar* str) {
+	if (str) {
+		return ::rb_str_new2(str);
+	} else {
+		return Qnil;
+	}
+}

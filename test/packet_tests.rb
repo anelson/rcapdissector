@@ -237,15 +237,17 @@ class PacketTests < Test::Unit::TestCase
         #To verify the to_yaml function, it will be compared with the slow Ruby-native ruby_to_yaml version, which uses
         #the YAML class.  The output of to_yaml will be parsed with YAML.load, then spit back out into 'canonical' YAML
         #with YAML.dump, and if the result matches the output of ruby_to_yaml, it's assumed that the outputs are equivalent.
-        capfile = CapDissector::CapFile.new(TEST_CAP)
-
-        packet_count = 0
-        capfile.each_packet() do |packet|
-            packet_count += 1
-            expected_yaml = packet.ruby_to_yaml
-            got_yaml = packet.to_yaml
-
-            compare_yaml(packet_count, expected_yaml, got_yaml)
+        SMALLISH_CAPS.each do |file|
+            capfile = CapDissector::CapFile.new(file)
+    
+            packet_count = 0
+            capfile.each_packet() do |packet|
+                packet_count += 1
+                expected_yaml = packet.ruby_to_yaml
+                got_yaml = packet.to_yaml
+    
+                compare_yaml(packet_count, expected_yaml, got_yaml)
+            end
         end
     end
 
@@ -313,3 +315,4 @@ class PacketTests < Test::Unit::TestCase
         end
     end
 end
+

@@ -29,6 +29,7 @@ public:
     void endMapping();
 
     void addMapping(const char* key, const char* value);
+    void addMapping(const char* key, guint32 value);
     void addMappingWithBinaryValue(const char* key, const guchar* value, size_t length);
 
     const StringBuffer& getStringBuffer() { return _strBuf;

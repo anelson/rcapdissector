@@ -43,6 +43,13 @@ void YamlGenerator::addMapping(const char* key, const char* value) {
     }
 }
 
+void YamlGenerator::addMapping(const char* key, guint32 value) {
+    char valueString[20];
+    ::_ultoa_s(value, valueString, 10);
+
+	startLine() << key << ": " << valueString << std::endl;
+}
+
 void YamlGenerator::addMappingWithBinaryValue(const char* key, const guchar* value, size_t length) {
     startLine() << key << ": !binary |" << std::endl;
 

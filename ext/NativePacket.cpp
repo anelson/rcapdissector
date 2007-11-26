@@ -14,6 +14,8 @@ VALUE Packet::createClass() {
 	VALUE klass = rb_define_class_under(g_cap_dissector_module, "Packet", rb_cObject);
 	rb_define_alloc_func(klass, Packet::alloc);
 
+    ::rb_define_const(klass, "MAX_INLINE_VALUE_LENGTH", LONG2FIX(MAX_INLINE_VALUE_LENGTH));
+
     //Define the 'initialize' method
     rb_define_method(klass,
                      "initialize", 
@@ -91,6 +93,11 @@ VALUE Packet::createClass() {
                      "each_descendant_field_match", 
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::each_descendant_field_match), 
 					 2);
+
+    rb_define_method(klass,
+                     "blobs", 
+					 reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::blobs), 
+					 0);
 
     rb_define_method(klass,
                      "to_yaml", 
@@ -210,6 +217,37 @@ ProtocolTreeNode* Packet::getProtocolTreeNodeFromProtoNode(proto_node* node) {
 	return NULL;
 }
 	
+const Blob* Packet::getBlobByDataSourcePtr(data_source* ds) {
+	ensureBlobsLoaded();
+
+	//Find the Blob that wraps this ds
+	for (BlobsList::const_iterator iter = _blobs.begin();
+		iter != _blobs.end();
+		++iter) {
+		if ((*iter)->getDataSource() == ds) {
+			return *iter;
+		}
+	}
+
+	return NULL;
+}
+	
+const Blob* Packet::getBlobByTvbuffPtr(tvbuff_t* tvb) {
+	ensureBlobsLoaded();
+
+	for (BlobsList::const_iterator iter = _blobs.begin();
+		iter != _blobs.end();
+		++iter) {
+		const data_source* ds = (*iter)->getDataSource();
+
+		if (tvb == ds->tvb) {
+			return (*iter);
+		}
+	}
+
+	return NULL;
+}
+
 void Packet::free() {
 	for (NodeNameMap::iterator iter = _nodesByName.begin();
 		iter != _nodesByName.end();
@@ -239,6 +277,7 @@ Packet::Packet()
 	_wth = NULL;
 	_cf = NULL;
 	_nodeCounter = 0;
+	_blobsHash = Qnil;
 }
 
 Packet::~Packet(void) {
@@ -511,6 +550,12 @@ VALUE Packet::each_descendant_field_match(VALUE self, VALUE parentField, VALUE q
 	Data_Get_Struct(self, Packet, packet);
 	return packet->eachDescendantFieldMatch(parentField, query);
 }
+	
+VALUE Packet::blobs(VALUE self) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->getBlobs();
+}
 
 VALUE Packet::to_yaml(VALUE self) {
 	Packet* packet = NULL;
@@ -565,6 +610,18 @@ void Packet::mark() {
 		if (!NIL_P(iter->second->peekFieldObject())) {
 			::rb_gc_mark(iter->second->peekFieldObject());
 		}
+	}
+
+	//Mark the hash of blobs, which will in turn mark the blobs
+	//so everything in the _blobs list will stick around
+	::rb_gc_mark(_blobsHash);
+
+	//As the belt to the above call's suspenders, go ahead and mark all the blobs
+	//in the _blobs list for good measure
+	for (BlobsList::iterator iter = _blobs.begin();
+		iter != _blobs.end();
+		++iter) {
+		::rb_gc_mark((*iter)->getRubyWrapper());
 	}
 }
 
@@ -819,6 +876,14 @@ VALUE Packet::eachDescendantFieldMatch(VALUE parentField, VALUE query) {
 	return _self;
 }
 
+VALUE Packet::getBlobs() {
+	if (NIL_P(_blobsHash)) {
+		ensureBlobsLoaded();
+	}
+
+	return _blobsHash;
+}
+
 VALUE Packet::toYaml() {
     YamlGenerator yaml;
 
@@ -864,7 +929,20 @@ void Packet::addFieldToYaml(ProtocolTreeNode* node, YamlGenerator& yaml) {
 
         //Top-level 'protocol' fields and fields with empty values shouldn't get a value field
         if (node->getIsProtocolNode() == false && node->getValue() != NULL && node->getFieldLength() > 0) { 
-            yaml.addMappingWithBinaryValue("value", node->getValue(), node->getFieldLength()); 
+            //If the binary value is shorter than the max inline length, just write the binary directly to the YAML
+            //Otherwise, write a reference to the BLOB where the field value can be found
+            if (node->getFieldLength() <= MAX_INLINE_VALUE_LENGTH) {
+                yaml.addMappingWithBinaryValue("value", node->getValue(), node->getFieldLength()); 
+            } else {
+                const Blob* blob = getBlobByTvbuffPtr(node->getProtoNode()->finfo->ds_tvb);
+                if (!blob) {
+                    ::rb_bug("Field has a value but unable to locate blob for field's value");
+                } else {
+                    yaml.addMapping("value_blob_name", blob->getDataSource()->name);
+                    yaml.addMapping("value_blob_offset", node->getProtoNode()->finfo->start);
+                    yaml.addMapping("value_blob_length", node->getProtoNode()->finfo->length);
+                }
+            }
         }
 
         //Add children, if any
@@ -894,12 +972,49 @@ void Packet::addProtocolNodes(proto_tree *tree) {
 		current = child;
 		child = current->next;
 
+		if (current->finfo->hfinfo->abbrev != NULL && ::strcmp(current->finfo->hfinfo->abbrev, "image-jfif") == 0) {
+			int foo = 0;
+			foo++;
+		}
+
 		//Pass this node to the callback
 		addNode(current);
 
 		//Now process all this node's children
 		addProtocolNodes((proto_tree *)current);
 	}
+}
+
+void Packet::ensureBlobsLoaded() {
+	if (NIL_P(_blobsHash)) {
+		addDataSourcesAsBlobs(_edt->pi.data_src);
+	}
+}
+
+
+void Packet::addDataSourcesAsBlobs(GSList* dses) {
+	_blobsHash = ::rb_hash_new();
+
+	GSList* li = dses;
+	while (li) {
+		data_source* ds = reinterpret_cast<data_source*>(li->data);
+
+		addDataSourceAsBlob(ds);
+
+		li = g_slist_next(li);
+	}
+}
+	
+void Packet::addDataSourceAsBlob(data_source* ds) {
+	VALUE rubyBlob = Blob::createBlob(_self, ds);
+	Blob* blob = NULL;
+	Data_Get_Struct(rubyBlob, Blob, blob);
+
+	::rb_hash_aset(_blobsHash, 
+		blob->getName(),
+		rubyBlob);
+
+	_blobs.push_back(blob);
 }
 
 ProtocolTreeNode* Packet::findDescendantNodeByName(ProtocolTreeNode* parent, const gchar* name) {

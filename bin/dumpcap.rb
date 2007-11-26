@@ -24,7 +24,8 @@ def main(*args)
         :show_packets_as_yaml => false,
         :wlan_keys => [],
         :traffic_analysis => nil,
-        :dump_field_contents => []
+        :dump_field_contents => [],
+        :run_test_code => false
     }
     
     log = Logger.new(STDOUT)
@@ -101,6 +102,12 @@ def main(*args)
             opts[:dump_field_contents] << val
         }
     
+    opt_parser.on("-t", 
+        "--test", 
+        "Run the per-packet test code") {|val|
+            opts[:run_test_code] = true
+        }
+    
     remaining_args = opt_parser.parse(*args)
     
     if remaining_args.length != 1
@@ -157,6 +164,10 @@ def main(*args)
     
         if opts[:benchmarks]
             packet_start_time = Time.now
+        end
+
+        if opts[:run_test_code]
+            per_packet_test(packet)
         end
     
         if opts[:list_wireless_aps]
@@ -271,6 +282,43 @@ def main(*args)
         log.info "Fastest each_packet block run time: #{benchmarks[:best_packet_time]} seconds"
         log.info "Slowest each_packet block run time: #{benchmarks[:worst_packet_time]} seconds"
         log.info "Mean each_packet block run time: #{benchmarks[:total_packet_time] / packet_count} seconds"
+    end
+end
+
+def per_packet_test(packet)
+    #Put experimental code here before integrating into the dumpcap app
+
+    #Experiment: Does the position/length values for each field, when applied to the
+    #raw data for the entire packet, return the same value as the value property?
+    frame = packet.find_first_field('frame')
+    raise 'Unexpectedly missing frame field' unless frame != nil
+
+    entire_packet_value = frame.value
+
+    # Find a small obscure field deep in the packet
+    compare_field = packet.find_first_field('image-jfif')
+    if compare_field == nil
+        compare_field = packet.find_first_field('http.host')
+        if compare_field == nil
+            compare_field = packet.find_first_field('tcp.flags')
+            if compare_field == nil
+                compare_field = packet.find_first_field('wlan.flags')
+                return unless compare_field != nil
+            end
+        end
+    end
+
+    #Does this offset and length fit in the frame's value buffer?
+    if compare_field.position >= entire_packet_value.length
+        raise "Position of field #{compare_field.name} within packet is #{compare_field.position}, but length of frame.value is only #{entire_packet_value.length}"
+    end
+
+    if compare_field.position + compare_field.length >= entire_packet_value.length
+        raise "Position of end of field #{compare_field.name} within packet is #{compare_field.position + compare_field.length}, but length of frame.value is only #{entire_packet_value.length}"
+    end
+
+    if compare_field.value != entire_packet_value[compare_field.position, compare_field.length]
+        raise "Field #{compare_field.name} reports value [#{compare_field.value}], which doesn't match data at frame's value buffer"
     end
 end
 
