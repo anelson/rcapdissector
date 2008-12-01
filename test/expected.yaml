@@ -1,0 +1,485 @@
+--- 
+- frame: 
+    display_name: Frame 4 (1422 bytes on wire, 1422 bytes captured)
+    children: 
+    - frame.time: 
+        display_name: "Arrival Time: Jun  6, 2007 22:51:29.924053000"
+        display_value: Jun  6, 2007 22:51:29.924053000
+    - frame.time_delta: 
+        display_name: "Time delta from previous packet: 1181184689.924053000 seconds"
+        display_value: "1181184689.924053000"
+    - frame.time_relative: 
+        display_name: "Time since reference or first frame: 1181184689.924053000 seconds"
+        display_value: "1181184689.924053000"
+    - frame.number: 
+        display_name: "Frame Number: 4"
+        display_value: "4"
+    - frame.pkt_len: 
+        display_name: "Packet Length: 1422 bytes"
+        display_value: "1422"
+    - frame.cap_len: 
+        display_name: "Capture Length: 1422 bytes"
+        display_value: "1422"
+    - frame.marked: 
+        display_name: "Frame is marked: False"
+        display_value: "0"
+    - frame.protocols: 
+        display_name: "Protocols in frame: eth:ip:tcp:http"
+        display_value: eth:ip:tcp:http
+- eth: 
+    display_name: "Ethernet II, Src: 00:03:0d:54:16:d2 (00:03:0d:54:16:d2), Dst: 00:60:08:ac:5e:2e (00:60:08:ac:5e:2e)"
+    children: 
+    - eth.dst: 
+        value: !binary |
+          AGAIrF4u
+
+        display_name: "Destination: 00:60:08:ac:5e:2e (00:60:08:ac:5e:2e)"
+        children: 
+        - eth.addr: 
+            value: !binary |
+              AGAIrF4u
+
+            display_name: "Address: 00:60:08:ac:5e:2e (00:60:08:ac:5e:2e)"
+            display_value: 00:60:08:ac:5e:2e
+        - eth.ig: 
+            value: !binary |
+              AGAI
+
+            display_name: ".... ...0 .... .... .... .... = IG bit: Individual address (unicast)"
+            display_value: "0"
+        - eth.lg: 
+            value: !binary |
+              AGAI
+
+            display_name: ".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)"
+            display_value: "0"
+        display_value: 00:60:08:ac:5e:2e
+    - eth.src: 
+        value: !binary |
+          AAMNVBbS
+
+        display_name: "Source: 00:03:0d:54:16:d2 (00:03:0d:54:16:d2)"
+        children: 
+        - eth.addr: 
+            value: !binary |
+              AAMNVBbS
+
+            display_name: "Address: 00:03:0d:54:16:d2 (00:03:0d:54:16:d2)"
+            display_value: 00:03:0d:54:16:d2
+        - eth.ig: 
+            value: !binary |
+              AAMN
+
+            display_name: ".... ...0 .... .... .... .... = IG bit: Individual address (unicast)"
+            display_value: "0"
+        - eth.lg: 
+            value: !binary |
+              AAMN
+
+            display_name: ".... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)"
+            display_value: "0"
+        display_value: 00:03:0d:54:16:d2
+    - eth.type: 
+        value: !binary |
+          CAA=
+
+        display_name: "Type: IP (0x0800)"
+        display_value: "0x0800"
+- ip: 
+    display_name: "Internet Protocol, Src: 192.168.1.127 (192.168.1.127), Dst: 206.157.193.68 (206.157.193.68)"
+    children: 
+    - ip.version: 
+        value: !binary |
+          RQ==
+
+        display_name: "Version: 4"
+        display_value: "4"
+    - ip.hdr_len: 
+        value: !binary |
+          RQ==
+
+        display_name: "Header length: 20 bytes"
+        display_value: "20"
+    - ip.dsfield: 
+        value: !binary |
+          AA==
+
+        display_name: "Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00)"
+        children: 
+        - ip.dsfield.dscp: 
+            value: !binary |
+              AA==
+
+            display_name: "0000 00.. = Differentiated Services Codepoint: Default (0x00)"
+            display_value: "0x00"
+        - ip.dsfield.ect: 
+            value: !binary |
+              AA==
+
+            display_name: ".... ..0. = ECN-Capable Transport (ECT): 0"
+            display_value: "0"
+        - ip.dsfield.ce: 
+            value: !binary |
+              AA==
+
+            display_name: ".... ...0 = ECN-CE: 0"
+            display_value: "0"
+        display_value: "0"
+    - ip.len: 
+        value: !binary |
+          BYA=
+
+        display_name: "Total Length: 1408"
+        display_value: "1408"
+    - ip.id: 
+        value: !binary |
+          Iac=
+
+        display_name: "Identification: 0x21a7 (8615)"
+        display_value: "0x21a7"
+    - ip.flags: 
+        value: !binary |
+          QA==
+
+        display_name: "Flags: 0x04 (Don't Fragment)"
+        children: 
+        - ip.flags.rb: 
+            value: !binary |
+              QA==
+
+            display_name: "0... = Reserved bit: Not set"
+            display_value: "0"
+        - ip.flags.df: 
+            value: !binary |
+              QA==
+
+            display_name: ".1.. = Don't fragment: Set"
+            display_value: "1"
+        - ip.flags.mf: 
+            value: !binary |
+              QA==
+
+            display_name: "..0. = More fragments: Not set"
+            display_value: "0"
+        display_value: "0x04"
+    - ip.frag_offset: 
+        value: !binary |
+          QAA=
+
+        display_name: "Fragment offset: 0"
+        display_value: "0"
+    - ip.ttl: 
+        value: !binary |
+          gA==
+
+        display_name: "Time to live: 128"
+        display_value: "128"
+    - ip.proto: 
+        value: !binary |
+          Bg==
+
+        display_name: "Protocol: TCP (0x06)"
+        display_value: "0x06"
+    - ip.checksum: 
+        value: !binary |
+          gcc=
+
+        display_name: "Header checksum: 0x81c7 [correct]"
+        children: 
+        - ip.checksum_good: 
+            value: !binary |
+              gcc=
+
+            display_name: "Good: True"
+            display_value: "1"
+        - ip.checksum_bad: 
+            value: !binary |
+              gcc=
+
+            display_name: "Bad : False"
+            display_value: "0"
+        display_value: "0x81c7"
+    - ip.src: 
+        value: !binary |
+          wKgBfw==
+
+        display_name: "Source: 192.168.1.127 (192.168.1.127)"
+        display_value: 192.168.1.127
+    - ip.addr: 
+        value: !binary |
+          wKgBfw==
+
+        display_name: "Source or Destination Address: 192.168.1.127 (192.168.1.127)"
+        display_value: 192.168.1.127
+    - ip.src_host: 
+        value: !binary |
+          wKgBfw==
+
+        display_name: "Source Host: 192.168.1.127"
+        display_value: 192.168.1.127
+    - ip.host: 
+        value: !binary |
+          wKgBfw==
+
+        display_name: "Source or Destination Host: 192.168.1.127"
+        display_value: 192.168.1.127
+    - ip.dst: 
+        value: !binary |
+          zp3BRA==
+
+        display_name: "Destination: 206.157.193.68 (206.157.193.68)"
+        display_value: 206.157.193.68
+    - ip.addr: 
+        value: !binary |
+          zp3BRA==
+
+        display_name: "Source or Destination Address: 206.157.193.68 (206.157.193.68)"
+        display_value: 206.157.193.68
+    - ip.dst_host: 
+        value: !binary |
+          zp3BRA==
+
+        display_name: "Destination Host: 206.157.193.68"
+        display_value: 206.157.193.68
+    - ip.host: 
+        value: !binary |
+          zp3BRA==
+
+        display_name: "Source or Destination Host: 206.157.193.68"
+        display_value: 206.157.193.68
+- tcp: 
+    display_name: "Transmission Control Protocol, Src Port: 2240 (2240), Dst Port: 80 (80), Seq: 1, Ack: 1, Len: 1368"
+    children: 
+    - tcp.srcport: 
+        value: !binary |
+          CMA=
+
+        display_name: "Source port: 2240 (2240)"
+        display_value: "2240"
+    - tcp.dstport: 
+        value: !binary |
+          AFA=
+
+        display_name: "Destination port: 80 (80)"
+        display_value: "80"
+    - tcp.port: 
+        value: !binary |
+          CMA=
+
+        display_name: "Source or Destination Port: 2240"
+        display_value: "2240"
+    - tcp.port: 
+        value: !binary |
+          AFA=
+
+        display_name: "Source or Destination Port: 80"
+        display_value: "80"
+    - tcp.len: 
+        value: !binary |
+          CMAAUA==
+
+        display_name: "TCP Segment Len: 1368"
+        display_value: "1368"
+    - tcp.seq: 
+        value: !binary |
+          dPgU+g==
+
+        display_name: "Sequence number: 1    (relative sequence number)"
+        display_value: "1"
+    - tcp.nxtseq: 
+        display_name: "Next sequence number: 1369    (relative sequence number)"
+        display_value: "1369"
+    - tcp.ack: 
+        value: !binary |
+          AnmeBw==
+
+        display_name: "Acknowledgement number: 1    (relative ack number)"
+        display_value: "1"
+    - tcp.hdr_len: 
+        value: !binary |
+          UA==
+
+        display_name: "Header length: 20 bytes"
+        display_value: "20"
+    - tcp.flags: 
+        value: !binary |
+          GA==
+
+        display_name: "Flags: 0x18 (PSH, ACK)"
+        children: 
+        - tcp.flags.cwr: 
+            value: !binary |
+              GA==
+
+            display_name: "0... .... = Congestion Window Reduced (CWR): Not set"
+            display_value: "0"
+        - tcp.flags.ecn: 
+            value: !binary |
+              GA==
+
+            display_name: ".0.. .... = ECN-Echo: Not set"
+            display_value: "0"
+        - tcp.flags.urg: 
+            value: !binary |
+              GA==
+
+            display_name: "..0. .... = Urgent: Not set"
+            display_value: "0"
+        - tcp.flags.ack: 
+            value: !binary |
+              GA==
+
+            display_name: "...1 .... = Acknowledgment: Set"
+            display_value: "1"
+        - tcp.flags.push: 
+            value: !binary |
+              GA==
+
+            display_name: ".... 1... = Push: Set"
+            display_value: "1"
+        - tcp.flags.reset: 
+            value: !binary |
+              GA==
+
+            display_name: ".... .0.. = Reset: Not set"
+            display_value: "0"
+        - tcp.flags.syn: 
+            value: !binary |
+              GA==
+
+            display_name: ".... ..0. = Syn: Not set"
+            display_value: "0"
+        - tcp.flags.fin: 
+            value: !binary |
+              GA==
+
+            display_name: ".... ...0 = Fin: Not set"
+            display_value: "0"
+        display_value: "0x18"
+    - tcp.window_size: 
+        value: !binary |
+          //8=
+
+        display_name: "Window size: 65535"
+        display_value: "65535"
+    - tcp.checksum: 
+        value: !binary |
+          V3w=
+
+        display_name: "Checksum: 0x577c [validation disabled]"
+        children: 
+        - tcp.checksum_good: 
+            value: !binary |
+              V3w=
+
+            display_name: "Good Checksum: False"
+            display_value: "0"
+        - tcp.checksum_bad: 
+            value: !binary |
+              V3w=
+
+            display_name: "Bad Checksum: False"
+            display_value: "0"
+        display_value: "0x577c"
+- http: 
+    display_name: Hypertext Transfer Protocol
+    children: 
+    - <Field#70>: 
+        value: !binary |
+          R0VUIC9wdWJsaWMvcGFnZS8wXzAwMThfUmVmcmVzaC5odG1sIEhUVFAvMS4x
+          DQo=
+
+        children: 
+        - http.request.method: 
+            value: !binary |
+              R0VU
+
+            display_name: "Request Method: GET"
+            display_value: GET
+        - http.request.uri: 
+            value: !binary |
+              L3B1YmxpYy9wYWdlLzBfMDAxOF9SZWZyZXNoLmh0bWw=
+
+            display_name: "Request URI: /public/page/0_0018_Refresh.html"
+            display_value: /public/page/0_0018_Refresh.html
+        - http.request.version: 
+            value: !binary |
+              SFRUUC8xLjE=
+
+            display_name: "Request Version: HTTP/1.1"
+            display_value: HTTP/1.1
+        display_value: GET /public/page/0_0018_Refresh.html HTTP/1.1\r\n
+    - http.host: 
+        value: !binary |
+          SG9zdDogb25saW5lLndzai5jb20NCg==
+
+        display_name: "Host: online.wsj.com\\r\\n"
+        display_value: online.wsj.com
+    - http.user_agent: 
+        value_blob_name: Frame (1422 bytes)
+        value_blob_length: 104
+        value_blob_offset: 123
+        display_name: "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3\\r\\n"
+        display_value: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3
+    - http.accept: 
+        value_blob_name: Frame (1422 bytes)
+        value_blob_length: 109
+        value_blob_offset: 227
+        display_name: "Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5\\r\\n"
+        display_value: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5
+    - http.accept_language: 
+        value: !binary |
+          QWNjZXB0LUxhbmd1YWdlOiBlbi11cyxlbjtxPTAuNQ0K
+
+        display_name: "Accept-Language: en-us,en;q=0.5\\r\\n"
+        display_value: en-us,en;q=0.5
+    - http.accept_encoding: 
+        value: !binary |
+          QWNjZXB0LUVuY29kaW5nOiBnemlwLGRlZmxhdGUNCg==
+
+        display_name: "Accept-Encoding: gzip,deflate\\r\\n"
+        display_value: gzip,deflate
+    - <Field#79>: 
+        value: !binary |
+          QWNjZXB0LUNoYXJzZXQ6IElTTy04ODU5LTEsdXRmLTg7cT0wLjcsKjtxPTAu
+          Nw0K
+
+        display_value: "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\\r\\n"
+    - <Field#80>: 
+        value: !binary |
+          S2VlcC1BbGl2ZTogMzAwDQo=
+
+        display_value: "Keep-Alive: 300\\r\\n"
+    - http.connection: 
+        value: !binary |
+          Q29ubmVjdGlvbjogY2xvc2UNCg==
+
+        display_name: "Connection: close\\r\\n"
+        display_value: close
+    - <Field#82>: 
+        value: !binary |
+          SWYtTW9kaWZpZWQtU2luY2U6IFRodSwgMDcgSnVuIDIwMDcgMDI6NDg6MDcg
+          R01UDQo=
+
+        display_value: "If-Modified-Since: Thu, 07 Jun 2007 02:48:07 GMT\\r\\n"
+    - http.referer: 
+        value: !binary |
+          UmVmZXJlcjogaHR0cDovL29ubGluZS53c2ouY29tL2hvbWUvdXM/cmVmcmVz
+          aD1vbg0K
+
+        display_name: "Referer: http://online.wsj.com/home/us?refresh=on\\r\\n"
+        display_value: http://online.wsj.com/home/us?refresh=on
+    - http.cookie: 
+        value_blob_name: Frame (1422 bytes)
+        value_blob_length: 835
+        value_blob_offset: 585
+        display_name: "Cookie: UBID=WedJun6203119EDT200701348968833; spotlightSet=true; WSJIE_LOGIN=AQSISOYTETcnl5wYgQIlHB9IDwUbjun0xDSrzzPL5%2FtbMQJoNyzdrgQupTUUJpwEaky2c%2BhMbK; djcs_user=VjE6YWRhbW5lbHNvbg%3D%3D; djcs_demo=VjE6Ynk9MTk4MDtjcz0xO2c9TTtpPTg7anJm"
+        display_value: UBID=WedJun6203119EDT200701348968833; spotlightSet=true; WSJIE_LOGIN=AQSISOYTETcnl5wYgQIlHB9IDwUbjun0xDSrzzPL5%2FtbMQJoNyzdrgQupTUUJpwEaky2c%2BhMbK; djcs_user=VjE6YWRhbW5lbHNvbg%3D%3D; djcs_demo=VjE6Ynk9MTk4MDtjcz0xO2c9TTtpPTg7anJmPTE7c3Q9MjtwPTE5; user_type=subscribed; rsessions=AQSISOYTIRcUE29pVP6V24Fp3OBUlBdBwTKxhCgdQJymgErlRDK%2F9lNIziZohwZSEX2sTJuyFObEFXQpLkA4%3DK; TR=097100097109110101108115111110; HOMEPAGE=/home/us; RCSEARCH=on%7C%7C; s_sq=%5B%5BB%5D%5D; s_cc=true; wsjproducts=QWaDGtlgfYhgwTmgZiyl2NZI9oUOtroEfnjinkgql3T1QVTMA%2F4iXdrE7SaEVccOlEMG6LsNVF4eQ7yPHXaWTT4ZHK%2FD7yx7F7asi5O%2FWGZ7adZ%2F8CZOZMP8%2B7TOROyWh31taXXOFB23M%3D; REMOTE_USER=adamnelson; betaprod=M1181177028%2FuXVjJSIammmbO12quVQXlZO2QGk4iwvVhzoaAS0qeMOdTjtkXE%2FQaO5zHgJ7SFEt5SERcyOnaE7i0Ew2SaN%2FgzCNIPNm0MqLShv8gyGlUyhHVYwdeHC7YUrS1Hn55AN2G
+    - <Field#85>: 
+        value: !binary |
+          DQo=
+
+        display_value: \r\n
+    - http.request: 
+        display_name: "Request: True"
+        display_value: "1"

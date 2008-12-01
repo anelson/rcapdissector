@@ -1,0 +1,298 @@
+<?xml version="1.0"?>
+<pdml version="0" creator="wireshark/0.99.5">
+<packet>
+  <proto name="geninfo" pos="0" showname="General information" size="1532">
+    <field name="num" pos="0" show="40769" showname="Number" value="9f41" size="1532"/>
+    <field name="len" pos="0" show="1532" showname="Packet Length" value="5fc" size="1532"/>
+    <field name="caplen" pos="0" show="1532" showname="Captured Length" value="5fc" size="1532"/>
+    <field name="timestamp" pos="0" show="Aug 18, 2007 09:00:53.853279000" showname="Captured Time" value="1187442053.853279000" size="1532"/>
+  </proto>
+  <proto name="frame" showname="Frame 40769 (1532 bytes on wire, 1532 bytes captured)" size="1532" pos="0">
+    <field name="frame.time" showname="Arrival Time: Aug 18, 2007 09:00:53.853279000" size="0" pos="0" show="Aug 18, 2007 09:00:53.853279000"/>
+    <field name="frame.time_delta" showname="Time delta from previous packet: 290.654931000 seconds" size="0" pos="0" show="290.654931000"/>
+    <field name="frame.time_relative" showname="Time since reference or first frame: 290.654931000 seconds" size="0" pos="0" show="290.654931000"/>
+    <field name="frame.number" showname="Frame Number: 40769" size="0" pos="0" show="40769"/>
+    <field name="frame.pkt_len" showname="Packet Length: 1532 bytes" size="0" pos="0" show="1532"/>
+    <field name="frame.cap_len" showname="Capture Length: 1532 bytes" size="0" pos="0" show="1532"/>
+    <field name="frame.marked" showname="Frame is marked: False" size="0" pos="0" show="0"/>
+    <field name="frame.protocols" showname="Protocols in frame: wlan:llc:ip:tcp" size="0" pos="0" show="wlan:llc:ip:tcp"/>
+    <field name="frame.coloring_rule.name" showname="Coloring Rule Name: HTTP" size="0" pos="0" show="HTTP"/>
+    <field name="frame.coloring_rule.string" showname="Coloring Rule String: http || tcp.port == 80" size="0" pos="0" show="http || tcp.port == 80"/>
+  </proto>
+  <proto name="wlan" showname="IEEE 802.11" size="24" pos="0">
+    <field name="wlan.fc.type_subtype" showname="Type/Subtype: Data (32)" size="1" pos="0" show="32" value="08"/>
+    <field name="wlan.fc" showname="Frame Control: 0x0208 (Normal)" size="2" pos="0" show="0x0208" value="0802">
+      <field name="wlan.fc.version" showname="Version: 0" size="1" pos="0" show="0" value="08"/>
+      <field name="wlan.fc.type" showname="Type: Data frame (2)" size="1" pos="0" show="2" value="08"/>
+      <field name="wlan.fc.subtype" showname="Subtype: 0" size="1" pos="0" show="0" value="08"/>
+      <field name="wlan.flags" showname="Flags: 0x2" size="1" pos="1" show="0x02" value="02">
+        <field name="wlan.fc.ds" showname="DS status: Frame from DS to a STA via AP(To DS: 0 From DS: 1) (0x02)" size="1" pos="1" show="0x02" value="02"/>
+        <field name="wlan.fc.tods" showname=".... ...0 = To DS: Frame is not entering DS" hide="yes" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+        <field name="wlan.fc.fromds" showname=".... ..1. = From DS: Frame is exiting DS" hide="yes" size="1" pos="1" show="1" value="1" unmaskedvalue="02"/>
+        <field name="wlan.fc.frag" showname=".... .0.. = More Fragments: This is the last fragment" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+        <field name="wlan.fc.retry" showname=".... 0... = Retry: Frame is not being retransmitted" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+        <field name="wlan.fc.pwrmgt" showname="...0 .... = PWR MGT: STA will stay up" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+        <field name="wlan.fc.moredata" showname="..0. .... = More Data: No data buffered" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+        <field name="wlan.fc.protected" showname=".0.. .... = Protected flag: Data is not protected" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+        <field name="wlan.fc.order" showname="0... .... = Order flag: Not strictly ordered" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+      </field>
+    </field>
+    <field name="wlan.duration" showname="Duration: 44" size="2" pos="2" show="44" value="2c00"/>
+    <field name="wlan.da" showname="Destination address: Cisco-Li_5e:73:ac (00:18:39:5e:73:ac)" size="6" pos="4" show="00:18:39:5e:73:ac" value="0018395e73ac"/>
+    <field name="wlan.bssid" showname="BSS Id: Cisco-Li_39:cd:08 (00:0f:66:39:cd:08)" size="6" pos="10" show="00:0f:66:39:cd:08" value="000f6639cd08"/>
+    <field name="wlan.sa" showname="Source address: Cisco-Li_39:cd:06 (00:0f:66:39:cd:06)" size="6" pos="16" show="00:0f:66:39:cd:06" value="000f6639cd06"/>
+    <field name="wlan.frag" showname="Fragment number: 0" size="2" pos="22" show="0" value="c01d"/>
+    <field name="wlan.seq" showname="Sequence number: 476" size="2" pos="22" show="476" value="c01d"/>
+    <field name="wlan.addr" showname="Source or Destination address: Cisco-Li_5e:73:ac (00:18:39:5e:73:ac)" hide="yes" size="6" pos="4" show="00:18:39:5e:73:ac" value="0018395e73ac"/>
+    <field name="wlan.addr" showname="Source or Destination address: Cisco-Li_39:cd:06 (00:0f:66:39:cd:06)" hide="yes" size="6" pos="16" show="00:0f:66:39:cd:06" value="000f6639cd06"/>
+  </proto>
+  <proto name="llc" showname="Logical-Link Control" size="8" pos="24">
+    <field name="llc.dsap" showname="DSAP: SNAP (0xaa)" size="1" pos="24" show="0xaa" value="aa"/>
+    <field name="llc.dsap.ig" showname="IG Bit: Individual" size="1" pos="24" show="0" value="aa"/>
+    <field name="llc.ssap" showname="SSAP: SNAP (0xaa)" size="1" pos="25" show="0xaa" value="aa"/>
+    <field name="llc.ssap.cr" showname="CR Bit: Command" size="1" pos="25" show="0" value="aa"/>
+    <field name="llc.control" showname="Control field: U, func=UI (0x03)" size="1" pos="26" show="0x0003" value="03">
+      <field name="llc.control.u_modifier_cmd" showname="000. 00.. = Command: Unnumbered Information (0x00)" size="1" pos="26" show="0x00" value="0" unmaskedvalue="03"/>
+      <field name="llc.control.ftype" showname=".... ..11 = Frame type: Unnumbered frame (0x03)" size="1" pos="26" show="0x03" value="3" unmaskedvalue="03"/>
+    </field>
+    <field name="llc.oui" showname="Organization Code: Encapsulated Ethernet (0x000000)" size="3" pos="27" show="0x000000" value="000000"/>
+    <field name="llc.type" showname="Type: IP (0x0800)" size="2" pos="30" show="0x0800" value="0800"/>
+  </proto>
+  <proto name="ip" showname="Internet Protocol, Src: 72.215.224.105 (72.215.224.105), Dst: 192.168.1.101 (192.168.1.101)" size="20" pos="32">
+    <field name="ip.version" showname="Version: 4" size="1" pos="32" show="4" value="45"/>
+    <field name="ip.hdr_len" showname="Header length: 20 bytes" size="1" pos="32" show="20" value="45"/>
+    <field name="ip.dsfield" showname="Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00)" size="1" pos="33" show="0" value="00">
+      <field name="ip.dsfield.dscp" showname="0000 00.. = Differentiated Services Codepoint: Default (0x00)" size="1" pos="33" show="0x00" value="0" unmaskedvalue="00"/>
+      <field name="ip.dsfield.ect" showname=".... ..0. = ECN-Capable Transport (ECT): 0" size="1" pos="33" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.dsfield.ce" showname=".... ...0 = ECN-CE: 0" size="1" pos="33" show="0" value="0" unmaskedvalue="00"/>
+    </field>
+    <field name="ip.len" showname="Total Length: 1500" size="2" pos="34" show="1500" value="05dc"/>
+    <field name="ip.id" showname="Identification: 0x3f4b (16203)" size="2" pos="36" show="0x3f4b" value="3f4b"/>
+    <field name="ip.flags" showname="Flags: 0x04 (Don&apos;t Fragment)" size="1" pos="38" show="0x04" value="40">
+      <field name="ip.flags.rb" showname="0... = Reserved bit: Not set" size="1" pos="38" show="0" value="0" unmaskedvalue="40"/>
+      <field name="ip.flags.df" showname=".1.. = Don&apos;t fragment: Set" size="1" pos="38" show="1" value="1" unmaskedvalue="40"/>
+      <field name="ip.flags.mf" showname="..0. = More fragments: Not set" size="1" pos="38" show="0" value="0" unmaskedvalue="40"/>
+    </field>
+    <field name="ip.frag_offset" showname="Fragment offset: 0" size="2" pos="38" show="0" value="4000"/>
+    <field name="ip.ttl" showname="Time to live: 59" size="1" pos="40" show="59" value="3b"/>
+    <field name="ip.proto" showname="Protocol: TCP (0x06)" size="1" pos="41" show="0x06" value="06"/>
+    <field name="ip.checksum" showname="Header checksum: 0x0f83 [correct]" size="2" pos="42" show="0x0f83" value="0f83">
+      <field name="ip.checksum_good" showname="Good: True" size="2" pos="42" show="1" value="0f83"/>
+      <field name="ip.checksum_bad" showname="Bad : False" size="2" pos="42" show="0" value="0f83"/>
+    </field>
+    <field name="ip.src" showname="Source: 72.215.224.105 (72.215.224.105)" size="4" pos="44" show="72.215.224.105" value="48d7e069"/>
+    <field name="ip.addr" showname="Source or Destination Address: 72.215.224.105 (72.215.224.105)" hide="yes" size="4" pos="44" show="72.215.224.105" value="48d7e069"/>
+    <field name="ip.src_host" showname="Source Host: 72.215.224.105" hide="yes" size="4" pos="44" show="72.215.224.105" value="48d7e069"/>
+    <field name="ip.host" showname="Source or Destination Host: 72.215.224.105" hide="yes" size="4" pos="44" show="72.215.224.105" value="48d7e069"/>
+    <field name="ip.dst" showname="Destination: 192.168.1.101 (192.168.1.101)" size="4" pos="48" show="192.168.1.101" value="c0a80165"/>
+    <field name="ip.addr" showname="Source or Destination Address: 192.168.1.101 (192.168.1.101)" hide="yes" size="4" pos="48" show="192.168.1.101" value="c0a80165"/>
+    <field name="ip.dst_host" showname="Destination Host: 192.168.1.101" hide="yes" size="4" pos="48" show="192.168.1.101" value="c0a80165"/>
+    <field name="ip.host" showname="Source or Destination Host: 192.168.1.101" hide="yes" size="4" pos="48" show="192.168.1.101" value="c0a80165"/>
+  </proto>
+  <proto name="tcp" showname="Transmission Control Protocol, Src Port: http (80), Dst Port: 2212 (2212), Seq: 0, Ack: 0, Len: 1460" size="20" pos="52">
+    <field name="tcp.srcport" showname="Source port: http (80)" size="2" pos="52" show="80" value="0050"/>
+    <field name="tcp.dstport" showname="Destination port: 2212 (2212)" size="2" pos="54" show="2212" value="08a4"/>
+    <field name="tcp.port" showname="Source or Destination Port: 80" hide="yes" size="2" pos="52" show="80" value="0050"/>
+    <field name="tcp.port" showname="Source or Destination Port: 2212" hide="yes" size="2" pos="54" show="2212" value="08a4"/>
+    <field name="tcp.len" showname="TCP Segment Len: 1460" hide="yes" size="4" pos="52" show="1460" value="005008a4"/>
+    <field name="tcp.seq" showname="Sequence number: 0    (relative sequence number)" size="4" pos="56" show="0" value="4e9cde93"/>
+    <field name="tcp.nxtseq" showname="Next sequence number: 1460    (relative sequence number)" size="0" pos="52" show="1460"/>
+    <field name="tcp.ack" showname="Acknowledgement number: 0    (relative ack number)" size="4" pos="60" show="0" value="09767d88"/>
+    <field name="tcp.hdr_len" showname="Header length: 20 bytes" size="1" pos="64" show="20" value="50"/>
+    <field name="tcp.flags" showname="Flags: 0x10 (ACK)" size="1" pos="65" show="0x10" value="10">
+      <field name="tcp.flags.cwr" showname="0... .... = Congestion Window Reduced (CWR): Not set" size="1" pos="65" show="0" value="0" unmaskedvalue="10"/>
+      <field name="tcp.flags.ecn" showname=".0.. .... = ECN-Echo: Not set" size="1" pos="65" show="0" value="0" unmaskedvalue="10"/>
+      <field name="tcp.flags.urg" showname="..0. .... = Urgent: Not set" size="1" pos="65" show="0" value="0" unmaskedvalue="10"/>
+      <field name="tcp.flags.ack" showname="...1 .... = Acknowledgment: Set" size="1" pos="65" show="1" value="1" unmaskedvalue="10"/>
+      <field name="tcp.flags.push" showname=".... 0... = Push: Not set" size="1" pos="65" show="0" value="0" unmaskedvalue="10"/>
+      <field name="tcp.flags.reset" showname=".... .0.. = Reset: Not set" size="1" pos="65" show="0" value="0" unmaskedvalue="10"/>
+      <field name="tcp.flags.syn" showname=".... ..0. = Syn: Not set" size="1" pos="65" show="0" value="0" unmaskedvalue="10"/>
+      <field name="tcp.flags.fin" showname=".... ...0 = Fin: Not set" size="1" pos="65" show="0" value="0" unmaskedvalue="10"/>
+    </field>
+    <field name="tcp.window_size" showname="Window size: 8576" size="2" pos="66" show="8576" value="2180"/>
+    <field name="tcp.checksum" showname="Checksum: 0x4d0b [validation disabled]" size="2" pos="68" show="0x4d0b" value="4d0b">
+      <field name="tcp.checksum_good" showname="Good Checksum: False" size="2" pos="68" show="0" value="4d0b"/>
+      <field name="tcp.checksum_bad" showname="Bad Checksum: False" size="2" pos="68" show="0" value="4d0b"/>
+    </field>
+    <field name="tcp.reassembled_in" showname="Reassembled PDU in frame: 40770" size="0" pos="52" show="40770"/>
+    <field name="" show="TCP segment data (1460 bytes)" size="1460" pos="72" value="485454502f312e3120323030204f4b0d0a4c6173742d4d6f6469666965643a204672692c203131204e6f7620323030352030323a34323a313220474d540d0a4163636570742d52616e6765733a2062797465730d0a436f6e74656e742d4c656e6774683a20313936320d0a436f6e74656e742d547970653a20696d6167652f6769660d0a43616368652d436f6e74726f6c3a206d61782d6167653d3331333736313333320d0a457870697265733a204672692c203238204a756c20323031372030303a35313a333820474d540d0a446174653a205361742c2031382041756720323030372031323a35363a303620474d540d0a436f6e6e656374696f6e3a206b6565702d616c6976650d0a0d0a4749463839612d002800f7ff00ced103cad9d931768dfbeb0298e0fa338499b7d9e5fcfef2a7c7add2ba0ac9e7f8d7ebcb94d6dabbe2f5dbd99b62aa5c9dcde3e1e7f9cfdcefabb18da6c5c5fed91eb4dff1b5ebd8eaf6e8ebe603d4e8e9fdf2ffedf1d057abc62fab15eccd21fef61cfefefe429fbb498696b6e7e9427d9094cdb5fcfb03c9e7ebd6e9fb91bcaef89805ecf3ffacdeccef6f11fde8179fcbe6b5ad2df1ebff74b4c8bdd2d87cd2edeafdfaf8a309f1feff82b6c9e3fefee6ef1471d109d6b55c9dd9eb4ab414a4e9fc18ab0b89c3c44e98b4f2f5fff6fffffdfeecba92023b8ca6f9ffffafca2e6ba7b9fdcd13e3f3fe9ec4c5317ca0e8fc04f5fbf092b7c7d5f1ffe1c5078c8d0888c5d827889e9ccddfd7d32c3488b46696aeb1a85479a5b5bdd7c57bb4d596d9f1ecf3f5f6b8049bbcd0a6d1ccbba80eb6932eec4d27edac03edff1caccbd1a3ccdbfff9fea3d5ffe2fcf42992a9dbf5f3e5d401a6def13da2b14484a6f4cb04fef8f49cd0e1d8f3f8539fbc5895afd4fcff499acb9dddf2e9d91ff8dc11fdfedf64bbd6518ca694cddba5d4f561969c8fb5937fabc9729608fffef9e0ece91c90aa349cb6f9f8ffdcfefef2d10087e1fb92dbff1db838afd5eaa1d0ebebd300efd9059bdbfeaadceaf9d103a9d3e366b6c3f2f9ffdcdd1397d3f3e9fdf13c7575e6f6f395deecf87b1df1dc0cf9c30cfe9819f2c2039ccaf2f8fdf8adcddf91d5ea92c1dcfede02f2e002a2cbd083aabf97d3ccf4fef09cc7deabd2fe3e98aaf6fff9b4ccdcf5f3ed96dde19bd6eaf6fbffdaf8e88ec2e278b1bbfef7e9f3d20b9dc5d0a0ce9fb9ccf0aed5f6aee1e5c3f0e7fceff4a9bea4ab830077cda1a6dfabec541f6aa9c38addef74acd1d3f8f67dbee1dcfff049922bc5f5f14db635dde10076873075ac21f0fbf9f2fffcece011e7b800fca815e0b73bf9ba1383b6daa5b07294d3faabdeffa2d7ee9ed0f98191538ba25588b169bc8c65f3f5e6aab7dcfff1e63dbb5215819939c35c98c8d192cfd4eb960aff880cff8610a2c8d6a3c2dfe6df01ead80f949f3de8e15494b60a67c66f7ba9aea1d7e2ffffff21f904010000ff002c000000002d0028000008ff00ff091c48b0a0c18308132a5cc8b0a1c38710234a9c4851a01a0a15251669e0abc48812bc323a84134c900041cf72807a2572a1a62505ae2cc1c482cd9e12855a1a04b4e0cb9b27855841d316224a925fb0ae48d0297041ac214fe81c6af0e9009b638d76ed4aa4e0490e868ae0f0e2a54191a2264d224450f46fcd332d5a3a140bc5a6881dacd02e58d0b0ab48213a6c15aa0946818c1a354e28388167a583962b4384b0b06307830d22ea1c7821a6ebd2384e076e0920b3b0de1a0928144850002410a33722366920922a090e40fabc3948b3a34782186344e1388003494e85c134b171b4c7c2332471294560f32b842c221c1c001b70cf9a3557031284ff53152044881c021692b923c3d790451de029a21c82c8862617844119306047850f7e6470421c9d00800c11bb685080140ac5124f119b8810800d9c3452c4270b08f34e3b3f6093011399fc51ca2999645201150350814c13441c9047090a61314b1210bc210d1b077c12c105e67820c90f00b432402b75a0b1c20d473261c93df77cd0832da9"/>
+  </proto>
+</packet>
+
+<packet>
+  <proto name="geninfo" pos="0" showname="General information" size="843">
+    <field name="num" pos="0" show="40770" showname="Number" value="9f42" size="843"/>
+    <field name="len" pos="0" show="843" showname="Packet Length" value="34b" size="843"/>
+    <field name="caplen" pos="0" show="843" showname="Captured Length" value="34b" size="843"/>
+    <field name="timestamp" pos="0" show="Aug 18, 2007 09:00:53.853955000" showname="Captured Time" value="1187442053.853955000" size="843"/>
+  </proto>
+  <proto name="frame" showname="Frame 40770 (843 bytes on wire, 843 bytes captured)" size="843" pos="0">
+    <field name="frame.time" showname="Arrival Time: Aug 18, 2007 09:00:53.853955000" size="0" pos="0" show="Aug 18, 2007 09:00:53.853955000"/>
+    <field name="frame.time_delta" showname="Time delta from previous packet: 0.000676000 seconds" size="0" pos="0" show="0.000676000"/>
+    <field name="frame.time_relative" showname="Time since reference or first frame: 290.655607000 seconds" size="0" pos="0" show="290.655607000"/>
+    <field name="frame.number" showname="Frame Number: 40770" size="0" pos="0" show="40770"/>
+    <field name="frame.pkt_len" showname="Packet Length: 843 bytes" size="0" pos="0" show="843"/>
+    <field name="frame.cap_len" showname="Capture Length: 843 bytes" size="0" pos="0" show="843"/>
+    <field name="frame.marked" showname="Frame is marked: False" size="0" pos="0" show="0"/>
+    <field name="frame.protocols" showname="Protocols in frame: wlan:llc:ip:tcp:http:image-gif" size="0" pos="0" show="wlan:llc:ip:tcp:http:image-gif"/>
+    <field name="frame.coloring_rule.name" showname="Coloring Rule Name: HTTP" size="0" pos="0" show="HTTP"/>
+    <field name="frame.coloring_rule.string" showname="Coloring Rule String: http || tcp.port == 80" size="0" pos="0" show="http || tcp.port == 80"/>
+  </proto>
+  <proto name="wlan" showname="IEEE 802.11" size="24" pos="0">
+    <field name="wlan.fc.type_subtype" showname="Type/Subtype: Data (32)" size="1" pos="0" show="32" value="08"/>
+    <field name="wlan.fc" showname="Frame Control: 0x0208 (Normal)" size="2" pos="0" show="0x0208" value="0802">
+      <field name="wlan.fc.version" showname="Version: 0" size="1" pos="0" show="0" value="08"/>
+      <field name="wlan.fc.type" showname="Type: Data frame (2)" size="1" pos="0" show="2" value="08"/>
+      <field name="wlan.fc.subtype" showname="Subtype: 0" size="1" pos="0" show="0" value="08"/>
+      <field name="wlan.flags" showname="Flags: 0x2" size="1" pos="1" show="0x02" value="02">
+        <field name="wlan.fc.ds" showname="DS status: Frame from DS to a STA via AP(To DS: 0 From DS: 1) (0x02)" size="1" pos="1" show="0x02" value="02"/>
+        <field name="wlan.fc.tods" showname=".... ...0 = To DS: Frame is not entering DS" hide="yes" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+        <field name="wlan.fc.fromds" showname=".... ..1. = From DS: Frame is exiting DS" hide="yes" size="1" pos="1" show="1" value="1" unmaskedvalue="02"/>
+        <field name="wlan.fc.frag" showname=".... .0.. = More Fragments: This is the last fragment" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+        <field name="wlan.fc.retry" showname=".... 0... = Retry: Frame is not being retransmitted" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+        <field name="wlan.fc.pwrmgt" showname="...0 .... = PWR MGT: STA will stay up" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+        <field name="wlan.fc.moredata" showname="..0. .... = More Data: No data buffered" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+        <field name="wlan.fc.protected" showname=".0.. .... = Protected flag: Data is not protected" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+        <field name="wlan.fc.order" showname="0... .... = Order flag: Not strictly ordered" size="1" pos="1" show="0" value="0" unmaskedvalue="02"/>
+      </field>
+    </field>
+    <field name="wlan.duration" showname="Duration: 44" size="2" pos="2" show="44" value="2c00"/>
+    <field name="wlan.da" showname="Destination address: Cisco-Li_5e:73:ac (00:18:39:5e:73:ac)" size="6" pos="4" show="00:18:39:5e:73:ac" value="0018395e73ac"/>
+    <field name="wlan.bssid" showname="BSS Id: Cisco-Li_39:cd:08 (00:0f:66:39:cd:08)" size="6" pos="10" show="00:0f:66:39:cd:08" value="000f6639cd08"/>
+    <field name="wlan.sa" showname="Source address: Cisco-Li_39:cd:06 (00:0f:66:39:cd:06)" size="6" pos="16" show="00:0f:66:39:cd:06" value="000f6639cd06"/>
+    <field name="wlan.frag" showname="Fragment number: 0" size="2" pos="22" show="0" value="d01d"/>
+    <field name="wlan.seq" showname="Sequence number: 477" size="2" pos="22" show="477" value="d01d"/>
+    <field name="wlan.addr" showname="Source or Destination address: Cisco-Li_5e:73:ac (00:18:39:5e:73:ac)" hide="yes" size="6" pos="4" show="00:18:39:5e:73:ac" value="0018395e73ac"/>
+    <field name="wlan.addr" showname="Source or Destination address: Cisco-Li_39:cd:06 (00:0f:66:39:cd:06)" hide="yes" size="6" pos="16" show="00:0f:66:39:cd:06" value="000f6639cd06"/>
+  </proto>
+  <proto name="llc" showname="Logical-Link Control" size="8" pos="24">
+    <field name="llc.dsap" showname="DSAP: SNAP (0xaa)" size="1" pos="24" show="0xaa" value="aa"/>
+    <field name="llc.dsap.ig" showname="IG Bit: Individual" size="1" pos="24" show="0" value="aa"/>
+    <field name="llc.ssap" showname="SSAP: SNAP (0xaa)" size="1" pos="25" show="0xaa" value="aa"/>
+    <field name="llc.ssap.cr" showname="CR Bit: Command" size="1" pos="25" show="0" value="aa"/>
+    <field name="llc.control" showname="Control field: U, func=UI (0x03)" size="1" pos="26" show="0x0003" value="03">
+      <field name="llc.control.u_modifier_cmd" showname="000. 00.. = Command: Unnumbered Information (0x00)" size="1" pos="26" show="0x00" value="0" unmaskedvalue="03"/>
+      <field name="llc.control.ftype" showname=".... ..11 = Frame type: Unnumbered frame (0x03)" size="1" pos="26" show="0x03" value="3" unmaskedvalue="03"/>
+    </field>
+    <field name="llc.oui" showname="Organization Code: Encapsulated Ethernet (0x000000)" size="3" pos="27" show="0x000000" value="000000"/>
+    <field name="llc.type" showname="Type: IP (0x0800)" size="2" pos="30" show="0x0800" value="0800"/>
+  </proto>
+  <proto name="ip" showname="Internet Protocol, Src: 72.215.224.105 (72.215.224.105), Dst: 192.168.1.101 (192.168.1.101)" size="20" pos="32">
+    <field name="ip.version" showname="Version: 4" size="1" pos="32" show="4" value="45"/>
+    <field name="ip.hdr_len" showname="Header length: 20 bytes" size="1" pos="32" show="20" value="45"/>
+    <field name="ip.dsfield" showname="Differentiated Services Field: 0x00 (DSCP 0x00: Default; ECN: 0x00)" size="1" pos="33" show="0" value="00">
+      <field name="ip.dsfield.dscp" showname="0000 00.. = Differentiated Services Codepoint: Default (0x00)" size="1" pos="33" show="0x00" value="0" unmaskedvalue="00"/>
+      <field name="ip.dsfield.ect" showname=".... ..0. = ECN-Capable Transport (ECT): 0" size="1" pos="33" show="0" value="0" unmaskedvalue="00"/>
+      <field name="ip.dsfield.ce" showname=".... ...0 = ECN-CE: 0" size="1" pos="33" show="0" value="0" unmaskedvalue="00"/>
+    </field>
+    <field name="ip.len" showname="Total Length: 811" size="2" pos="34" show="811" value="032b"/>
+    <field name="ip.id" showname="Identification: 0x3f4c (16204)" size="2" pos="36" show="0x3f4c" value="3f4c"/>
+    <field name="ip.flags" showname="Flags: 0x04 (Don&apos;t Fragment)" size="1" pos="38" show="0x04" value="40">
+      <field name="ip.flags.rb" showname="0... = Reserved bit: Not set" size="1" pos="38" show="0" value="0" unmaskedvalue="40"/>
+      <field name="ip.flags.df" showname=".1.. = Don&apos;t fragment: Set" size="1" pos="38" show="1" value="1" unmaskedvalue="40"/>
+      <field name="ip.flags.mf" showname="..0. = More fragments: Not set" size="1" pos="38" show="0" value="0" unmaskedvalue="40"/>
+    </field>
+    <field name="ip.frag_offset" showname="Fragment offset: 0" size="2" pos="38" show="0" value="4000"/>
+    <field name="ip.ttl" showname="Time to live: 59" size="1" pos="40" show="59" value="3b"/>
+    <field name="ip.proto" showname="Protocol: TCP (0x06)" size="1" pos="41" show="0x06" value="06"/>
+    <field name="ip.checksum" showname="Header checksum: 0x1233 [correct]" size="2" pos="42" show="0x1233" value="1233">
+      <field name="ip.checksum_good" showname="Good: True" size="2" pos="42" show="1" value="1233"/>
+      <field name="ip.checksum_bad" showname="Bad : False" size="2" pos="42" show="0" value="1233"/>
+    </field>
+    <field name="ip.src" showname="Source: 72.215.224.105 (72.215.224.105)" size="4" pos="44" show="72.215.224.105" value="48d7e069"/>
+    <field name="ip.addr" showname="Source or Destination Address: 72.215.224.105 (72.215.224.105)" hide="yes" size="4" pos="44" show="72.215.224.105" value="48d7e069"/>
+    <field name="ip.src_host" showname="Source Host: 72.215.224.105" hide="yes" size="4" pos="44" show="72.215.224.105" value="48d7e069"/>
+    <field name="ip.host" showname="Source or Destination Host: 72.215.224.105" hide="yes" size="4" pos="44" show="72.215.224.105" value="48d7e069"/>
+    <field name="ip.dst" showname="Destination: 192.168.1.101 (192.168.1.101)" size="4" pos="48" show="192.168.1.101" value="c0a80165"/>
+    <field name="ip.addr" showname="Source or Destination Address: 192.168.1.101 (192.168.1.101)" hide="yes" size="4" pos="48" show="192.168.1.101" value="c0a80165"/>
+    <field name="ip.dst_host" showname="Destination Host: 192.168.1.101" hide="yes" size="4" pos="48" show="192.168.1.101" value="c0a80165"/>
+    <field name="ip.host" showname="Source or Destination Host: 192.168.1.101" hide="yes" size="4" pos="48" show="192.168.1.101" value="c0a80165"/>
+  </proto>
+  <proto name="tcp" showname="Transmission Control Protocol, Src Port: http (80), Dst Port: 2212 (2212), Seq: 1460, Ack: 0, Len: 771" size="20" pos="52">
+    <field name="tcp.srcport" showname="Source port: http (80)" size="2" pos="52" show="80" value="0050"/>
+    <field name="tcp.dstport" showname="Destination port: 2212 (2212)" size="2" pos="54" show="2212" value="08a4"/>
+    <field name="tcp.port" showname="Source or Destination Port: 80" hide="yes" size="2" pos="52" show="80" value="0050"/>
+    <field name="tcp.port" showname="Source or Destination Port: 2212" hide="yes" size="2" pos="54" show="2212" value="08a4"/>
+    <field name="tcp.len" showname="TCP Segment Len: 771" hide="yes" size="4" pos="52" show="771" value="005008a4"/>
+    <field name="tcp.seq" showname="Sequence number: 1460    (relative sequence number)" size="4" pos="56" show="1460" value="4e9ce447"/>
+    <field name="tcp.nxtseq" showname="Next sequence number: 2231    (relative sequence number)" size="0" pos="52" show="2231"/>
+    <field name="tcp.ack" showname="Acknowledgement number: 0    (relative ack number)" size="4" pos="60" show="0" value="09767d88"/>
+    <field name="tcp.hdr_len" showname="Header length: 20 bytes" size="1" pos="64" show="20" value="50"/>
+    <field name="tcp.flags" showname="Flags: 0x18 (PSH, ACK)" size="1" pos="65" show="0x18" value="18">
+      <field name="tcp.flags.cwr" showname="0... .... = Congestion Window Reduced (CWR): Not set" size="1" pos="65" show="0" value="0" unmaskedvalue="18"/>
+      <field name="tcp.flags.ecn" showname=".0.. .... = ECN-Echo: Not set" size="1" pos="65" show="0" value="0" unmaskedvalue="18"/>
+      <field name="tcp.flags.urg" showname="..0. .... = Urgent: Not set" size="1" pos="65" show="0" value="0" unmaskedvalue="18"/>
+      <field name="tcp.flags.ack" showname="...1 .... = Acknowledgment: Set" size="1" pos="65" show="1" value="1" unmaskedvalue="18"/>
+      <field name="tcp.flags.push" showname=".... 1... = Push: Set" size="1" pos="65" show="1" value="1" unmaskedvalue="18"/>
+      <field name="tcp.flags.reset" showname=".... .0.. = Reset: Not set" size="1" pos="65" show="0" value="0" unmaskedvalue="18"/>
+      <field name="tcp.flags.syn" showname=".... ..0. = Syn: Not set" size="1" pos="65" show="0" value="0" unmaskedvalue="18"/>
+      <field name="tcp.flags.fin" showname=".... ...0 = Fin: Not set" size="1" pos="65" show="0" value="0" unmaskedvalue="18"/>
+    </field>
+    <field name="tcp.window_size" showname="Window size: 8576" size="2" pos="66" show="8576" value="2180"/>
+    <field name="tcp.checksum" showname="Checksum: 0x3bea [validation disabled]" size="2" pos="68" show="0x3bea" value="3bea">
+      <field name="tcp.checksum_good" showname="Good Checksum: False" size="2" pos="68" show="0" value="3bea"/>
+      <field name="tcp.checksum_bad" showname="Bad Checksum: False" size="2" pos="68" show="0" value="3bea"/>
+    </field>
+    <field name="" show="TCP segment data (771 bytes)" size="771" pos="72" value="04e08e1a09c918023922dcd1081b38e8e2890a0f041184123b40518991a3b8308a2968d4f1c20bbfb1804318826c512504215810c8103844610b106df481c00f3c90d2ca3d4cdc40cf196730338a3ca53cf2481c5ca440d43aa0a480d01d5884d0400d8c1850550a84c412260f69a4f8cd0af330ea68371548ff7a42162d6463c406a08083d0209d3600091f5fe080cb062d3ce06310fb58f3e10a2ba4e9029b99b8e24a0266303059085d20b16baf044483840c3810818209e85c83088a0314d90d922b885147252f80f0413a0434b041285e3c41c34183dc118201603030c7183a24c1421fc320a344250364f00730a570538a1862fc1187250924508509b91861b0205df0ebaf017d44d2c11cbbd8b1811cce0c6388195464400a3e2f00030c13a7fcf1c70bc99831012d904c77802a02e062503d335a000618a82ca29c1dd0f800092134f8e14a277180404a16d69cb0cdcec9c443092116b8214b1444943086416b240d461fe2c4665e1398f830092be7e4134e02ad9cfff2c223ad30714415883cb08c239ce062442244e431820d0521bd511f6074fb460af551a3893f91d86d0f17471c514619319451c5341e0451cd32b62421c1217408004a0005ad0143120df8b00a01e5bc61c5068d84e24f2e91ace2831c084c4081212ad0b0000717f0e3413bca08a187004f6821850606cd02832d0ddce103398474508b0c494481892891049c4b2eb4f461c1148d6c10421118c402930023f4433b42de2b420a4860810292e30ac3284222f0200a715c020c771085026cc0067600421bd410c2100450802dd8a3090bc102258aa00347e0000725ec403358708030588018e468401374208b0db0810506d0c313aea0052118431b0d81002b8702400312d080880698c11564208b8d28c00d46b0c32e7e81025f5ce10a4f80c5ff1e42030abce20ef0980503c8708b5ed46206496844081261076d4ca1175041821e60a186c0306509236842137530892594a000b550030a986210038c00150dc80112ae500b5f6c919006d1c36390b00403b000920a11421e3431484c32c4119e0ca528991210003b"/>
+  </proto>
+  <field name="tcp.segments" showname="Reassembled TCP Segments (2231 bytes): #40769(1460), #40770(771)" size="2231" pos="0" show="" value="">
+    <field name="tcp.segment" showname="Frame: 40769, payload: 0-1459 (1460 bytes)" size="1460" pos="0" show="40769" value="485454502f312e3120323030204f4b0d0a4c6173742d4d6f6469666965643a204672692c203131204e6f7620323030352030323a34323a313220474d540d0a4163636570742d52616e6765733a2062797465730d0a436f6e74656e742d4c656e6774683a20313936320d0a436f6e74656e742d547970653a20696d6167652f6769660d0a43616368652d436f6e74726f6c3a206d61782d6167653d3331333736313333320d0a457870697265733a204672692c203238204a756c20323031372030303a35313a333820474d540d0a446174653a205361742c2031382041756720323030372031323a35363a303620474d540d0a436f6e6e656374696f6e3a206b6565702d616c6976650d0a0d0a4749463839612d002800f7ff00ced103cad9d931768dfbeb0298e0fa338499b7d9e5fcfef2a7c7add2ba0ac9e7f8d7ebcb94d6dabbe2f5dbd99b62aa5c9dcde3e1e7f9cfdcefabb18da6c5c5fed91eb4dff1b5ebd8eaf6e8ebe603d4e8e9fdf2ffedf1d057abc62fab15eccd21fef61cfefefe429fbb498696b6e7e9427d9094cdb5fcfb03c9e7ebd6e9fb91bcaef89805ecf3ffacdeccef6f11fde8179fcbe6b5ad2df1ebff74b4c8bdd2d87cd2edeafdfaf8a309f1feff82b6c9e3fefee6ef1471d109d6b55c9dd9eb4ab414a4e9fc18ab0b89c3c44e98b4f2f5fff6fffffdfeecba92023b8ca6f9ffffafca2e6ba7b9fdcd13e3f3fe9ec4c5317ca0e8fc04f5fbf092b7c7d5f1ffe1c5078c8d0888c5d827889e9ccddfd7d32c3488b46696aeb1a85479a5b5bdd7c57bb4d596d9f1ecf3f5f6b8049bbcd0a6d1ccbba80eb6932eec4d27edac03edff1caccbd1a3ccdbfff9fea3d5ffe2fcf42992a9dbf5f3e5d401a6def13da2b14484a6f4cb04fef8f49cd0e1d8f3f8539fbc5895afd4fcff499acb9dddf2e9d91ff8dc11fdfedf64bbd6518ca694cddba5d4f561969c8fb5937fabc9729608fffef9e0ece91c90aa349cb6f9f8ffdcfefef2d10087e1fb92dbff1db838afd5eaa1d0ebebd300efd9059bdbfeaadceaf9d103a9d3e366b6c3f2f9ffdcdd1397d3f3e9fdf13c7575e6f6f395deecf87b1df1dc0cf9c30cfe9819f2c2039ccaf2f8fdf8adcddf91d5ea92c1dcfede02f2e002a2cbd083aabf97d3ccf4fef09cc7deabd2fe3e98aaf6fff9b4ccdcf5f3ed96dde19bd6eaf6fbffdaf8e88ec2e278b1bbfef7e9f3d20b9dc5d0a0ce9fb9ccf0aed5f6aee1e5c3f0e7fceff4a9bea4ab830077cda1a6dfabec541f6aa9c38addef74acd1d3f8f67dbee1dcfff049922bc5f5f14db635dde10076873075ac21f0fbf9f2fffcece011e7b800fca815e0b73bf9ba1383b6daa5b07294d3faabdeffa2d7ee9ed0f98191538ba25588b169bc8c65f3f5e6aab7dcfff1e63dbb5215819939c35c98c8d192cfd4eb960aff880cff8610a2c8d6a3c2dfe6df01ead80f949f3de8e15494b60a67c66f7ba9aea1d7e2ffffff21f904010000ff002c000000002d0028000008ff00ff091c48b0a0c18308132a5cc8b0a1c38710234a9c4851a01a0a15251669e0abc48812bc323a84134c900041cf72807a2572a1a62505ae2cc1c482cd9e12855a1a04b4e0cb9b27855841d316224a925fb0ae48d0297041ac214fe81c6af0e9009b638d76ed4aa4e0490e868ae0f0e2a54191a2264d224450f46fcd332d5a3a140bc5a6881dacd02e58d0b0ab48213a6c15aa0946818c1a354e28388167a583962b4384b0b06307830d22ea1c7821a6ebd2384e076e0920b3b0de1a0928144850002410a33722366920922a090e40fabc3948b3a34782186344e1388003494e85c134b171b4c7c2332471294560f32b842c221c1c001b70cf9a3557031284ff53152044881c021692b923c3d790451de029a21c82c8862617844119306047850f7e6470421c9d00800c11bb685080140ac5124f119b8810800d9c3452c4270b08f34e3b3f6093011399fc51ca2999645201150350814c13441c9047090a61314b1210bc210d1b077c12c105e67820c90f00b432402b75a0b1c20d473261c93df77cd0832da9"/>
+    <field name="tcp.segment" showname="Frame: 40770, payload: 1460-2230 (771 bytes)" size="771" pos="1460" show="40770" value="04e08e1a09c918023922dcd1081b38e8e2890a0f041184123b40518991a3b8308a2968d4f1c20bbfb1804318826c512504215810c8103844610b106df481c00f3c90d2ca3d4cdc40cf196730338a3ca53cf2481c5ca440d43aa0a480d01d5884d0400d8c1850550a84c412260f69a4f8cd0af330ea68371548ff7a42162d6463c406a08083d0209d3600091f5fe080cb062d3ce06310fb58f3e10a2ba4e9029b99b8e24a0266303059085d20b16baf044483840c3810818209e85c83088a0314d90d922b885147252f80f0413a0434b041285e3c41c34183dc118201603030c7183a24c1421fc320a344250364f00730a570538a1862fc1187250924508509b91861b0205df0ebaf017d44d2c11cbbd8b1811cce0c6388195464400a3e2f00030c13a7fcf1c70bc99831012d904c77802a02e062503d335a000618a82ca29c1dd0f800092134f8e14a277180404a16d69cb0cdcec9c443092116b8214b1444943086416b240d461fe2c4665e1398f830092be7e4134e02ad9cfff2c223ad30714415883cb08c239ce062442244e431820d0521bd511f6074fb460af551a3893f91d86d0f17471c514619319451c5341e0451cd32b62421c1217408004a0005ad0143120df8b00a01e5bc61c5068d84e24f2e91ace2831c084c4081212ad0b0000717f0e3413bca08a187004f6821850606cd02832d0ddce103398474508b0c494481892891049c4b2eb4f461c1148d6c10421118c402930023f4433b42de2b420a4860810292e30ac3284222f0200a715c020c771085026cc0067600421bd410c2100450802dd8a3090bc102258aa00347e0000725ec403358708030588018e468401374208b0db0810506d0c313aea0052118431b0d81002b8702400312d080880698c11564208b8d28c00d46b0c32e7e81025f5ce10a4f80c5ff1e42030abce20ef0980503c8708b5ed46206496844081261076d4ca1175041821e60a186c0306509236842137530892594a000b550030a986210038c00150dc80112ae500b5f6c919006d1c36390b00403b000920a11421e3431484c32c4119e0ca528991210003b"/>
+  </field>
+  <proto name="http" showname="Hypertext Transfer Protocol" size="269" pos="0">
+    <field name="" show="HTTP/1.1 200 OK\r\n" size="17" pos="0" value="485454502f312e3120323030204f4b0d0a">
+      <field name="http.request.version" showname="Request Version: HTTP/1.1" size="8" pos="0" show="HTTP/1.1" value="485454502f312e31"/>
+      <field name="http.response.code" showname="Response Code: 200" size="3" pos="9" show="200" value="323030"/>
+    </field>
+    <field name="http.last_modified" showname="Last-Modified: Fri, 11 Nov 2005 02:42:12 GMT\r\n" size="46" pos="17" show="Fri, 11 Nov 2005 02:42:12 GMT" value="4c6173742d4d6f6469666965643a204672692c203131204e6f7620323030352030323a34323a313220474d540d0a"/>
+    <field name="" show="Accept-Ranges: bytes\r\n" size="22" pos="63" value="4163636570742d52616e6765733a2062797465730d0a"/>
+    <field name="http.content_length" showname="Content-Length: 1962" size="22" pos="85" show="1962" value="436f6e74656e742d4c656e6774683a20313936320d0a"/>
+    <field name="http.content_type" showname="Content-Type: image/gif\r\n" size="25" pos="107" show="image/gif" value="436f6e74656e742d547970653a20696d6167652f6769660d0a"/>
+    <field name="http.cache_control" showname="Cache-Control: max-age=313761332\r\n" size="34" pos="132" show="max-age=313761332" value="43616368652d436f6e74726f6c3a206d61782d6167653d3331333736313333320d0a"/>
+    <field name="" show="Expires: Fri, 28 Jul 2017 00:51:38 GMT\r\n" size="40" pos="166" value="457870697265733a204672692c203238204a756c20323031372030303a35313a333820474d540d0a"/>
+    <field name="http.date" showname="Date: Sat, 18 Aug 2007 12:56:06 GMT\r\n" size="37" pos="206" show="Sat, 18 Aug 2007 12:56:06 GMT" value="446174653a205361742c2031382041756720323030372031323a35363a303620474d540d0a"/>
+    <field name="http.connection" showname="Connection: keep-alive\r\n" size="24" pos="243" show="keep-alive" value="436f6e6e656374696f6e3a206b6565702d616c6976650d0a"/>
+    <field name="" show="\r\n" size="2" pos="267" value="0d0a"/>
+    <field name="http.response" showname="Response: True" hide="yes" size="0" pos="0" show="1"/>
+  </proto>
+  <proto name="image-gif" showname="Compuserve GIF, Version: GIF89a" size="1962" pos="269">
+    <field name="image-gif.version" showname="Version: GIF89a" size="6" pos="269" show="GIF89a" value="474946383961"/>
+    <field name="image-gif.screen.width" showname="Screen width: 45" size="2" pos="275" show="45" value="2d00"/>
+    <field name="image-gif.screen.height" showname="Screen height: 40" size="2" pos="277" show="40" value="2800"/>
+    <field name="" show="Global settings: (Global color table present) (7 bits per color) (8 bits per pixel)" size="1" pos="279" value="f7">
+      <field name="image-gif.global.color_map.present" showname="1... .... = Global color map is present: True (1)" size="1" pos="279" show="1" value="1" unmaskedvalue="f7"/>
+      <field name="image-gif.global.color_bpp" showname=".111 .... = Bits per color minus 1: 7" size="1" pos="279" show="7" value="7" unmaskedvalue="f7"/>
+      <field name="image-gif.global.color_map.ordered" showname=".... 0... = Global color map is ordered: False (0)" size="1" pos="279" show="0" value="0" unmaskedvalue="f7"/>
+      <field name="image-gif.global.bpp" showname=".... .111 = Image bits per pixel minus 1: 7" size="1" pos="279" show="7" value="7" unmaskedvalue="f7"/>
+    </field>
+    <field name="image-gif.image_background_index" showname="Background color index: 255" size="1" pos="280" show="255" value="ff"/>
+    <field name="image-gif.global.color_map" showname="Global color map: CED103CAD9D931768DFBEB0298E0FA338499B7D9E5FCFEF2..." size="768" pos="282" show="ce:d1:03:ca:d9:d9:31:76:8d:fb:eb:02:98:e0:fa:33:84:99:b7:d9:e5:fc:fe:f2:a7:c7:ad:d2:ba:0a:c9:e7:f8:d7:eb:cb:94:d6:da:bb:e2:f5:db:d9:9b:62:aa:5c:9d:cd:e3:e1:e7:f9:cf:dc:ef:ab:b1:8d:a6:c5:c5:fe:d9:1e:b4:df:f1:b5:eb:d8:ea:f6:e8:eb:e6:03:d4:e8:e9:fd:f2:ff:ed:f1:d0:57:ab:c6:2f:ab:15:ec:cd:21:fe:f6:1c:fe:fe:fe:42:9f:bb:49:86:96:b6:e7:e9:42:7d:90:94:cd:b5:fc:fb:03:c9:e7:eb:d6:e9:fb:91:bc:ae:f8:98:05:ec:f3:ff:ac:de:cc:ef:6f:11:fd:e8:17:9f:cb:e6:b5:ad:2d:f1:eb:ff:74:b4:c8:bd:d2:d8:7c:d2:ed:ea:fd:fa:f8:a3:09:f1:fe:ff:82:b6:c9:e3:fe:fe:e6:ef:14:71:d1:09:d6:b5:5c:9d:d9:eb:4a:b4:14:a4:e9:fc:18:ab:0b:89:c3:c4:4e:98:b4:f2:f5:ff:f6:ff:ff:fd:fe:ec:ba:92:02:3b:8c:a6:f9:ff:ff:af:ca:2e:6b:a7:b9:fd:cd:13:e3:f3:fe:9e:c4:c5:31:7c:a0:e8:fc:04:f5:fb:f0:92:b7:c7:d5:f1:ff:e1:c5:07:8c:8d:08:88:c5:d8:27:88:9e:9c:cd:df:d7:d3:2c:34:88:b4:66:96:ae:b1:a8:54:79:a5:b5:bd:d7:c5:7b:b4:d5:96:d9:f1:ec:f3:f5:f6:b8:04:9b:bc:d0:a6:d1:cc:bb:a8:0e:b6:93:2e:ec:4d:27:ed:ac:03:ed:ff:1c:ac:cb:d1:a3:cc:db:ff:f9:fe:a3:d5:ff:e2:fc:f4:29:92:a9:db:f5:f3:e5:d4:01:a6:de:f1:3d:a2:b1:44:84:a6:f4:cb:04:fe:f8:f4:9c:d0:e1:d8:f3:f8:53:9f:bc:58:95:af:d4:fc:ff:49:9a:cb:9d:dd:f2:e9:d9:1f:f8:dc:11:fd:fe:df:64:bb:d6:51:8c:a6:94:cd:db:a5:d4:f5:61:96:9c:8f:b5:93:7f:ab:c9:72:96:08:ff:fe:f9:e0:ec:e9:1c:90:aa:34:9c:b6:f9:f8:ff:dc:fe:fe:f2:d1:00:87:e1:fb:92:db:ff:1d:b8:38:af:d5:ea:a1:d0:eb:eb:d3:00:ef:d9:05:9b:db:fe:aa:dc:ea:f9:d1:03:a9:d3:e3:66:b6:c3:f2:f9:ff:dc:dd:13:97:d3:f3:e9:fd:f1:3c:75:75:e6:f6:f3:95:de:ec:f8:7b:1d:f1:dc:0c:f9:c3:0c:fe:98:19:f2:c2:03:9c:ca:f2:f8:fd:f8:ad:cd:df:91:d5:ea:92:c1:dc:fe:de:02:f2:e0:02:a2:cb:d0:83:aa:bf:97:d3:cc:f4:fe:f0:9c:c7:de:ab:d2:fe:3e:98:aa:f6:ff:f9:b4:cc:dc:f5:f3:ed:96:dd:e1:9b:d6:ea:f6:fb:ff:da:f8:e8:8e:c2:e2:78:b1:bb:fe:f7:e9:f3:d2:0b:9d:c5:d0:a0:ce:9f:b9:cc:f0:ae:d5:f6:ae:e1:e5:c3:f0:e7:fc:ef:f4:a9:be:a4:ab:83:00:77:cd:a1:a6:df:ab:ec:54:1f:6a:a9:c3:8a:dd:ef:74:ac:d1:d3:f8:f6:7d:be:e1:dc:ff:f0:49:92:2b:c5:f5:f1:4d:b6:35:dd:e1:00:76:87:30:75:ac:21:f0:fb:f9:f2:ff:fc:ec:e0:11:e7:b8:00:fc:a8:15:e0:b7:3b:f9:ba:13:83:b6:da:a5:b0:72:94:d3:fa:ab:de:ff:a2:d7:ee:9e:d0:f9:81:91:53:8b:a2:55:88:b1:69:bc:8c:65:f3:f5:e6:aa:b7:dc:ff:f1:e6:3d:bb:52:15:81:99:39:c3:5c:98:c8:d1:92:cf:d4:eb:96:0a:ff:88:0c:ff:86:10:a2:c8:d6:a3:c2:df:e6:df:01:ea:d8:0f:94:9f:3d:e8:e1:54:94:b6:0a:67:c6:6f:7b:a9:ae:a1:d7:e2:ff:ff:ff" value="ced103cad9d931768dfbeb0298e0fa338499b7d9e5fcfef2a7c7add2ba0ac9e7f8d7ebcb94d6dabbe2f5dbd99b62aa5c9dcde3e1e7f9cfdcefabb18da6c5c5fed91eb4dff1b5ebd8eaf6e8ebe603d4e8e9fdf2ffedf1d057abc62fab15eccd21fef61cfefefe429fbb498696b6e7e9427d9094cdb5fcfb03c9e7ebd6e9fb91bcaef89805ecf3ffacdeccef6f11fde8179fcbe6b5ad2df1ebff74b4c8bdd2d87cd2edeafdfaf8a309f1feff82b6c9e3fefee6ef1471d109d6b55c9dd9eb4ab414a4e9fc18ab0b89c3c44e98b4f2f5fff6fffffdfeecba92023b8ca6f9ffffafca2e6ba7b9fdcd13e3f3fe9ec4c5317ca0e8fc04f5fbf092b7c7d5f1ffe1c5078c8d0888c5d827889e9ccddfd7d32c3488b46696aeb1a85479a5b5bdd7c57bb4d596d9f1ecf3f5f6b8049bbcd0a6d1ccbba80eb6932eec4d27edac03edff1caccbd1a3ccdbfff9fea3d5ffe2fcf42992a9dbf5f3e5d401a6def13da2b14484a6f4cb04fef8f49cd0e1d8f3f8539fbc5895afd4fcff499acb9dddf2e9d91ff8dc11fdfedf64bbd6518ca694cddba5d4f561969c8fb5937fabc9729608fffef9e0ece91c90aa349cb6f9f8ffdcfefef2d10087e1fb92dbff1db838afd5eaa1d0ebebd300efd9059bdbfeaadceaf9d103a9d3e366b6c3f2f9ffdcdd1397d3f3e9fdf13c7575e6f6f395deecf87b1df1dc0cf9c30cfe9819f2c2039ccaf2f8fdf8adcddf91d5ea92c1dcfede02f2e002a2cbd083aabf97d3ccf4fef09cc7deabd2fe3e98aaf6fff9b4ccdcf5f3ed96dde19bd6eaf6fbffdaf8e88ec2e278b1bbfef7e9f3d20b9dc5d0a0ce9fb9ccf0aed5f6aee1e5c3f0e7fceff4a9bea4ab830077cda1a6dfabec541f6aa9c38addef74acd1d3f8f67dbee1dcfff049922bc5f5f14db635dde10076873075ac21f0fbf9f2fffcece011e7b800fca815e0b73bf9ba1383b6daa5b07294d3faabdeffa2d7ee9ed0f98191538ba25588b169bc8c65f3f5e6aab7dcfff1e63dbb5215819939c35c98c8d192cfd4eb960aff880cff8610a2c8d6a3c2dfe6df01ead80f949f3de8e15494b60a67c66f7ba9aea1d7e2ffffff"/>
+    <field name="image-gif.extension" showname="Extension: Graphics Control" size="8" pos="1050" show="" value="">
+      <field name="image-gif.extension.label" showname="Extension label: Graphics Control (0xf9)" size="1" pos="1051" show="0xf9" value="f9"/>
+      <field name="" show="Data block (length = 4)" size="5" pos="1052" value="04010000ff"/>
+      <field name="" show="Data block (length = 0)" size="1" pos="1057" value="00"/>
+    </field>
+    <field name="image-gif.image" showname="Image" size="1172" pos="1058" show="" value="">
+      <field name="image-gif.image.left" showname="Image left position: 0" size="2" pos="1059" show="0" value="0000"/>
+      <field name="image-gif.image.top" showname="Image top position: 0" size="2" pos="1061" show="0" value="0000"/>
+      <field name="image-gif.image.width" showname="Image width: 45" size="2" pos="1063" show="45" value="2d00"/>
+      <field name="image-gif.image.height" showname="Image height: 40" size="2" pos="1065" show="40" value="2800"/>
+      <field name="" show="Local settings: (1 bit per color) (1 bit per pixel)" size="1" pos="1067" value="00">
+        <field name="image-gif.local.color_map.present" showname="0... .... = Local color map is present: False (0)" size="1" pos="1067" show="0" value="0" unmaskedvalue="00"/>
+        <field name="image-gif.local.color_bpp" showname=".000 .... = Bits per color minus 1: 0" size="1" pos="1067" show="0" value="0" unmaskedvalue="00"/>
+        <field name="image-gif.local.color_map.ordered" showname=".... 0... = Local color map is ordered: False (0)" size="1" pos="1067" show="0" value="0" unmaskedvalue="00"/>
+        <field name="image-gif.global.bpp" showname=".... .000 = Image bits per pixel minus 1: 0" size="1" pos="1067" show="0" value="0" unmaskedvalue="00"/>
+      </field>
+      <field name="image-gif.image.code_size" showname="LZW minimum code size: 8" size="1" pos="1068" show="8" value="08"/>
+      <field name="" show="Data block (length = 255)" size="256" pos="1069" value="ff00ff091c48b0a0c18308132a5cc8b0a1c38710234a9c4851a01a0a15251669e0abc48812bc323a84134c900041cf72807a2572a1a62505ae2cc1c482cd9e12855a1a04b4e0cb9b27855841d316224a925fb0ae48d0297041ac214fe81c6af0e9009b638d76ed4aa4e0490e868ae0f0e2a54191a2264d224450f46fcd332d5a3a140bc5a6881dacd02e58d0b0ab48213a6c15aa0946818c1a354e28388167a583962b4384b0b06307830d22ea1c7821a6ebd2384e076e0920b3b0de1a0928144850002410a33722366920922a090e40fabc3948b3a34782186344e1388003494e85c134b171b4c7c2332471294560f32b842c221c1c001b70cf9a3557031284"/>
+      <field name="" show="Data block (length = 255)" size="256" pos="1325" value="ff53152044881c021692b923c3d790451de029a21c82c8862617844119306047850f7e6470421c9d00800c11bb685080140ac5124f119b8810800d9c3452c4270b08f34e3b3f6093011399fc51ca2999645201150350814c13441c9047090a61314b1210bc210d1b077c12c105e67820c90f00b432402b75a0b1c20d473261c93df77cd0832da904e08e1a09c918023922dcd1081b38e8e2890a0f041184123b40518991a3b8308a2968d4f1c20bbfb1804318826c512504215810c8103844610b106df481c00f3c90d2ca3d4cdc40cf196730338a3ca53cf2481c5ca440d43aa0a480d01d5884d0400d8c1850550a84c412260f69a4f8cd0af330ea68371548"/>
+      <field name="" show="Data block (length = 255)" size="256" pos="1581" value="ff7a42162d6463c406a08083d0209d3600091f5fe080cb062d3ce06310fb58f3e10a2ba4e9029b99b8e24a0266303059085d20b16baf044483840c3810818209e85c83088a0314d90d922b885147252f80f0413a0434b041285e3c41c34183dc118201603030c7183a24c1421fc320a344250364f00730a570538a1862fc1187250924508509b91861b0205df0ebaf017d44d2c11cbbd8b1811cce0c6388195464400a3e2f00030c13a7fcf1c70bc99831012d904c77802a02e062503d335a000618a82ca29c1dd0f800092134f8e14a277180404a16d69cb0cdcec9c443092116b8214b1444943086416b240d461fe2c4665e1398f830092be7e4134e02ad9c"/>
+      <field name="" show="Data block (length = 255)" size="256" pos="1837" value="fff2c223ad30714415883cb08c239ce062442244e431820d0521bd511f6074fb460af551a3893f91d86d0f17471c514619319451c5341e0451cd32b62421c1217408004a0005ad0143120df8b00a01e5bc61c5068d84e24f2e91ace2831c084c4081212ad0b0000717f0e3413bca08a187004f6821850606cd02832d0ddce103398474508b0c494481892891049c4b2eb4f461c1148d6c10421118c402930023f4433b42de2b420a4860810292e30ac3284222f0200a715c020c771085026cc0067600421bd410c2100450802dd8a3090bc102258aa00347e0000725ec403358708030588018e468401374208b0db0810506d0c313aea0052118431b0d81002b"/>
+      <field name="" show="Data block (length = 135)" size="136" pos="2093" value="8702400312d080880698c11564208b8d28c00d46b0c32e7e81025f5ce10a4f80c5ff1e42030abce20ef0980503c8708b5ed46206496844081261076d4ca1175041821e60a186c0306509236842137530892594a000b550030a986210038c00150dc80112ae500b5f6c919006d1c36390b00403b000920a11421e3431484c32c4119e0ca528991210"/>
+      <field name="" show="Data block (length = 0)" size="1" pos="2229" value="00"/>
+    </field>
+    <field name="image-gif.end" showname="Trailer (End of the GIF stream)" size="1" pos="2230" show="" value=""/>
+  </proto>
+</packet>
+
+</pdml>

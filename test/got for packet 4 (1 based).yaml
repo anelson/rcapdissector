@@ -1,0 +1,494 @@
+---
+- frame:
+    display_name: "Frame 4 (81 bytes on wire, 81 bytes captured)"
+    children:
+    - frame.time:
+        display_name: "Arrival Time: Jan 21, 2007 12:19:30.296070000"
+        display_value: "Jan 21, 2007 12:19:30.296070000"
+    - frame.time_delta:
+        display_name: "Time delta from previous packet: 1169399970.296070000 seconds"
+        display_value: "1169399970.296070000"
+    - frame.time_relative:
+        display_name: "Time since reference or first frame: 1169399970.296070000 seconds"
+        display_value: "1169399970.296070000"
+    - frame.number:
+        display_name: "Frame Number: 4"
+        display_value: "4"
+    - frame.pkt_len:
+        display_name: "Packet Length: 81 bytes"
+        display_value: "81"
+    - frame.cap_len:
+        display_name: "Capture Length: 81 bytes"
+        display_value: "81"
+    - frame.marked:
+        display_name: "Frame is marked: False"
+        display_value: "0"
+    - frame.protocols:
+        display_name: "Protocols in frame: wlan"
+        display_value: "wlan"
+- wlan:
+    display_name: "IEEE 802.11"
+    children:
+    - wlan.fc.type_subtype:
+        display_name: "Type/Subtype: Beacon frame (8)"
+        display_value: "8"
+        value: !binary |
+          gA==
+          
+    - wlan.fc:
+        display_name: "Frame Control: 0x0080 (Normal)"
+        display_value: "0x0080"
+        value: !binary |
+          gAA=
+          
+        children:
+        - wlan.fc.version:
+            display_name: "Version: 0"
+            display_value: "0"
+            value: !binary |
+              gA==
+              
+        - wlan.fc.type:
+            display_name: "Type: Management frame (0)"
+            display_value: "0"
+            value: !binary |
+              gA==
+              
+        - wlan.fc.subtype:
+            display_name: "Subtype: 8"
+            display_value: "8"
+            value: !binary |
+              gA==
+              
+        - wlan.flags:
+            display_name: "Flags: 0x0"
+            display_value: "0x00"
+            value: !binary |
+              AA==
+              
+            children:
+            - wlan.fc.ds:
+                display_name: "DS status: Not leaving DS or network is operating in AD-HOC mode (To DS: 0 From DS: 0) (0x00)"
+                display_value: "0x00"
+                value: !binary |
+                  AA==
+                  
+            - wlan.fc.tods:
+                display_name: ".... ...0 = To DS: Frame is not entering DS"
+                display_value: "0"
+                value: !binary |
+                  AA==
+                  
+            - wlan.fc.fromds:
+                display_name: ".... ..0. = From DS: Frame is not exiting DS"
+                display_value: "0"
+                value: !binary |
+                  AA==
+                  
+            - wlan.fc.frag:
+                display_name: ".... .0.. = More Fragments: This is the last fragment"
+                display_value: "0"
+                value: !binary |
+                  AA==
+                  
+            - wlan.fc.retry:
+                display_name: ".... 0... = Retry: Frame is not being retransmitted"
+                display_value: "0"
+                value: !binary |
+                  AA==
+                  
+            - wlan.fc.pwrmgt:
+                display_name: "...0 .... = PWR MGT: STA will stay up"
+                display_value: "0"
+                value: !binary |
+                  AA==
+                  
+            - wlan.fc.moredata:
+                display_name: "..0. .... = More Data: No data buffered"
+                display_value: "0"
+                value: !binary |
+                  AA==
+                  
+            - wlan.fc.protected:
+                display_name: ".0.. .... = Protected flag: Data is not protected"
+                display_value: "0"
+                value: !binary |
+                  AA==
+                  
+            - wlan.fc.order:
+                display_name: "0... .... = Order flag: Not strictly ordered"
+                display_value: "0"
+                value: !binary |
+                  AA==
+                  
+    - wlan.duration:
+        display_name: "Duration: 0"
+        display_value: "0"
+        value: !binary |
+          AAA=
+          
+    - wlan.da:
+        display_name: "Destination address: ff:ff:ff:ff:ff:ff (ff:ff:ff:ff:ff:ff)"
+        display_value: "ff:ff:ff:ff:ff:ff"
+        value: !binary |
+          ////////
+          
+    - wlan.sa:
+        display_name: "Source address: 00:0c:41:e3:51:74 (00:0c:41:e3:51:74)"
+        display_value: "00:0c:41:e3:51:74"
+        value: !binary |
+          AAxB41F0
+          
+    - wlan.addr:
+        display_name: "Source or Destination address: ff:ff:ff:ff:ff:ff (ff:ff:ff:ff:ff:ff)"
+        display_value: "ff:ff:ff:ff:ff:ff"
+        value: !binary |
+          ////////
+          
+    - wlan.addr:
+        display_name: "Source or Destination address: 00:0c:41:e3:51:74 (00:0c:41:e3:51:74)"
+        display_value: "00:0c:41:e3:51:74"
+        value: !binary |
+          AAxB41F0
+          
+    - wlan.bssid:
+        display_name: "BSS Id: 00:0c:41:e3:51:74 (00:0c:41:e3:51:74)"
+        display_value: "00:0c:41:e3:51:74"
+        value: !binary |
+          AAxB41F0
+          
+    - wlan.frag:
+        display_name: "Fragment number: 0"
+        display_value: "0"
+        value: !binary |
+          wLM=
+          
+    - wlan.seq:
+        display_name: "Sequence number: 2876"
+        display_value: "2876"
+        value: !binary |
+          wLM=
+          
+- wlan_mgt:
+    display_name: "IEEE 802.11 wireless LAN management frame"
+    children:
+    - wlan_mgt.fixed.all:
+        display_name: "Fixed parameters (12 bytes)"
+        display_value: "12"
+        value: !binary |
+          iQHDRJIBAABkAAEE
+          
+        children:
+        - wlan_mgt.fixed.timestamp:
+            display_name: "Timestamp: 0x0000019244C30189"
+            display_value: "0x0000019244C30189"
+            value: !binary |
+              iQHDRJIBAAA=
+              
+        - wlan_mgt.fixed.beacon:
+            display_name: "Beacon Interval: 0.102400 [Seconds]"
+            display_value: "0.1024"
+            value: !binary |
+              ZAA=
+              
+        - wlan_mgt.fixed.capabilities:
+            display_name: "Capability Information: 0x0401"
+            display_value: "0x0401"
+            value: !binary |
+              AQQ=
+              
+            children:
+            - wlan_mgt.fixed.capabilities.ess:
+                display_name: ".... .... .... ...1 = ESS capabilities: Transmitter is an AP"
+                display_value: "1"
+                value: !binary |
+                  AQQ=
+                  
+            - wlan_mgt.fixed.capabilities.ibss:
+                display_name: ".... .... .... ..0. = IBSS status: Transmitter belongs to a BSS"
+                display_value: "0"
+                value: !binary |
+                  AQQ=
+                  
+            - wlan_mgt.fixed.capabilities.cfpoll.ap:
+                display_name: ".... ..0. .... 00.. = CFP participation capabilities: No point coordinator at AP (0x0000)"
+                display_value: "0x0000"
+                value: !binary |
+                  AQQ=
+                  
+            - wlan_mgt.fixed.capabilities.privacy:
+                display_name: ".... .... ...0 .... = Privacy: AP/STA cannot support WEP"
+                display_value: "0"
+                value: !binary |
+                  AQQ=
+                  
+            - wlan_mgt.fixed.capabilities.preamble:
+                display_name: ".... .... ..0. .... = Short Preamble: Short preamble not allowed"
+                display_value: "0"
+                value: !binary |
+                  AQQ=
+                  
+            - wlan_mgt.fixed.capabilities.pbcc:
+                display_name: ".... .... .0.. .... = PBCC: PBCC modulation not allowed"
+                display_value: "0"
+                value: !binary |
+                  AQQ=
+                  
+            - wlan_mgt.fixed.capabilities.agility:
+                display_name: ".... .... 0... .... = Channel Agility: Channel agility not in use"
+                display_value: "0"
+                value: !binary |
+                  AQQ=
+                  
+            - wlan_mgt.fixed.capabilities.spec_man:
+                display_name: ".... ...0 .... .... = Spectrum Management: dot11SpectrumManagementRequired FALSE"
+                display_value: "0"
+                value: !binary |
+                  AQQ=
+                  
+            - wlan_mgt.fixed.capabilities.short_slot_time:
+                display_name: ".... .1.. .... .... = Short Slot Time: Short slot time in use"
+                display_value: "1"
+                value: !binary |
+                  AQQ=
+                  
+            - wlan_mgt.fixed.capabilities.apsd:
+                display_name: ".... 0... .... .... = Automatic Power Save Delivery: apsd not implemented"
+                display_value: "0"
+                value: !binary |
+                  AQQ=
+                  
+            - wlan_mgt.fixed.capabilities.dsss_ofdm:
+                display_name: "..0. .... .... .... = DSSS-OFDM: DSSS-OFDM modulation not allowed"
+                display_value: "0"
+                value: !binary |
+                  AQQ=
+                  
+            - wlan_mgt.fixed.capabilities.del_blk_ack:
+                display_name: ".0.. .... .... .... = Delayed Block Ack: delayed block ack not implented"
+                display_value: "0"
+                value: !binary |
+                  AQQ=
+                  
+            - wlan_mgt.fixed.capabilities.imm_blk_ack:
+                display_name: "0... .... .... .... = Immediate Block Ack: immediate block ack not implented"
+                display_value: "0"
+                value: !binary |
+                  AQQ=
+                  
+    - wlan_mgt.tagged.all:
+        display_name: "Tagged parameters (45 bytes)"
+        display_value: "45"
+        value: !binary |
+          AAUAAAAAAAEIgoSLliQwSGwDAQYFBAABAAAqAQYvAQYyBAwSGGDdBQAQGAEA
+          
+        children:
+        - <Field#52>:
+            display_value: "SSID parameter set: \"\000\000\000\000\000\""
+            value: !binary |
+              AAUAAAAAAA==
+              
+            children:
+            - wlan_mgt.tag.number:
+                display_name: "Tag Number: 0 (SSID parameter set)"
+                display_value: "0"
+                value: !binary |
+                  AA==
+                  
+            - wlan_mgt.tag.length:
+                display_name: "Tag length: 5"
+                display_value: "5"
+                value: !binary |
+                  BQ==
+                  
+            - wlan_mgt.tag.interpretation:
+                display_name: "Tag interpretation: "
+                value: !binary |
+                  AAAAAAA=
+                  
+        - <Field#56>:
+            display_value: "Supported Rates: 1.0(B) 2.0(B) 5.5(B) 11.0(B) 18.0 24.0 36.0 54.0 "
+            value: !binary |
+              AQiChIuWJDBIbA==
+              
+            children:
+            - wlan_mgt.tag.number:
+                display_name: "Tag Number: 1 (Supported Rates)"
+                display_value: "1"
+                value: !binary |
+                  AQ==
+                  
+            - wlan_mgt.tag.length:
+                display_name: "Tag length: 8"
+                display_value: "8"
+                value: !binary |
+                  CA==
+                  
+            - wlan_mgt.tag.interpretation:
+                display_name: "Tag interpretation: Supported rates: 1.0(B) 2.0(B) 5.5(B) 11.0(B) 18.0 24.0 36.0 54.0  [Mbit/sec]"
+                display_value: "Supported rates: 1.0(B) 2.0(B) 5.5(B) 11.0(B) 18.0 24.0 36.0 54.0  [Mbit/sec]"
+                value: !binary |
+                  goSLliQwSGw=
+                  
+        - <Field#60>:
+            display_value: "DS Parameter set: Current Channel: 6"
+            value: !binary |
+              AwEG
+              
+            children:
+            - wlan_mgt.tag.number:
+                display_name: "Tag Number: 3 (DS Parameter set)"
+                display_value: "3"
+                value: !binary |
+                  Aw==
+                  
+            - wlan_mgt.tag.length:
+                display_name: "Tag length: 1"
+                display_value: "1"
+                value: !binary |
+                  AQ==
+                  
+            - wlan_mgt.tag.interpretation:
+                display_name: "Tag interpretation: Current Channel: 6"
+                display_value: "Current Channel: 6"
+                value: !binary |
+                  Bg==
+                  
+        - <Field#64>:
+            display_value: "(TIM) Traffic Indication Map: DTIM 0 of 1 bitmap empty"
+            value: !binary |
+              BQQAAQAA
+              
+            children:
+            - wlan_mgt.tag.number:
+                display_name: "Tag Number: 5 ((TIM) Traffic Indication Map)"
+                display_value: "5"
+                value: !binary |
+                  BQ==
+                  
+            - wlan_mgt.tim.length:
+                display_name: "TIM length: 4"
+                display_value: "4"
+                value: !binary |
+                  BA==
+                  
+            - wlan_mgt.tim.dtim_count:
+                display_name: "DTIM count: 0"
+                display_value: "0"
+                value: !binary |
+                  AA==
+                  
+            - wlan_mgt.tim.dtim_period:
+                display_name: "DTIM period: 1"
+                display_value: "1"
+                value: !binary |
+                  AQ==
+                  
+            - wlan_mgt.tim.bmapctl:
+                display_name: "Bitmap Control: 0x00 (mcast:0, bitmap offset 0)"
+                display_value: "0x00"
+                value: !binary |
+                  AA==
+                  
+        - <Field#70>:
+            display_value: "ERP Information: no Non-ERP STAs, use protection, long preambles"
+            value: !binary |
+              KgEG
+              
+            children:
+            - wlan_mgt.tag.number:
+                display_name: "Tag Number: 42 (ERP Information)"
+                display_value: "42"
+                value: !binary |
+                  Kg==
+                  
+            - wlan_mgt.tag.length:
+                display_name: "Tag length: 1"
+                display_value: "1"
+                value: !binary |
+                  AQ==
+                  
+            - wlan_mgt.tag.interpretation:
+                display_name: "Tag interpretation: ERP info: 0x6 (no Non-ERP STAs, use protection, long preambles)"
+                display_value: "ERP info: 0x6 (no Non-ERP STAs, use protection, long preambles)"
+                value: !binary |
+                  Bg==
+                  
+        - <Field#74>:
+            display_value: "ERP Information: no Non-ERP STAs, use protection, long preambles"
+            value: !binary |
+              LwEG
+              
+            children:
+            - wlan_mgt.tag.number:
+                display_name: "Tag Number: 47 (ERP Information)"
+                display_value: "47"
+                value: !binary |
+                  Lw==
+                  
+            - wlan_mgt.tag.length:
+                display_name: "Tag length: 1"
+                display_value: "1"
+                value: !binary |
+                  AQ==
+                  
+            - wlan_mgt.tag.interpretation:
+                display_name: "Tag interpretation: ERP info: 0x6 (no Non-ERP STAs, use protection, long preambles)"
+                display_value: "ERP info: 0x6 (no Non-ERP STAs, use protection, long preambles)"
+                value: !binary |
+                  Bg==
+                  
+        - <Field#78>:
+            display_value: "Extended Supported Rates: 6.0 9.0 12.0 48.0 "
+            value: !binary |
+              MgQMEhhg
+              
+            children:
+            - wlan_mgt.tag.number:
+                display_name: "Tag Number: 50 (Extended Supported Rates)"
+                display_value: "50"
+                value: !binary |
+                  Mg==
+                  
+            - wlan_mgt.tag.length:
+                display_name: "Tag length: 4"
+                display_value: "4"
+                value: !binary |
+                  BA==
+                  
+            - wlan_mgt.tag.interpretation:
+                display_name: "Tag interpretation: Supported rates: 6.0 9.0 12.0 48.0  [Mbit/sec]"
+                display_value: "Supported rates: 6.0 9.0 12.0 48.0  [Mbit/sec]"
+                value: !binary |
+                  DBIYYA==
+                  
+        - <Field#82>:
+            display_value: "Vendor Specific: 00:10:18"
+            value: !binary |
+              3QUAEBgBAA==
+              
+            children:
+            - wlan_mgt.tag.number:
+                display_name: "Tag Number: 221 (Vendor Specific)"
+                display_value: "221"
+                value: !binary |
+                  3Q==
+                  
+            - wlan_mgt.tag.length:
+                display_name: "Tag length: 5"
+                display_value: "5"
+                value: !binary |
+                  BQ==
+                  
+            - wlan_mgt.tag.oui:
+                display_name: "Vendor: 00:10:18"
+                display_value: "00:10:18"
+                value: !binary |
+                  ABAY
+                  
+            - wlan_mgt.tag.interpretation:
+                display_name: "Tag interpretation: Not interpreted"
+                display_value: "Not interpreted"
+                value: !binary |
+                  AQA=
+                  
