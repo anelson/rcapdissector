@@ -195,7 +195,7 @@ private:
 	}
 
 	/** Specialization of sortAndYield for ProtocolTreeNodeOrderedSet iterators */
-	void sortAndYield<>(ProtocolTreeNodeOrderedSet::iterator begin, ProtocolTreeNodeOrderedSet::iterator end) {
+	void sortAndYield(ProtocolTreeNodeOrderedSet::iterator begin, ProtocolTreeNodeOrderedSet::iterator end) {
 		for (ProtocolTreeNodeOrderedSet::iterator iter = begin;
 			iter != end;
 			++iter) {

@@ -105,7 +105,7 @@ VALUE Field::createField(VALUE packet, ProtocolTreeNode* node) {
 	};
 
 	//Create a Field object for this packet
-	VALUE field = rb_class_new_instance(_countof(argv),
+	VALUE field = rb_class_new_instance(sizeof(argv)/sizeof(argv[0]),
 										 argv,
 										 g_field_class);
 

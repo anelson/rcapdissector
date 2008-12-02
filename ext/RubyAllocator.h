@@ -1,5 +1,7 @@
-#pragma once
-#include "allocator.h"
+#ifndef RUBY_ALLOCATOR_H
+#define RUBY_ALLOCATOR_H
+
+#include "Allocator.h"
 
 #ifdef USE_LOOKASIDE_LIST
 /** Allocator implementation that uses the Ruby memory allocation functions which are GC-aware */
@@ -13,3 +15,7 @@ public:
 	virtual void free(void* block);
 };
 #endif
+
+
+#endif /* RUBY_ALLOCATOR_H */
+

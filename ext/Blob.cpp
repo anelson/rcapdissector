@@ -40,7 +40,7 @@ VALUE Blob::createBlob(VALUE packet, data_source* ds) {
 	};
 
 	//Create a Blob object for this packet
-	VALUE blob = rb_class_new_instance(_countof(argv),
+	VALUE blob = rb_class_new_instance(sizeof(argv)/sizeof(argv[0]),
 										 argv,
 										 g_blob_class);
 

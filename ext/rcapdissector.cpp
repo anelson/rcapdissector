@@ -1,5 +1,7 @@
+#ifdef WINDOWS_BUILD
 #include <winsock2.h>
 #include <windows.h>
+#endif
 
 #include "rcapdissector.h"
 
@@ -28,7 +30,11 @@ VALUE g_native_pointer_class;
 
 ID g_id_call;
 
+#ifdef WINDOWS_BUILD
 extern "C" __declspec(dllexport) void Init_capdissector() {
+#else
+extern "C" void Init_capdissector() {
+#endif
     //Find the native-ruby companion classes that we need
     rb_require("capdissector");
 

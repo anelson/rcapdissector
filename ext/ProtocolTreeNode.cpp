@@ -4,8 +4,8 @@
 
 //Need some dissector constants
 extern "C" {
-#include "epan\dissectors\packet-frame.h"
-#include "epan\dissectors\packet-data.h"
+#include "epan/dissectors/packet-frame.h"
+#include "epan/dissectors/packet-data.h"
 }
 
 ProtocolTreeNode::ProtocolTreeNode(VALUE packet, epan_dissect_t* edt, guint ordinal, proto_node* node, ProtocolTreeNode* parentNode)

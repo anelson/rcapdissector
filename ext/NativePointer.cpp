@@ -55,3 +55,5 @@ VALUE NativePointer::alloc(VALUE klass) {
 VALUE NativePointer::initialize(VALUE self) {
 	return self;
 }
+
+

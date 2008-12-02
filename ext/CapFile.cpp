@@ -205,6 +205,7 @@ VALUE CapFile::createClass() {
 void CapFile::initPacketCapture() {
     epan_init(register_all_protocols, 
               register_all_protocol_handoffs,
+              NULL, NULL,
               failure_message, 
               open_failure_message, 
               read_failure_message);

@@ -45,7 +45,7 @@ void YamlGenerator::addMapping(const char* key, const char* value) {
 
 void YamlGenerator::addMapping(const char* key, guint32 value) {
     char valueString[20];
-    ::_ultoa_s(value, valueString, 10);
+    snprintf(valueString, sizeof(valueString), "%d", value);
 
 	startLine() << key << ": " << valueString << std::endl;
 }

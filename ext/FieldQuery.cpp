@@ -3,8 +3,8 @@
 
 //Need some dissector constants
 extern "C" {
-#include "epan\dissectors\packet-frame.h"
-#include "epan\dissectors\packet-data.h"
+#include "epan/dissectors/packet-frame.h"
+#include "epan/dissectors/packet-data.h"
 }
 
 VALUE FieldQuery::createClass() {
@@ -380,7 +380,7 @@ bool FieldQuery::compareStrings(VALUE rubyString, const char* nativeString, bool
 	size_t length = RSTRING(rubyString)->len;
 
 	if (!caseSensitive) {
-		return ::strnicmp(compareString, nativeString, length) == 0;
+		return ::strncasecmp(compareString, nativeString, length) == 0;
 	} else {
 		return ::strncmp(compareString, nativeString, length) == 0;
 	}

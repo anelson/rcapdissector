@@ -1,12 +1,19 @@
-#pragma once
+#ifndef RUBYANDSHIT_H
+#define RUBYANDSHIT_H
+
+/* #define WINDOWS_BUILD */
 
 //Include the Ruby and Wireshark and Windows stuff with all the nasty warnings hidden
+#ifdef WINDOWS_BUILD
 #pragma warning(push)
 #pragma warning(disable : 4312) //'type cast' : conversion from 'VALUE' to 'RBasic *' of greater size
 #pragma warning(disable : 4005) //warning C4005: 'strcasecmp' : macro redefinition
+#endif
 
+#ifdef WINDOWS_BUILD
 #include <winsock2.h>
 #include <windows.h>
+#endif
 
 #include "ruby.h"
 
@@ -29,7 +36,13 @@ extern "C" {
 #endif
 
 #ifdef HAVE_CONFIG_H
-# include "config.h"
+# include <epan/../config.h>
+#else
+#error Config.h is missing
+#endif
+
+#if !defined(WS_VAR_IMPORT)
+fuck me its broken
 #endif
 
 #include <stdlib.h>
@@ -100,13 +113,13 @@ extern "C" {
 #include <setjmp.h>
 #include "capture-pcap-util.h"
 #include "pcapio.h"
-#include <wiretap/wtap-capture.h>
+/* #include <wiretap/wtap-capture.h> */
 #ifdef _WIN32
 #include "capture-wpcap.h"
 #include "capture_errs.h"
 #endif /* _WIN32 */
 #include "capture.h"
-#include "capture_loop.h"
+/* #include "capture_loop.h" */
 #include "capture_sync.h"
 #endif /* HAVE_LIBPCAP */
 #include "epan/emem.h"
@@ -117,6 +130,7 @@ extern "C" {
 }
 #endif
 
+#ifdef WINDOWS_BUILD
 #pragma warning(pop)
 
 //Data_Get_Struct causes warning 4312 within code, so leave this warning disabled
@@ -126,3 +140,8 @@ extern "C" {
 #pragma warning(disable : 4312) //'type cast' : conversion from 'VALUE' to 'RBasic *' of greater size
 #pragma warning(disable : 4127) // conditional expression is constant
 #pragma warning(disable : 4505) // 'g_error' : unreferenced local function has been removed
+
+#endif
+
+#endif /* RUBYANDSHIT_H */
+

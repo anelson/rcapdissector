@@ -5,8 +5,8 @@
 
 //Need some dissector constants
 extern "C" {
-#include "epan\dissectors\packet-frame.h"
-#include "epan\dissectors\packet-data.h"
+#include "epan/dissectors/packet-frame.h"
+#include "epan/dissectors/packet-data.h"
 }
 
 VALUE Packet::createClass() {
@@ -107,8 +107,10 @@ VALUE Packet::createClass() {
 	return klass;
 }
 
+#ifdef WINDOWS_BUILD
 #pragma warning(push)
 #pragma warning(disable : 4702) //unreachable code
+#endif
 
 gboolean Packet::getNextPacket(VALUE capFileObject, capture_file& cf, VALUE& packet) {
     int err = 0;
@@ -186,7 +188,9 @@ void Packet::freePacket(VALUE packet) {
 	return nativePacket->free();
 }
 
+#ifdef WINDOWS_BUILD
 #pragma warning(pop)
+#endif
 
 void Packet::getNodeSiblings(ProtocolTreeNode& node, NodeParentMap::iterator& lbound, NodeParentMap::iterator& ubound) {
 	guint64 parentPtr = 0;
@@ -335,7 +339,7 @@ VALUE Packet::processPacket(VALUE capFileObject, capture_file& cf, gint64 offset
 		};
 
 		//Create a Packet object for this packet
-		packet = rb_class_new_instance(_countof(argv),
+		packet = rb_class_new_instance(sizeof(argv) / sizeof(argv[0]),
 											 argv,
 											 g_packet_class);
 
@@ -402,7 +406,8 @@ void Packet::fillInFdata(frame_data *fdata, capture_file& cf,
 
   /* Don't bother with computing a relative time, so set the rel time to the abs time */
   fdata->rel_ts = fdata->abs_ts;
-  fdata->del_ts = fdata->abs_ts;
+  fdata->del_dis_ts = fdata->abs_ts;
+  fdata->del_cap_ts = fdata->abs_ts;
 }
 
 void Packet::clearFdata(frame_data *fdata)
@@ -915,7 +920,7 @@ void Packet::addFieldToYaml(ProtocolTreeNode* node, YamlGenerator& yaml) {
     //in which case use <no name>
     fieldName = node->getName();
     if (fieldName == NULL || ::strlen(fieldName) == 0) {
-        ::sprintf_s(fieldOrdinalBuffer, "<Field#%d>", node->getOrdinal());
+        sprintf(fieldOrdinalBuffer, "<Field#%d>", node->getOrdinal());
         fieldName = fieldOrdinalBuffer;
     }
 
