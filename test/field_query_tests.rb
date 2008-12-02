@@ -1,6 +1,6 @@
 require 'test/unit'
 
-require 'capdissector'
+require 'rcapdissector'
 require File.dirname(__FILE__) + '\testdata'
 
 include TestData

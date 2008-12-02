@@ -1,6 +1,6 @@
 require 'optparse'
 require 'logger'
-require 'capdissector'
+require 'rcapdissector'
 
 def main(*args)
     opts = {

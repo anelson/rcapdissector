@@ -1,6 +1,6 @@
 require 'test/unit'
 
-require 'capdissector'
+require 'rcapdissector'
 
 module TestData
     TEST_DATA_DIR = File.dirname(__FILE__) + "\\testdata\\"

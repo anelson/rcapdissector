@@ -1,5 +1,5 @@
 #!/usr/bin/ruby -w
-require 'capdissector'
+require 'rcapdissector'
 
 module CapDissector
     # Internal exception thrown by the native FieldQuery object when a query predicate is found to not

@@ -1,5 +1,5 @@
 #!/usr/bin/ruby -w
-require 'capdissector'
+require 'rcapdissector'
 
 module CapDissector
     class CapFileError < Exception

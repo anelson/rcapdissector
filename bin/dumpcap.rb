@@ -1,6 +1,6 @@
 require 'optparse'
 require 'logger'
-require 'capdissector'
+require 'rcapdissector'
 
 # Define 'WiresharkPref' as an option type, consisting of a name=value pair
 class WiresharkPref
