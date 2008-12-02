@@ -1,0 +1,51 @@
+/* I can't figure out how to use mkmf to pull in source files from elsewhere on the system, so I use
+ * this C file.  It ##include's all the source files from the wireshark tree used by the rcapdissector extension */
+
+#include <capture-pcap-util.c>
+#include <apture_wpcap.c>
+#include <apture_errs.c>
+#include <apture_loop.c>
+#include <apture_ops.c>
+#include <apture_stop_conditions.c>
+#include <apture_ui_utils.c>
+#include <apture_wpcap_packet.c>
+#include <file.c>
+#include <lops_common.c>
+#include <onditions.c>
+#include <isabled_protos.c>
+#include <etopt.c>
+#include <capio.c>
+#include <rint.c>
+#include <s.c>
+#include <ingbuffer.c>
+#include <ap-afpstat.c>
+#include <ap-ansi_astat.c>
+#include <ap-bootpstat.c>
+#include <ap-camcelcounter.c>
+#include <ap-camelsrt.c>
+#include <ap-dcerptstat.c>
+#include <ap-funnel.c>
+#include <ap-gsm_astat.c>
+#include <ap-h225counter.c>
+#include <ap-h225rassrt.c>
+#include <ap-httpstat.c>
+#include <ap-uistat.c>
+#include <ap-iousers.c>
+#include <ap-mgcpstat.c>
+#include <ap-protocolinfo.c>
+#include <ap-protohierstat.c>
+#include <ap-radiusstat.c>
+#include <ap-rpcprogs.c>
+#include <ap-rpcstat.c>
+#include <ap-sctpchunkstat.c>
+#include <ap-sipstat.c>
+#include <ap-smbsids.c>
+#include <ap-smbstat.c>
+#include <ap-stats_tree.c>
+#include <ap-wspstat.c>
+#include <empfile.c>
+#include <imestats.c>
+#include <shark-tap-register.c>
+#include <til.c>
+#include <ersion_info.c>
+>
