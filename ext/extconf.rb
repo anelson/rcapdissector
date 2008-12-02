@@ -2,29 +2,12 @@ require 'mkmf-gnome2'
 
 PACKAGE_NAME="rcapdissector"
 
-def move_ruby_includes_to_end(flags)
-    puts "Moving ruby includes in #{flags}"
-
-    dirs = flags.split(" ")
-    non_ruby_dirs = []
-    ruby_dirs = []
-    dirs.each do |dir|
-        if dir =~ /ruby/
-            ruby_dirs << dir
-        else
-            non_ruby_dirs << dir
-        end
-    end
-
-    dirs = non_ruby_dirs + ruby_dirs
-    puts "Came up with" + dirs.join(" ")
-    dirs.join(" ")
-end
-
-
-
 dir_config("wireshark")
 dir_config("wiretap")
+
+# Wireshark is built with these defines, so we must be too
+$CFLAGS += " -DINET6 -D_U_=\"__attribute__((unused))\""
+$CPPFLAGS += " -DINET6 -D_U_=\"__attribute__((unused))\""
 
 unless PKGConfig.have_package('gtk+-2.0')
     warn("Unable to locate GTK+ version 2.0 or later")
@@ -79,6 +62,11 @@ unless have_header("epan/epan.h")
     exit
 end
 
+unless have_header("wtap.h")
+    warn("Unable to locate wtap.h; check the wiretap include directory and try again")
+    exit
+end
+
 unless find_library("wiretap", "wtap_pcap_encap_to_wtap_encap") 
     warn("Unable to locate libwiretap; check wiretap link directory and try again")
     exit
@@ -88,6 +76,67 @@ unless find_library("wireshark", "tvb_reported_length")
     warn("Unable to locate libwireshark; check wireshark link directory and try again")
     exit
 end
+
+# All the checks pass.  Now, we need some way to include a number of wireshark source code files
+# in our extension.  As far as I can tell, mkmf doesn't have a facility for this, so instead I'll generate
+# one .c file in the ext directory for every wireshark file I need, and just #include the wireshark file
+# within the .c file.  It's not pretty, but it works
+wireshark_source_files = [
+    "capture-pcap-util.c",
+    "capture_errs.c",
+    "capture_opts.c",
+    "capture_stop_conditions.c",
+    "capture_ui_utils.c",
+    "cfile.c",
+    "clops_common.c",
+    "conditions.c",
+    "disabled_protos.c",
+    "getopt.c",
+    "print.c",
+    "ps.c",
+    "ringbuffer.c",
+    "tap-afpstat.c",
+    "tap-ansi_astat.c",
+    "tap-bootpstat.c",
+    "tap-camelcounter.c",
+    "tap-camelstr.c",
+    "tap-dcerpcstat.c",
+    "tap-funnel.c",
+    "tap-gsm_astat.c",
+    "tap-h225counter.c",
+    "tap-h225rassrt.c",
+    "tap-httpstat.c",
+    "tap-iostat.c",
+    "tap-iousers.c",
+    "tap-mgcpstat.c",
+    "tap-protocolinfo.c",
+    "tap-protohierstat.c",
+    "tap-radiusstat.c",
+    "tap-rpcprogs.c",
+    "tap-rpcstat.c",
+    "tap-sctpchunkstat.c",
+    "tap-sipstat.c",
+    "tap-smbsids.c",
+    "tap-smbstat.c",
+    "tap-stats_free.c",
+    "tap-wpstat.c",
+    "tempfile.c",
+    "timestats.c",
+    "tshark-tap-register.c",
+    "util.c",
+    "version_info.c"
+    ]
+
+#Delete all existing files like this, and recreate them
+Dir[File.dirname("__FILE__") + "/wireshark-*.c"].each do |file| File.delete(file) end
+
+wireshark_source_files.each do |file|
+    File.open("wireshark-#{file}", "w") do
+        file << "#include <#{file}>"
+        file << "\n"
+    end
+end
+
 
 create_makefile(PACKAGE_NAME)
 
