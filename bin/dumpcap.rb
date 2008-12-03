@@ -1,6 +1,7 @@
 require 'optparse'
 require 'logger'
 require 'rcapdissector'
+require 'pp'
 
 # Define 'WiresharkPref' as an option type, consisting of a name=value pair
 class WiresharkPref
@@ -102,7 +103,7 @@ def main(*args)
             opts[:dump_field_contents] << val
         }
     
-    opt_parser.on("-t", 
+    opt_parser.on("-x", 
         "--test", 
         "Run the per-packet test code") {|val|
             opts[:run_test_code] = true
@@ -318,7 +319,7 @@ def per_packet_test(packet)
     end
 
     if compare_field.value != entire_packet_value[compare_field.position, compare_field.length]
-        raise "Field #{compare_field.name} reports value [#{compare_field.value}], which doesn't match data at frame's value buffer"
+        raise "Field #{compare_field.name} reports value [#{compare_field.value}], which doesn't match data at frame's value buffer, at byte offset #{compare_field.position}, #{compare_field.length} bytes long: [#{entire_packet_value[compare_field.position, compare_field.length]}]"
     end
 end
 
@@ -405,8 +406,9 @@ def output_field(field, indent_level)
     # The top-level 'protocol' fields shouldn't have values as they're just containers
     if field.is_protocol_node? == false && field.value != nil && field.value.length > 0
         value_string = ""
-        field.value.each do |byte|
+        field.value.each_byte do |byte|
             value_string << sprintf(" %02x", byte)
+            #value_string << sprintf(" %02x", 0)
         end
         puts indent + "value:#{value_string}"
     end
