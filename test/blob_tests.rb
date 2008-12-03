@@ -2,7 +2,7 @@ require 'test/unit'
 require 'yaml'
 
 require 'rcapdissector'
-require File.dirname(__FILE__) + '\testdata'
+require File.dirname(__FILE__) + '/testdata'
 
 include TestData
 

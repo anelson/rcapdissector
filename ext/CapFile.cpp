@@ -203,6 +203,11 @@ VALUE CapFile::createClass() {
 }
 
 void CapFile::initPacketCapture() {
+  /*
+   * Get credential information for later use.
+   */
+  get_credential_info();
+
     epan_init(register_all_protocols, 
               register_all_protocol_handoffs,
               NULL, NULL,

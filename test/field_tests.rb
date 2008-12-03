@@ -1,7 +1,7 @@
 require 'test/unit'
 
 require 'rcapdissector'
-require File.dirname(__FILE__) + '\testdata'
+require File.dirname(__FILE__) + '/testdata'
 
 include TestData
 
@@ -43,7 +43,7 @@ class FieldTests < Test::Unit::TestCase
         end
 
         assert_equal(1, packet_count)
-        assert_equal(90, field_count)
+        assert_equal(94, field_count)
     end
 
     def test_known_field_contents

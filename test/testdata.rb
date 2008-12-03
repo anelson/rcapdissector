@@ -3,7 +3,7 @@ require 'test/unit'
 require 'rcapdissector'
 
 module TestData
-    TEST_DATA_DIR = File.dirname(__FILE__) + "\\testdata\\"
+    TEST_DATA_DIR = File.dirname(__FILE__) + "/testdata/"
 
     BOGUS_CAP = TEST_DATA_DIR + 'nonexistantcapturefile'
     CORRUPTED_CAP = TEST_DATA_DIR + 'corrupted.cap'
