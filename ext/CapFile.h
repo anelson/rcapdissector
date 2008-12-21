@@ -47,6 +47,8 @@ private:
 
     static VALUE close_capture_file(VALUE self);
 
+        static VALUE deinitialize();
+
 	/*@ Instance methods that actually perform the CapFile-specific work */
 	void openCaptureFile(VALUE capFileName);
 	void closeCaptureFile();
@@ -56,6 +58,11 @@ private:
 	static void setPreference(const char* name, const char* value);
 	static void setWlanDecryptionKey(VALUE key);
 	static void setWlanDecryptionKeys(VALUE keys);
+
+        void setupColumns();
+
+        static gint* COLUMNS;
+        static gint NUM_COLUMNS;
 
 	VALUE _self;
 	capture_file _cf;

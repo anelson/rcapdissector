@@ -4,4 +4,5 @@ ruby -w extconf.rb \
     --with-wireshark-lib=/home/anelson/wireshark-1.0.4/epan/.libs \
     --with-wiretap-include=/home/anelson/wireshark-1.0.4/wiretap \
     --with-wiretap-lib=/home/anelson/wireshark-1.0.4/wiretap/.libs
+
     

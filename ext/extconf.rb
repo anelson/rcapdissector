@@ -9,6 +9,12 @@ dir_config("wiretap")
 $CFLAGS += " -DINET6 -D_U_=\"__attribute__((unused))\""
 $CPPFLAGS += " -DINET6 -D_U_=\"__attribute__((unused))\""
 
+
+if (enable_config("lookaside-lists"))
+    $CFLAGS += " -DUSE_LOOKASIDE_LIST"
+    $CPPFLAGS += " -DUSE_LOOKASIDE_LIST"
+end
+
 unless PKGConfig.have_package('gtk+-2.0')
     warn("Unable to locate GTK+ version 2.0 or later")
     exit

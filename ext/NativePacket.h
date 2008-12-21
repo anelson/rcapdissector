@@ -9,6 +9,7 @@
 #include "rcapdissector.h"
 
 #include "ProtocolTreeNode.h"
+
 #ifdef USE_LOOKASIDE_LIST
 #include "RubyAllocator.h"
 #include "ProtocolTreeNodeLookasideList.h"
@@ -107,6 +108,12 @@ private:
 	static VALUE initialize(VALUE self, VALUE capFileObject);
 	static VALUE init_copy(VALUE copy, VALUE orig);
 
+        static VALUE number(VALUE self);
+        static VALUE timestamp(VALUE self);
+        static VALUE source_address(VALUE self);
+        static VALUE destination_address(VALUE self);
+        static VALUE protocol(VALUE self);
+        static VALUE info(VALUE self);
 	static VALUE field_exists(VALUE self, VALUE fieldName);
 	static VALUE descendant_field_exists(VALUE self, VALUE parentField, VALUE fieldName);
 	static VALUE find_first_field(VALUE self, VALUE fieldName);
@@ -131,6 +138,12 @@ private:
 	void addNode(proto_node* node);
 	VALUE getRubyFieldObjectForField(ProtocolTreeNode& node);
 	void mark();
+        VALUE getNumber();
+        VALUE getTimestamp();
+        VALUE getSourceAddress();
+        VALUE getDestinationAddress();
+        VALUE getProtocol();
+        VALUE getInfo();
 	VALUE fieldExists(VALUE fieldName);
 	VALUE descendantFieldExists(VALUE parentField, VALUE fieldName);
 	VALUE findFirstField(VALUE fieldName);
@@ -149,6 +162,8 @@ private:
 	VALUE getBlobs();
 
     VALUE toYaml();
+
+    VALUE getColumn(gint colFormat);
 
     void addFieldToYaml(ProtocolTreeNode* node, YamlGenerator& yaml);
 

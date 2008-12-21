@@ -7,6 +7,7 @@
 extern "C" {
 #include "epan/dissectors/packet-frame.h"
 #include "epan/dissectors/packet-data.h"
+#include "epan/column.h"
 }
 
 VALUE Packet::createClass() {
@@ -27,6 +28,36 @@ VALUE Packet::createClass() {
                    "capfile",
                    TRUE, 
                    FALSE);
+
+    rb_define_method(klass,
+                  "number",
+                  reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::number),
+                  0);
+
+    rb_define_method(klass,
+                  "timestamp",
+                  reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::timestamp),
+                  0);
+
+    rb_define_method(klass,
+                  "source_address",
+                  reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::source_address),
+                  0);
+
+    rb_define_method(klass,
+                  "destination_address",
+                  reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::destination_address),
+                  0);
+
+    rb_define_method(klass,
+                  "protocol",
+                  reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::protocol),
+                  0);
+
+    rb_define_method(klass,
+                  "info",
+                  reinterpret_cast<VALUE(*)(ANYARGS)>(Packet::info),
+                  0);
 
     rb_define_method(klass,
                      "field_exists?", 
@@ -321,7 +352,8 @@ VALUE Packet::processPacket(VALUE capFileObject, capture_file& cf, gint64 offset
        *not* verbose; in verbose mode, we print the protocol tree, not
        the protocol summary. */
     epan_dissect_run(edt, pseudo_header, pd, &fdata,
-                     NULL);
+//                     NULL);
+                     &cf.cinfo);
 
     tap_push_tapped_queue(edt);
 
@@ -332,6 +364,9 @@ VALUE Packet::processPacket(VALUE capFileObject, capture_file& cf, gint64 offset
         passed = TRUE;
 
     if (passed) {
+        if (edt->pi.cinfo) {
+            epan_dissect_fill_in_columns(edt);
+        }
         /* Passes the filter critera.  Create a Ruby Packet object and build it. */
 #ifndef SKIP_OBJECT_CREATION
 		VALUE argv[] = {
@@ -478,6 +513,42 @@ VALUE Packet::init_copy(VALUE copy, VALUE orig) {
 	return copy;
 }
 	
+VALUE Packet::number(VALUE self) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->getNumber();
+}
+
+VALUE Packet::timestamp(VALUE self) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->getTimestamp();
+}
+
+VALUE Packet::source_address(VALUE self) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->getSourceAddress();
+}
+
+VALUE Packet::destination_address(VALUE self) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->getDestinationAddress();
+}
+
+VALUE Packet::protocol(VALUE self) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->getProtocol();
+}
+
+VALUE Packet::info(VALUE self) {
+	Packet* packet = NULL;
+	Data_Get_Struct(self, Packet, packet);
+	return packet->getInfo();
+}
+
 VALUE Packet::field_exists(VALUE self, VALUE fieldName) {
 	Packet* packet = NULL;
 	Data_Get_Struct(self, Packet, packet);
@@ -628,6 +699,30 @@ void Packet::mark() {
 		++iter) {
 		::rb_gc_mark((*iter)->getRubyWrapper());
 	}
+}
+
+VALUE Packet::getNumber() {
+    return INT2NUM(_frameData.num);
+}
+
+VALUE Packet::getTimestamp() {
+    return getColumn(COL_CLS_TIME);
+}
+
+VALUE Packet::getSourceAddress() {
+    return getColumn(COL_DEF_SRC);
+}
+
+VALUE Packet::getDestinationAddress() {
+    return getColumn(COL_DEF_DST);
+}
+
+VALUE Packet::getProtocol() {
+    return getColumn(COL_PROTOCOL);
+}
+
+VALUE Packet::getInfo() {
+    return getColumn(COL_INFO);
 }
 
 VALUE Packet::fieldExists(VALUE fieldName) {
@@ -911,6 +1006,17 @@ VALUE Packet::toYaml() {
     yaml.endList();
 
     return ::rb_str_new2(yaml.getStringBuffer().str().c_str());
+}
+
+VALUE Packet::getColumn(gint colFormat) {
+    if (!_edt->pi.cinfo) { return Qnil; }
+    for (gint idx = 0; idx < _edt->pi.cinfo->num_cols; idx++) {
+        if (_edt->pi.cinfo->col_fmt[idx] == colFormat) {
+            return rb_str_new2(_edt->pi.cinfo->col_data[idx]);
+        }
+    }
+
+    return Qnil;
 }
 
 void Packet::addFieldToYaml(ProtocolTreeNode* node, YamlGenerator& yaml) {

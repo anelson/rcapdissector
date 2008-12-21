@@ -2,7 +2,21 @@
 
 #include <sstream>
 
+#include <epan/prefs.h>
+
 #include "NativePacket.h"
+
+static gint cols[] = {
+    COL_NUMBER,
+    COL_DEF_SRC,
+    COL_DEF_DST,
+    COL_PROTOCOL,
+    COL_INFO,
+    COL_CLS_TIME
+};
+
+gint* CapFile::COLUMNS = cols;
+gint CapFile::NUM_COLUMNS = sizeof(cols) / sizeof(cols[0]);
 
 /** copied from Wireshark, epan\dissectors\packet-ieee80211.c */
 #define MAX_ENCRYPTION_KEYS 64
@@ -170,6 +184,11 @@ VALUE CapFile::createClass() {
                      "close", 
 					 reinterpret_cast<VALUE(*)(ANYARGS)>(CapFile::close_capture_file), 
 					 0);
+
+    rb_define_singleton_method(klass,
+                    "deinitialize",
+                    reinterpret_cast<VALUE(*)(ANYARGS)>(CapFile::deinitialize),
+                    0);
 
     //Define the 'capture_file' attribute reader
     rb_define_attr(klass,
@@ -440,6 +459,11 @@ VALUE CapFile::close_capture_file(VALUE self) {
 	return self;
 }
 
+VALUE CapFile::deinitialize() {
+    deinitPacketCapture();
+    return Qnil;
+}
+
 void CapFile::openCaptureFile(VALUE capFileName) {
 	//Apply any previously-set preferences
 	prefs_apply_all();
@@ -483,6 +507,8 @@ void CapFile::openCaptureFile(VALUE capFileName) {
     } else
         _cf.has_snap = TRUE;
     nstime_set_zero(&_cf.elapsed_time);
+
+    setupColumns();
 
     return;
 
@@ -621,4 +647,53 @@ void CapFile::setWlanDecryptionKeys(VALUE keys) {
 }
 
 
+void CapFile::setupColumns() {
+/*    gint gpf_open_errno, gpf_read_errno, pf_open_errno, pf_read_errno;
+    gchar* gpf_path = NULL, *pf_path = NULL;
+
+    e_prefs* prefs = read_prefs(&gpf_open_errno,
+        &gpf_read_errno,
+        &gpf_path,
+        &pf_open_errno,
+        &pf_read_errno,
+        &pf_path);
+
+    if(gpf_path) g_free(gpf_path);
+    if(gpf_path) g_free(pf_path);
+*/
+  //This determines what sort of timestamp the COL_CLS_TIME is
+  timestamp_set_type(TS_ABSOLUTE_WITH_DATE);
+  col_setup(&_cf.cinfo, NUM_COLUMNS);
+  int i = 0;
+  for (i = 0; i < _cf.cinfo.num_cols; i++) {
+    _cf.cinfo.col_fmt[i] = COLUMNS[i];
+    _cf.cinfo.col_title[i] = g_strdup(col_format_desc(COLUMNS[i]));
+    _cf.cinfo.col_custom_field[i] = NULL;
+    _cf.cinfo.fmt_matx[i] = (gboolean *) g_malloc0(sizeof(gboolean) *
+      NUM_COL_FMTS);
+    get_column_format_matches(_cf.cinfo.fmt_matx[i], _cf.cinfo.col_fmt[i]);
+    _cf.cinfo.col_data[i] = NULL;
+    if (_cf.cinfo.col_fmt[i] == COL_INFO)
+      _cf.cinfo.col_buf[i] = (gchar *) g_malloc(sizeof(gchar) * COL_MAX_INFO_LEN);
+    else
+      _cf.cinfo.col_buf[i] = (gchar *) g_malloc(sizeof(gchar) * COL_MAX_LEN);
+    _cf.cinfo.col_fence[i] = 0;
+    _cf.cinfo.col_expr.col_expr[i] = (gchar *) g_malloc(sizeof(gchar) * COL_MAX_LEN);
+    _cf.cinfo.col_expr.col_expr_val[i] = (gchar *) g_malloc(sizeof(gchar) * COL_MAX_LEN);
+  }
+
+  for (i = 0; i < _cf.cinfo.num_cols; i++) {
+      int j;
+
+      for (j = 0; j < NUM_COL_FMTS; j++) {
+         if (!_cf.cinfo.fmt_matx[i][j])
+             continue;
+
+         if (_cf.cinfo.col_first[j] == -1)
+             _cf.cinfo.col_first[j] = i;
+         _cf.cinfo.col_last[j] = i;
+      }
+  }
+
+}
 
