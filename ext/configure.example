@@ -1,0 +1,15 @@
+#!/bin/sh
+# This is the command I use to generate the Makefile for this extension.  Edit the arguments below
+# to reflect the location of the wireshark source tree.
+#
+# Note that you must first build Wireshark in this source tree, or the libs required by rcapdissector
+# won't be there.
+# 
+# Also note that you must then use 'make' to build the extension, and 'make install' as root to install it.
+ruby -w extconf.rb \
+    --with-wireshark-include=/home/anelson/wireshark-1.0.4 \
+    --with-wireshark-lib=/home/anelson/wireshark-1.0.4/epan/.libs \
+    --with-wiretap-include=/home/anelson/wireshark-1.0.4/wiretap \
+    --with-wiretap-lib=/home/anelson/wireshark-1.0.4/wiretap/.libs
+
+    

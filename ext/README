@@ -1,0 +1,4 @@
+To generate a makefile for this extension, run extconf.rb.  You'll have to specify the location of the wireshark
+source and binary directories with various complicated arguments, so I've created a configure.example file which
+shows how I run extconnf.rb on my machine.  I encourage you to modify that and run it instead.
+
